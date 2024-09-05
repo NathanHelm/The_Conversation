@@ -7,7 +7,7 @@ public class StateManager : StaticInstance<StateManager>
     public PlayerDataMono playerDataState;
     public DialogueStateMono dialogueState;
 
-
+    public int change;
 
     public TransitionTo2d transitionTo2D = new TransitionTo2d();
     public TransitionTo3d transitionTo3D = new TransitionTo3d();
