@@ -13,8 +13,9 @@ public class StaticInstance<T> : MonoBehaviour
 		}
 		
 	}
-    public void OnEnable()
+    public virtual void OnEnable()
     {
+		//adds static values to the event hashmap.
 		GameEventManager.INSTANCE.AddEventFunc(typeof(T).ToString().ToLower(),ReturnStaticType);
     }
 	public T ReturnStaticType()

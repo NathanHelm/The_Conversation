@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Data;
-public class UIManager : MonoBehaviour
+public class UIManager : StaticInstance<UIManager>
 {
     UIData UIData;
     

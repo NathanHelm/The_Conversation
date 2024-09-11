@@ -2,9 +2,9 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
-public class GameEventManager : StaticInstance<GameEventManager>
+public class GameEventManager : MonoBehaviour
 {
-
+    public static GameEventManager INSTANCE = new GameEventManager();
 	public Dictionary<string, Action> onStateNameToAction = new Dictionary<string, Action>(); //gets a event name (OnTransitionTo2d for example) and adds a function to it. 
 
     private Dictionary<string, Action> previousAction = new Dictionary<string, Action>(); //gets a event name (OnTransitionTo2d for example) and adds a function to it. 
@@ -13,6 +13,11 @@ public class GameEventManager : StaticInstance<GameEventManager>
     //public Dictionary<string, Func<object, object>> onIDtoReturnFuncPara = new Dictionary<string, Func<object, object>>();
 
     // public Dictionary<string, Func<object>> onIDtoReturnFunc = new Dictionary<string, Func<object>>();
+
+    public void Awake()
+    {
+        INSTANCE = FindObjectOfType<GameEventManager>();
+    }
 
     public void ReplaceEvent(string name, Action action)
     {
@@ -64,7 +69,7 @@ public class GameEventManager : StaticInstance<GameEventManager>
     {
         if (!GameEventGeneric<T1, T2, T3>.dict3.ContainsKey(funcKey))
         {
-            throw new KeyNotFoundException();
+            throw new KeyNotFoundException(funcKey + "not found");
         }
         return GameEventGeneric<T1, T2, T3>.dict3[funcKey](para, para2); //sus
     }
@@ -72,7 +77,7 @@ public class GameEventManager : StaticInstance<GameEventManager>
     {
         if (!GameEventGeneric<T1,T2>.dict2.ContainsKey(funcKey))
         {
-            throw new KeyNotFoundException();
+            throw new KeyNotFoundException(funcKey + "not found");
         }
         return GameEventGeneric<T1,T2>.dict2[funcKey](para); //sus
     }
@@ -81,7 +86,7 @@ public class GameEventManager : StaticInstance<GameEventManager>
     {
         if (!GameEventGeneric<T1>.dict1.ContainsKey(funcKey))
         {
-            throw new KeyNotFoundException();
+            throw new KeyNotFoundException(funcKey + "not found");
         }
         return GameEventGeneric<T1>.dict1[funcKey]();
     }

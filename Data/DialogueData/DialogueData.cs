@@ -7,9 +7,10 @@ namespace Data
 	public class DialogueData : StaticInstance<DialogueData>
 	{
 		[SerializeField]
-		public int characterID { get; set; }
+		public int characterID, persistentConversationID;
 		[SerializeField]
 		public int questionID { get; set; }
+		 
 		[SerializeField]
 		public DialogueScriptableObject player;
 		[SerializeField]

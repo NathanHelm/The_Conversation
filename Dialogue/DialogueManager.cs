@@ -33,7 +33,7 @@ public class DialogueManager : StaticInstance<DialogueManager>
         dialogueObjects = currentdialogueConvo.dialogueObjects;
  
    }
-
+    //conversation state
     public void RunDialog()
     {
       
@@ -99,6 +99,22 @@ public class DialogueManager : StaticInstance<DialogueManager>
             single(); //runs the action based on the dialogue index.
         }
     }
+    //endconversationstate
+    public void RunDialogAgain()
+    {
+        if(Input.GetKeyDown(KeyCode.Return)) //plays the dialog again
+        {
+            GameEventManager.INSTANCE.OnEvent(typeof(ConversationState));
+        }
+    }
+    //noconversationstate
+    public void NoDialogue()
+    {
+        StopAllCoroutines();
+        Debug.Log("no dialog");
+    }
+
+
     private void AddDialogueAction()
     {
         dialogueLineToAction = GameEventManager.INSTANCE.OnEventFunc<int, Dictionary<int, DialogueAction>>("dialogueactionmanager", dialogueID);

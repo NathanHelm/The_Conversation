@@ -29,8 +29,12 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
 
                 ()=>{ GameEventManager.INSTANCE.AddEvent("", ()=>{ });  }
 
+                
 
             })
+
+
+
 
             }
             }
@@ -45,6 +49,7 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
 
     public Dictionary<int, DialogueAction> GetActionOnConversation(int characterID, int questionID)
     {
+        //getactiononconversation(dialoguedata.characterID, dialoguedata.questionid)
 
         if (questionID.Equals("") || !conversationKeyToDialogActions.ContainsKey(questionID))
         {

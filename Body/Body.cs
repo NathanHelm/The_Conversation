@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TriggerData : MonoBehaviour
+public class Body 
 {
-
+	public int ID;
 }
 
