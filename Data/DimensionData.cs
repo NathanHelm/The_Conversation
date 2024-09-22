@@ -26,7 +26,7 @@ public class DimensionData : StaticInstance<DimensionData>
     }
     private void Start()
     {
-        uIData = GameEventManager.INSTANCE.OnEventFunc<UIData>("uidata");
+        uIData = GameEventManager.INSTANCE.OnEventFunc<UIData>("data.uidata");
     }
     public void ToDimension(DimensionScriptableObject dimensionScriptableObject)
 	{

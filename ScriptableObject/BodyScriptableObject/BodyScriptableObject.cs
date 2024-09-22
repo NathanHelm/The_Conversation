@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[CreateAssetMenu(fileName = "bodyID", menuName = "ScriptableObjects/bodyID", order = 3)]
+[CreateAssetMenu(fileName = "bodySO", menuName = "ScriptableObjects/bodySO", order = 3)]
 public class BodyScriptableObject : ScriptableObject
 {
     [SerializeField]

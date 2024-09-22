@@ -2,6 +2,8 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+
 public class GameEventManager : MonoBehaviour
 {
     public static GameEventManager INSTANCE = new GameEventManager();
@@ -67,9 +69,16 @@ public class GameEventManager : MonoBehaviour
 
     public T3 OnEventFunc<T1, T2, T3>(string funcKey, T1 para, T2 para2)
     {
+        string[] keys = GameEventGeneric<T1, T2, T3>.dict3.Keys.ToArray();
+
         if (!GameEventGeneric<T1, T2, T3>.dict3.ContainsKey(funcKey))
         {
-            throw new KeyNotFoundException(funcKey + "not found");
+            for(int i = 0; i < keys.Length; i++)
+            {
+                Debug.Log(keys[i]);
+            }
+            throw new KeyNotFoundException(funcKey + "not found ");
+            
         }
         return GameEventGeneric<T1, T2, T3>.dict3[funcKey](para, para2); //sus
     }
@@ -103,6 +112,7 @@ public class GameEventManager : MonoBehaviour
             onStateNameToAction[stateName] += action;
             return;
         }
+        SavePrevEvent(stateName, action);
         onStateNameToAction.Add(stateName.ToString(), action);
     }
 	public void AddEvent(Type stateName, Action action) //subscribe a action/method to a paticular object
@@ -112,6 +122,7 @@ public class GameEventManager : MonoBehaviour
 			onStateNameToAction[stateName.ToString()] += action;
 			return;
 		}
+        SavePrevEvent(stateName.ToString(), action);
         onStateNameToAction.Add(stateName.ToString(), action);
     }
 

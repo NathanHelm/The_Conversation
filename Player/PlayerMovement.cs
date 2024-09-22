@@ -44,7 +44,7 @@ public class PlayerMovement : MonoBehaviour
         //'if is walking' is true, then perform code.
         if (isWalking)
         {
-            playerRigidBody.AddForce(movement * moveSpeed * 125, ForceMode2D.Force);
+            playerRigidBody.AddForce(movement * moveSpeed, ForceMode2D.Force);
             movement.x = Input.GetAxisRaw("Horizontal");
             movement.y = Input.GetAxisRaw("Vertical");
 

@@ -6,7 +6,7 @@ namespace Data
 	{
         public TriggerActionManager triggerActionManager { get; set; }
 		public TriggerManager triggerManager { get; set; }
-		public BodyMono currentBodyOnTrigger { get; set; }
+		//public BodyMono currentBodyOnTrigger { get; set; }
 		public Trigger[] triggers { get; set; }
         public Trigger triggerOnTrigger { get; set; }
         public DialogueData dialogueData;

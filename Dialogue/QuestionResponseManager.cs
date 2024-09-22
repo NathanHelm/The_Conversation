@@ -11,9 +11,6 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 
 
 	private DialogueData dialogueData;
-	[SerializeField]
-	private CharacterMono[] characters;
-	private int currentID;
 
 
 
@@ -24,28 +21,32 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
     public override void OnEnable()
     {
 		GameEventManager.INSTANCE.AddEventFunc<int, int, DialogueConversation>("getdialogueconversation", getDialogueConversation); 
-		SetUpQuestionResponseManager();
+		
 		base.OnEnable();
 	}
-    public void Start()
+
+    public override void m_Start()
     {
 		dialogueData = GameEventManager.INSTANCE.OnEventFunc<DialogueData>(typeof(DialogueData).ToString().ToLower());
-		Debug.Log(typeof(DialogueData).ToString().ToLower());
+        SetUpQuestionResponseManager();
+        Debug.Log(typeof(DialogueData).ToString().ToLower());
     }
 
 
     public void SetUpQuestionResponseManager()
 	{
-		//all code is preprocessed
-							//character id. 
-		npcToQuestionDialogueNpc.Add(1, new Dictionary<int, DialogueConversation>());
+        //all code is preprocessed
+        //character id.
+
+        //GameEventManager.INSTANCE.OnEventFunc<int,int, DialogueConversation>("getconversationoncharacterid") <-- USE THIS.
+
+        npcToQuestionDialogueNpc.Add(1, new Dictionary<int, DialogueConversation>());
 
 		npcToQuestionDialogueNpc[1] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[] {
 
 		//key pair value code goes here.
-						  //question id							
-			new (new int[] { 2, 3, 4}, characters[0].dialogueConversation[0]), //todo make a dictionary where based on conversation id,
-																			   //return conversation.
+		//question id							
+			new (new int[] { 2, 3, 4}, GameEventManager.INSTANCE.OnEventFunc<int,int, DialogueConversation>("getconversationoncharacterid",1,2)), //based on character & conversation id, return conversation
 			
 			
 
@@ -74,13 +75,7 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 			
 			for (int j = 0; j < keys[i].Item1.Length; j++)
 			{
-                if (keys[i].Item1[j] == 1 && keyValuePairs.ContainsKey(1)) //keys cannot be zero since persistent keys are label as 1.
-										   //adding a key=1 will override the default persistent key.
-                {
-					Debug.LogError("invalid key " + keys[i].Item1[j]);
-					continue;
-                }
-
+	
                 keyValuePairs.Add(keys[i].Item1[j], keys[i].Item2); //for each int in key array, add a responding key pair value.
 			}
 		}
@@ -90,7 +85,7 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 
     public DialogueConversation getDialogueConversation(int characterID, int playerQuestionID)
 	{
-
+		//code for question response type dialog
 		if(!npcToQuestionDialogueNpc.ContainsKey(characterID))
 		{
 			throw new KeyNotFoundException("character ID "+ characterID + " does not match with value");
@@ -99,12 +94,12 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 		{
 			Debug.Log("playerQuestion ID " + playerQuestionID + " does not match player question value for character " + characterID);
 
-			if (!npcToQuestionDialogueNpc[characterID].ContainsKey(dialogueData.persistentConversationID))
+			if (!npcToQuestionDialogueNpc[characterID].ContainsKey(dialogueData.currentPersistentConversationID))
 			{
 				throw new KeyNotFoundException("cannot link the persistentconversationID to character" + characterID);
 			}
 
-			return npcToQuestionDialogueNpc[characterID][dialogueData.persistentConversationID];
+			return npcToQuestionDialogueNpc[characterID][dialogueData.currentPersistentConversationID];
 			//default key if no question is provided.
 			//can act like a normal conversation.
 
@@ -112,7 +107,7 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 		return npcToQuestionDialogueNpc[characterID][playerQuestionID];
 		
 	}
-
+	 
 
 	
 }

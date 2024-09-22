@@ -13,6 +13,11 @@ public class StaticInstance<T> : MonoBehaviour
 		}
 		
 	}
+	public virtual void m_Start()
+	{
+
+	}
+
     public virtual void OnEnable()
     {
 		//adds static values to the event hashmap.

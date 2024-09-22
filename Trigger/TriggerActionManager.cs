@@ -34,23 +34,30 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>
 	{
 		if (!characterIDToTriggerAction.ContainsKey(characterID))
 		{
-			TriggerData trigger = GameEventManager.INSTANCE.OnEventFunc<TriggerData>("triggerdata");
+			TriggerData trigger = GameEventManager.INSTANCE.OnEventFunc<TriggerData>("data.triggerdata");
 
-			if(trigger.currentBodyOnTrigger is CharacterMono)
+			if (trigger.triggerOnTrigger.charactersOnTrigger.Count > 0)
 			{
-				//enable default conversation
-				return () => { GameEventManager.INSTANCE.OnEvent(typeof(ConversationState));
+				if (trigger.triggerOnTrigger.charactersOnTrigger[0] is CharacterMono)
+				{
+					//enable default conversation
+					return () =>
+					{
+						GameEventManager.INSTANCE.OnEvent(typeof(TriggerConversationState));
 
-					Debug.Log("this character has no action-- running default conversation state. Attach some character ID functionality @ triggeraction manager\"");
-				};
+						Debug.Log("this character has no action-- running default conversation state. Attach some character ID functionality @ triggeraction manager");
+					};
+				}
 			}
-		 
 
-			
-			return () => { Debug.Log("this is a body-- attach some character ID functionality @ triggeraction manager"); };
+			if (trigger.triggerOnTrigger.bodiesOnTrigger.Count > 0)
+			{
+
+				return () => { Debug.Log("this is a body-- attach some character ID functionality @ triggeraction manager"); };
+			}
 		}
-
-		return characterIDToTriggerAction[characterID];
+		 
+			return characterIDToTriggerAction[characterID];
 		 
 	}
 	 

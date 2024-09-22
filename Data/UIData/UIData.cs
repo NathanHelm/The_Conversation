@@ -8,22 +8,20 @@ namespace Data
     public class UIData : StaticInstance<UIData>
     { 
         public Animator transitionAnimator { get; set; }
-        public Image image { get; set; }
+        public Image dialogBlock { get; set; }
+        public TextMeshProUGUI dialogText { get; set; }
 
-        
 
-        public override void Awake()
+        public override void OnEnable()
         {
             transitionAnimator = GetComponentInChildren<Animator>();
-            GameEventManager.INSTANCE.AddEventFunc("uidata", GetData);
-            base.Awake();
+            dialogText = FindObjectOfType<TextMeshProUGUI>();
+            dialogBlock = FindObjectOfType<Image>();
+            base.OnEnable();
         }
 
-        public UIData GetData()
-        {
-            return this;
-        }
-            
+
+
     }
 }
 
