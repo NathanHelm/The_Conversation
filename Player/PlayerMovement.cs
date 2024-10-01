@@ -9,10 +9,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float moveSpeed = 15;
     private Vector2 movement;
+    private Vector3 movement3d;
     private bool isWalking = true;
     [SerializeField]
     private float velocityThreshold = 0;
     Rigidbody2D playerRigidBody;
+    Rigidbody playerRigidBody3d;
     Animator animator;
     public IEnumerator coroutine { get; set; }
     PlayerData playerData;
@@ -27,11 +29,12 @@ public class PlayerMovement : MonoBehaviour
     {
         playerData = PlayerData.INSTANCE;
         playerRigidBody = playerData.rb2D;
+        playerRigidBody3d = playerData.rb3D;
         animator = playerData.playerAnimator;
 
         this.moveSpeed = playerData.currentPlayerSO.speed;
-        playerRigidBody.drag = 10;
-        playerRigidBody.mass = 10;
+        playerRigidBody3d.drag = playerRigidBody.drag = 10;
+        playerRigidBody3d.mass = playerRigidBody.mass = 10;
     }
 
     public void setPlayerPos(Vector3 pos)
@@ -45,17 +48,24 @@ public class PlayerMovement : MonoBehaviour
         if (isWalking)
         {
             playerRigidBody.AddForce(movement * moveSpeed, ForceMode2D.Force);
+            playerRigidBody3d.AddForce(movement3d * moveSpeed, ForceMode.Force);
+            
             movement.x = Input.GetAxisRaw("Horizontal");
             movement.y = Input.GetAxisRaw("Vertical");
+
+            movement3d.z = Input.GetAxisRaw("Vertical");
+            movement3d.x = Input.GetAxisRaw("Horizontal");
 
             animator.SetFloat("Horizontal", movement.x);
             animator.SetFloat("Vertical", movement.y);
             animator.SetFloat("Speed", movement.sqrMagnitude);
+
             if (Input.GetAxisRaw("Horizontal") == 1 || Input.GetAxisRaw("Horizontal") == -1 || Input.GetAxisRaw("Vertical") == 1 || Input.GetAxisRaw("Vertical") == -1)
             {
                 animator.SetFloat("Last Horizontal", Input.GetAxisRaw("Horizontal"));
                 animator.SetFloat("Last Vertical", Input.GetAxisRaw("Vertical"));
             }
+
             if (playerRigidBody.velocity.magnitude <= 0 && playerRigidBody.velocity.magnitude <= 0) //removes instantious low velocity edge case.
             {
                 return;
