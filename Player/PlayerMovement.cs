@@ -33,8 +33,8 @@ public class PlayerMovement : MonoBehaviour
         animator = playerData.playerAnimator;
 
         this.moveSpeed = playerData.currentPlayerSO.speed;
-        playerRigidBody3d.drag = playerRigidBody.drag = 10;
-        playerRigidBody3d.mass = playerRigidBody.mass = 10;
+        playerRigidBody3d.drag = playerRigidBody.drag = 1;
+        playerRigidBody3d.mass = playerRigidBody.mass = 2;
     }
 
     public void setPlayerPos(Vector3 pos)
@@ -47,9 +47,10 @@ public class PlayerMovement : MonoBehaviour
         //'if is walking' is true, then perform code.
         if (isWalking)
         {
-            playerRigidBody.AddForce(movement * moveSpeed, ForceMode2D.Force);
-            playerRigidBody3d.AddForce(movement3d * moveSpeed, ForceMode.Force);
-            
+            Debug.Log(playerRigidBody.velocity.magnitude);
+            playerRigidBody.velocity = movement * moveSpeed;
+            // playerRigidBody3d.AddForce(movement3d * moveSpeed, ForceMode.Force);
+            playerRigidBody3d.velocity = movement3d * moveSpeed;
             movement.x = Input.GetAxisRaw("Horizontal");
             movement.y = Input.GetAxisRaw("Vertical");
 
@@ -65,10 +66,13 @@ public class PlayerMovement : MonoBehaviour
                 animator.SetFloat("Last Horizontal", Input.GetAxisRaw("Horizontal"));
                 animator.SetFloat("Last Vertical", Input.GetAxisRaw("Vertical"));
             }
-
-            if (playerRigidBody.velocity.magnitude <= 0 && playerRigidBody.velocity.magnitude <= 0) //removes instantious low velocity edge case.
+            if(Input.GetAxisRaw("Horizontal") == 1 || Input.GetAxisRaw("Horizontal") == -1 || Input.GetAxisRaw("Vertical") == 1 || Input.GetAxisRaw("Vertical") == -1) 
             {
-                return;
+
+            }
+          //  if (playerRigidBody.velocity.magnitude <= 0) //removes instantious low velocity edge case.
+            {
+         //       return;
             }
 
             if (playerRigidBody.velocity.magnitude < velocityThreshold && playerRigidBody.velocity.magnitude < velocityThreshold)
