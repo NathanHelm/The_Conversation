@@ -8,7 +8,7 @@ public class StateMono<T> : MonoBehaviour
     protected T Value;
     public State<T> currentState = new State<T>();
 
-    public void Update()
+    public void FixedUpdate()
     {
 
         if (currentState != null)
