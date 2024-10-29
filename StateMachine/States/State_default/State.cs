@@ -32,5 +32,9 @@ public class State<T>
     {
 
     }
+    public virtual void OnFixedUpdate(T data)
+    {
+
+    }
 
 }

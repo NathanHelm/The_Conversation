@@ -7,7 +7,7 @@ public class PlayerMove2dState : State<PlayerData>
     {
      
     }
-    public override void OnUpdate(PlayerData data)
+    public override void OnFixedUpdate(PlayerData data)
     {
         data.playerMovement.PlayerMovementFunction();
     }

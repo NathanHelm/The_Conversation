@@ -18,6 +18,9 @@ public class MManager : StaticInstance<MManager>
     //UI
     UIManager uIManager;
 
+    //movement
+    MovementManager movementManager;
+
 
     private void SetManagers()
     {
@@ -28,7 +31,7 @@ public class MManager : StaticInstance<MManager>
         triggerManager = GameEventManager.INSTANCE.OnEventFunc<TriggerManager>("triggermanager");
         triggerActionManager = GameEventManager.INSTANCE.OnEventFunc<TriggerActionManager>("triggeractionmanager");
         uIManager = GameEventManager.INSTANCE.OnEventFunc<UIManager>("uimanager");
-
+        movementManager = GameEventManager.INSTANCE.OnEventFunc<MovementManager>("movementmanager");
     }
     public void StartManagers()
     {
@@ -45,6 +48,10 @@ public class MManager : StaticInstance<MManager>
         dialogueActionManager.m_Start();
 
         uIManager.m_Start();
+
+        movementManager.m_Start();
+
+
 
     }
     private void Start()

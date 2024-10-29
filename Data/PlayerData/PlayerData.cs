@@ -13,6 +13,7 @@ namespace Data
         public Rigidbody2D rb2D;
         public Rigidbody rb3D;
         public Transform trans2d, trans3d;
+        public MovementManager movementManager;
 
 
         public override void Awake()
@@ -32,6 +33,7 @@ namespace Data
             rb3D = FindObjectOfType<PlayerLook>().GetComponent<Rigidbody>();
             trans2d = FindObjectOfType<PlayerMovement>().transform;
             trans3d = FindObjectOfType<PlayerLook>().transform;
+            movementManager = GameEventManager.INSTANCE.OnEventFunc<MovementManager>("movementmanager");
 
         }
 

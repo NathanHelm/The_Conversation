@@ -21,7 +21,7 @@ public class CharacterManager : StaticInstance<CharacterManager>
         SetUpCharacterIDtoConversationIdToConversation();
     }
 
-    public void SetUpCharacterIDtoConversationIdToConversation()
+    public void SetUpCharacterIDtoConversationIdToConversation() //method adds all occuring characterMono and their lines to the dictionary
     {
         characterMono = FindObjectsOfType<CharacterMono>();
 
@@ -33,6 +33,7 @@ public class CharacterManager : StaticInstance<CharacterManager>
         for(int i = 0; i < characterMono.Length; i++)
         {
             int bodyId = characterMono[i].bodyID;
+            //add the body id, makes a new dictionary.
             characterIDtoConverationIdtoConversation.Add(bodyId, new Dictionary<int, DialogueConversation>());
             
             DialogueConversation[] dialogueConversation = characterMono[i].dialogueConversation;
@@ -48,6 +49,7 @@ public class CharacterManager : StaticInstance<CharacterManager>
                 {
                     throw new KeyNotFoundException("character " + characterMono[i].name + " already contains" + dialogueConversation[j].ID +"check conversation index " + j);
                 }
+                //adds the conversation to the respective body id.
                 characterIDtoConverationIdtoConversation[bodyId].Add(dialogueConversation[j].ID, dialogueConversation[j]);
             }
         }

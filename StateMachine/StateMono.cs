@@ -8,13 +8,20 @@ public class StateMono<T> : MonoBehaviour
     protected T Value;
     public State<T> currentState = new State<T>();
 
-    public void FixedUpdate()
+    public void Update()
     {
 
         if (currentState != null)
         {
             currentState.OnUpdate(Value) ;
         }
+    }
+    public void FixedUpdate()
+    {
+         if(currentState != null)
+         {
+            currentState.OnFixedUpdate(Value);
+         }
     }
     public void SwitchState(State<T> nextState)
     {

@@ -14,14 +14,14 @@ public class DialogueManager : StaticInstance<DialogueManager>
    bool isDialogueScrolling = false;
    DialogueObject[] dialogueObjects;
 
-   Dictionary<int, DialogueAction> dialogueLineToAction;
+   Dictionary<int, DialogueAction> dialogueLineToAction; //dialog action
 
-   private DialogueConversation currentdialogueConvo;
+   private DialogueConversation currentdialogueConvo; //dialog string, img, ... ect
 
    UIManager uIManager;
 
  
-    public void StartConversation(DialogueData dialogueData)
+   public void StartConversation(DialogueData dialogueData)
    {
        
         characterID = dialogueData.currentCharacterID; 

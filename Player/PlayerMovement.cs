@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Data;
+
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField]
@@ -10,80 +11,38 @@ public class PlayerMovement : MonoBehaviour
     private float moveSpeed = 15;
     private Vector2 movement;
     private Vector3 movement3d;
-    private bool isWalking = true;
+    private bool isWalking = true, isColiding = false;
     [SerializeField]
     private float velocityThreshold = 0;
     Rigidbody2D playerRigidBody;
     Rigidbody playerRigidBody3d;
     Animator animator;
     public IEnumerator coroutine { get; set; }
+    private MovementManager movementManager;
+
     PlayerData playerData;
-    [SerializeField]
-    private Vector2 previous2dPosition = Vector2.zero;
-    private Vector2 capturedVec;
-    private bool isCollision = false;
+
+
+    private Vector2 startPosition = Vector3.zero;
+    float z = 0;
+    Vector3 start3dPosition = Vector3.zero, positionTransformation = Vector3.zero;
+
+
 
 
     private void Start()
     {
         SetPlayer(playerData);
+
+        startPosition = playerRigidBody.position;
+        start3dPosition = playerRigidBody3d.position;
+        movementManager = playerData.movementManager;
+
+        
+
     }
 
-    private void Can3dPlayerMove(Rigidbody2D rb, Vector2 movement2d)
-    {
-        
-        Debug.Log("VELOCITY-->" + playerRigidBody.velocity);
-        Debug.Log("magnitude" + playerRigidBody.velocity.magnitude + "x");
-        
-       
 
-        movement3d.x = movement2d.x;
-        movement3d.z = movement2d.y;
-
-        float distanceX = Vector2.Distance(new Vector2(rb.position.x, 0), new Vector2(previous2dPosition.x, 0));
-        float distanceY = Vector2.Distance(new Vector2(0, rb.position.y), new Vector2(0,previous2dPosition.y));
-
-        Debug.Log("dist x--> " + distanceX + "dist y -->" + distanceY);
-        if (distanceX < 0.045)
-        {
-            movement3d.x = 0;
-        }
-        if(distanceY < 0.045)
-        {
-            movement3d.z = 0;
-        }
-
-        previous2dPosition = rb.position;
-
-
- 
-    }
-
-    private void Check3DMove()
-    {
-        
-        float capturedangle = Mathf.Atan2(capturedVec.y, capturedVec.x);
-        float currentAngle = Mathf.Atan2(playerRigidBody.velocity.x, playerRigidBody.velocity.y);
-        float captureAngleMinus45 = capturedangle - 45;
-        float captureAnglePlus45 = capturedangle + 45;
-
-        Debug.Log("captued angle" + capturedangle * Mathf.Rad2Deg + "current angle" + currentAngle * Mathf.Rad2Deg);
-        Debug.Log("VELOCITY-->" + playerRigidBody.velocity);
-        if (currentAngle == capturedangle || currentAngle == captureAngleMinus45 || currentAngle == captureAnglePlus45)
-        {
-            movement3d = Vector3.zero;
-        }
-        else
-        {
-            movement3d.x = 0;
-            movement3d.z = 0;
-        }
-      
-        //Debug.Log("captued angle" + capturedangle * Mathf.Rad2Deg + "current angle" + currentAngle * Mathf.Rad2Deg);
-        Debug.Log("VELOCITY-->" + playerRigidBody.velocity);
-  
-         
-    }
    
     // Update is called once per frame
     public void SetPlayer(PlayerData p)
@@ -104,23 +63,23 @@ public class PlayerMovement : MonoBehaviour
         transform.position = pos;
     }
 
+
     public void PlayerMovementFunction()
     {
         //'if is walking' is true, then perform code.
         
         if (isWalking)
         {
+
             playerRigidBody.velocity = movement * moveSpeed;
-            playerRigidBody3d.velocity = movement3d * moveSpeed;
-
-            Can3dPlayerMove(playerRigidBody, movement);
-
-
-
+            if (movementManager != null)
+            {
+                playerRigidBody3d.transform.position = start3dPosition + movementManager.SetThreeDMovementOnTwoDMovement(playerRigidBody.position, startPosition);
+            }
 
             movement.x = Input.GetAxisRaw("Horizontal");
             movement.y = Input.GetAxisRaw("Vertical");
-
+           
 
             animator.SetFloat("Horizontal", movement.x);
             animator.SetFloat("Vertical", movement.y);
