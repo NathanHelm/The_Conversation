@@ -9,15 +9,13 @@ public class CharacterManager : StaticInstance<CharacterManager>
 
     Dictionary<int, Dictionary<int, DialogueConversation>> characterIDtoConverationIdtoConversation = new Dictionary<int, Dictionary<int, DialogueConversation>>();
 
-    public override void Awake()
+    public override void OnEnable()
     {
-        base.Awake();
-        
+        MManager.onStartManagersAction.AddAction((MManager m) => { m.characterManager = this; });
+        base.OnEnable();
     }
-
     public override void m_Start()
     {
-        GameEventManager.INSTANCE.AddEventFunc<int, int, DialogueConversation>("getconversationoncharacterid", GetConversationOnCharacterID);
         SetUpCharacterIDtoConversationIdToConversation();
     }
 

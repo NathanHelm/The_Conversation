@@ -7,36 +7,45 @@ using System;
 using Data;
 public class DialogueManager : StaticInstance<DialogueManager>
 {
+    public static SystemActionCall<DialogueManager> actionOnStartConversation = new SystemActionCall<DialogueManager>();
+    public static SystemActionCall<DialogueManager> actionOnAfterRunDialog = new SystemActionCall<DialogueManager>();
 
-   private int dialogueIndex = 0;
-   private int questionID;
-   private int characterID;
-   bool isDialogueScrolling = false;
-   DialogueObject[] dialogueObjects;
 
-   Dictionary<int, DialogueAction> dialogueLineToAction; //dialog action
 
-   private DialogueConversation currentdialogueConvo; //dialog string, img, ... ect
+    private int dialogueIndex = 0;
+    public int questionID { get; set; }
+    public int characterID { get; set; }
+    public string currentLine { get; set; }
+    private bool isDialogueScrolling = false;
 
-   UIManager uIManager;
 
- 
-   public void StartConversation(DialogueData dialogueData)
-   {
-       
-        characterID = dialogueData.currentCharacterID; 
-        questionID = dialogueData.currentQuestionID; //If the trigger state is switched and the character ID doesn't have a custom trigger action, it will set currentQuestionID to persistentconversationID. 
-        AddDialogueConversation();
-        AddDialogueAction();
-        dialogueObjects = currentdialogueConvo.dialogueObjects;
-        uIManager = dialogueData.uIManager;
+    public DialogueObject[] dialogueObjects { get; set; } //dialog string, img, ... ect
+    public Dictionary<int, Action> dialogueLineToAction { get; set; } //dialog action
 
+    public UIManager uIManager { get; set; }
+
+    public override void OnEnable()
+    {
+        MManager.onStartManagersAction.AddAction((MManager m) => { m.dialogueManager = this; /*add m_start action*/ }); //dialogemanager has priority as other managers RELY on the dialogue manager.
     }
-   
+
+
+    public void StartConversation(DialogueData dialogueData)
+    {
+        //runs on dialogue state (on enter)
+        if(actionOnStartConversation != null)
+        {
+            actionOnStartConversation.RunAction(this);  // sets your code for you! (sort of)
+        }
+        //If the trigger state is switched and the character ID doesn't have a custom trigger action, it will set currentQuestionID to persistentconversationID. 
+       // dialogueObjects = actionManagerImplement.GetDialogueConversation(characterID, questionID) ;
+       // dialogueLineToAction = qresponseMImplement.getDialogueAction();
+    }
+
     public void RunDialog()
     {
-         
-        if(Input.GetKeyDown(KeyCode.Return) && !isDialogueScrolling)
+
+        if (Input.GetKeyDown(KeyCode.Return) && !isDialogueScrolling)
         {
             ShowDialogUIAndDialogScroll();
         }
@@ -69,8 +78,8 @@ public class DialogueManager : StaticInstance<DialogueManager>
 
         DialogueObject currentdialogue = dialogueObject; //gets line before key is replaced.
 
-        string line = currentdialogue.line;
- 
+        string line = currentLine = currentdialogue.line;
+
         for (int i = 0; i < line.Length; i++)
         {
             char singleText = line[i];
@@ -90,6 +99,7 @@ public class DialogueManager : StaticInstance<DialogueManager>
 
     private void PlayDialogAction(int index)
     {
+        actionOnAfterRunDialog.RunAction(this);
         if (dialogueLineToAction == null)
         {
             return;
@@ -98,17 +108,12 @@ public class DialogueManager : StaticInstance<DialogueManager>
         {
             return;
         }
-        Action[] dialogueAction = dialogueLineToAction[index].actions;
-        foreach(Action single in dialogueAction)
-        {
-            single(); //runs the action based on the dialogue index.
-        }
+        Action dialogueAction = dialogueLineToAction[index];
+        dialogueAction();
     }
     //endconversationstate
     public void RunDialogAgain()
-    {
-       
-         
+    { 
         if (Input.GetKeyDown(KeyCode.Return)) //plays the dialog again
         {
             ShowDialogUIAndDialogScroll();
@@ -124,19 +129,6 @@ public class DialogueManager : StaticInstance<DialogueManager>
         Debug.Log("no dialog");
     }
 
-
-    private void AddDialogueConversation()
-    {
-        currentdialogueConvo = GameEventManager.INSTANCE.OnEventFunc<int,int, DialogueConversation>("getdialogueconversation", characterID, questionID);
-    }
-
-    private void AddDialogueAction()
-    {
-        dialogueLineToAction = GameEventManager.INSTANCE.OnEventFunc<int, int, Dictionary<int, DialogueAction>>("getactiononconversation", characterID, questionID);
-    }
-
-    
- 
 
 
 }

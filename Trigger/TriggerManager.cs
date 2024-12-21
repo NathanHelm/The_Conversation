@@ -5,15 +5,24 @@ using System;
 using Data;
 public class TriggerManager : StaticInstance<TriggerManager>
 {
+    public static SystemActionCall<TriggerManager> onStartTriggerManagerAction = new SystemActionCall<TriggerManager>();
+    public static SystemActionCall<TriggerManager> onTriggerTriggerManagerAction = new SystemActionCall<TriggerManager>();
 
-    public TriggerData triggerData;
-    public Trigger[] triggers;
+    public TriggerActionManager triggerActionManager { get; set; }
+    public TriggerData triggerData { get; set; } //only reason for trigger data is to set variable triggerOnTrigger.
+    public DialogueData dialogueData { get; set; }
+    public Trigger[] triggers; //trigger data sets this variable.
+
+    public override void OnEnable()
+    {
+        MManager.onStartManagersAction.AddAction((MManager m) => { m.triggerManager = this; });
+        base.OnEnable();
+    }
+
 
     public void SetUpTrigger() //runs on enter dialog states
     {
-       triggerData = GameEventManager.INSTANCE.OnEventFunc<TriggerData>("data.triggerdata");
-       
-       triggers = triggerData.triggers;
+        onStartTriggerManagerAction.RunAction(this);
     }
 
     public int GetBodyID(Trigger trigger) //returns the body id that collided with the trigger.
@@ -80,6 +89,7 @@ public class TriggerManager : StaticInstance<TriggerManager>
 
     public void DefaultTrigger(Collider other, Trigger trigger)
     {
+        
         PlayerLook player = other.GetComponent<PlayerLook>();
         BodyMono bodyMono = other.GetComponent<BodyMono>();
 
@@ -98,19 +108,19 @@ public class TriggerManager : StaticInstance<TriggerManager>
 
         if (player != null && trigger.charactersOnTrigger.Count > 0) //if player != null return
         {
-            int characterOnTrigger = triggerData.triggerManager.GetCharacterID(trigger);
-            triggerData.dialogueData.currentCharacterID = characterOnTrigger;
+            int characterOnTrigger = GetCharacterID(trigger);
+            dialogueData.currentCharacterID = characterOnTrigger;
 
                                                     //will change with further state changes
-            triggerData.dialogueData.currentQuestionID =
-            triggerData.dialogueData.currentPersistentConversationID = trigger.charactersOnTrigger[0].persistentConversationId;
+            dialogueData.currentQuestionID =
+            dialogueData.currentPersistentConversationID = trigger.charactersOnTrigger[0].persistentConversationId;
 
-            triggerData.triggerActionManager.GetTriggerAction(characterOnTrigger)();
+            triggerActionManager.GetTriggerAction(characterOnTrigger)();
         }
         if(player != null && trigger.bodiesOnTrigger.Count > 0)
         {
-            int bodyOnTriggerId = triggerData.triggerManager.GetBodyID(trigger);
-            triggerData.triggerActionManager.GetTriggerAction(bodyOnTriggerId)(); 
+            int bodyOnTriggerId = GetBodyID(trigger);
+            triggerActionManager.GetTriggerAction(bodyOnTriggerId)(); 
         }
     }
 

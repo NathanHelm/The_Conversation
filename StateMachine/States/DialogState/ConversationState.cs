@@ -7,8 +7,7 @@ public class ConversationState : DialogueState
     //player questions lead to differenct responses via the key pair in class "Question Response Manager."
     public override void OnEnter(DialogueData data)
     {
-        data.dialogueManager.StartConversation(data);
-
+        DialogueManager.INSTANCE.StartConversation(data); 
     }
     public override void OnExit(DialogueData data)
     {
@@ -16,7 +15,7 @@ public class ConversationState : DialogueState
     }
     public override void OnUpdate(DialogueData data)
     {
-        data.dialogueManager.RunDialog();
+        DialogueManager.INSTANCE.RunDialog();
     }
 }
 

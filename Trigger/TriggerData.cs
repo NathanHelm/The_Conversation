@@ -4,8 +4,7 @@ namespace Data
 {
 	public class TriggerData : StaticInstance<TriggerData>
 	{
-        public TriggerActionManager triggerActionManager { get; set; }
-		public TriggerManager triggerManager { get; set; }
+       
 		//public BodyMono currentBodyOnTrigger { get; set; }
 		public Trigger[] triggers { get; set; }
         public Trigger triggerOnTrigger { get; set; }
@@ -13,12 +12,21 @@ namespace Data
 
         public void Start()
         {
-            triggerManager = GameEventManager.INSTANCE.OnEventFunc<TriggerManager>(typeof(TriggerManager).ToString().ToLower());
             triggers = FindObjectsOfType<Trigger>();
             dialogueData = FindObjectOfType<DialogueData>();
-            triggerActionManager = GameEventManager.INSTANCE.OnEventFunc<TriggerActionManager>(typeof(TriggerActionManager).ToString().ToLower());
-
+            SetUpTriggerManager();
+            SetUpTriggerActionManager();
         }
+        private void SetUpTriggerManager()
+        {
+            //set up triggerManager's Trigger Data
+            TriggerManager.onStartTriggerManagerAction.AddAction((TriggerManager t) => { t.triggerData = this; t.triggers = triggers; });
+        }
+        private void SetUpTriggerActionManager()
+        {
+            TriggerActionManager.onTriggerActionTriggerActionManager.AddAction((TriggerActionManager t) => {t.triggerOnTrigger = this.triggerOnTrigger;});
+        }
+        
 
 
     }

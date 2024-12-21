@@ -6,7 +6,7 @@ public class NoConversationState : DialogueState
 {
     public override void OnEnter(DialogueData data)
     {
-        data.dialogueManager.NoDialogue();
+        DialogueManager.INSTANCE.NoDialogue();
     }
 }
 

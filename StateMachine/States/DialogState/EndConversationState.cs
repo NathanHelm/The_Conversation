@@ -4,12 +4,12 @@ public class EndConversationState: DialogueState
 {
     public override void OnEnter(DialogueData data)
     {
-        data.dialogueManager.NoDialogue();
+        DialogueManager.INSTANCE.NoDialogue();
         
     }
     public override void OnUpdate(DialogueData data)
     {
-        data.dialogueManager.RunDialogAgain();
+        DialogueManager.INSTANCE.RunDialogAgain();
     }
 
 }

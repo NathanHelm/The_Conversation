@@ -95,7 +95,7 @@ public class GameEventManager : MonoBehaviour
     {
         if (!GameEventGeneric<T1>.dict1.ContainsKey(funcKey))
         {
-            throw new KeyNotFoundException(funcKey + "not found");
+                    throw new KeyNotFoundException(funcKey + "not found");
         }
         return GameEventGeneric<T1>.dict1[funcKey]();
     }

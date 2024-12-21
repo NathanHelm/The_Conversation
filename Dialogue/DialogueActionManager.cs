@@ -5,70 +5,60 @@ using System;
 using Data;
 public class DialogueActionManager : StaticInstance<DialogueActionManager>
 {
-    public Dictionary<int, Dictionary<int, Dictionary<int, DialogueAction>>> conversationKeyToDialogActions =
+    public Dictionary<int, Dictionary<int, Dictionary<int, Action>>> conversationKeyToDialogActions =
 
-    new Dictionary<int, Dictionary<int, Dictionary<int, DialogueAction>>>();
+    new Dictionary<int, Dictionary<int, Dictionary<int, Action>>>();
 
     public override void m_Start()
     {
-        GameEventManager.INSTANCE.AddEventFunc<int, int, Dictionary<int, DialogueAction>>("getactiononconversation", GetActionOnConversation);
 
         SetUpDialogueAction();
+      
 
     }
-    public override void Awake()
+    public override void OnEnable()
     {
-        base.Awake();
-     
+        MManager.onStartManagersAction.AddAction((MManager m) =>
+        {
+            m.dialogueActionManager = this;
+        });
+            DialogueManager.actionOnStartConversation.AddAction((DialogueManager d) => {
+            /* set code goes here*/
+            d.dialogueLineToAction = GetActionOnConversation(d.characterID, d.questionID);
+        });
+        base.OnEnable();
     }
+
     public void SetUpDialogueAction() //preprocess the dialogue action
     {
-                                    //CharacterID   
-        conversationKeyToDialogActions.Add(1, new Dictionary<int, Dictionary<int, DialogueAction>>()
+        //CharacterID   
+        conversationKeyToDialogActions.Add(1, new Dictionary<int, Dictionary<int, Action>>()
         {
            //QuestionID 
             { 3,
-            new Dictionary<int, DialogueAction>() { 
+            new Dictionary<int, Action>() { 
             //index in the conversation
-            { 1, new DialogueAction(new Action[] {
+            { 1,
 
                 ()=>{ GameEventManager.INSTANCE.AddEvent("", ()=>{ });  }
 
-                
-
-            })
-
-
-
+            }
 
             }
-            }
+            
         }
         });
-                                    //2 = vet
-        conversationKeyToDialogActions.Add(2, new Dictionary<int, Dictionary<int, DialogueAction>>()
+                                    //2 = vetID
+        conversationKeyToDialogActions.Add(2, new Dictionary<int, Dictionary<int, Action>>()
         {
            //QuestionID 
             { 0,
-            new Dictionary<int, DialogueAction>() { 
+            new Dictionary<int, Action>() { 
             //index in the conversation
-            { 1, new DialogueAction(new Action[] {
-
-                ()=>{ GameEventManager.INSTANCE.AddEvent(typeof(EndConversationState), ()=>{
-
-                     DialogueData triggerData = GameEventManager.INSTANCE.OnEventFunc<DialogueData>("data.dialoguedata");
-                     triggerData.currentPersistentConversationID = 13;
-                     GameEventManager.INSTANCE.ReplaceWithPrevEvent("endconversationstate");
-                });  }
-
-
-
-            })
-
-
-
-
+            { 1,
+                ()=>{ Debug.Log("testing"); }
             }
+            
             }
         }
         });
@@ -79,9 +69,11 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
 
 
 
-    public Dictionary<int, DialogueAction> GetActionOnConversation(int characterID, int questionID)
+    public Dictionary<int, Action> GetActionOnConversation(int characterID, int questionID)
     {
-        //getactiononconversation(dialoguedata.characterID, dialoguedata.questionid)
+        //based on character id, question dictionary.
+        //based on the question id, get the 
+
         if(questionID.Equals(""))
         {
             throw new KeyNotFoundException("key is nothing");
@@ -90,17 +82,18 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
         if (!conversationKeyToDialogActions.ContainsKey(characterID))
         {
             Debug.Log("no character action found for id" + characterID);
-            return new Dictionary<int, DialogueAction>();
+            return new Dictionary<int, Action>();
         }
         if(!conversationKeyToDialogActions[characterID].ContainsKey(questionID))
         {
             Debug.Log("no question id found for id" + questionID);
-            return new Dictionary<int, DialogueAction>();
+            return new Dictionary<int, Action>();
            
         }
         return conversationKeyToDialogActions[characterID][questionID];
 
     }
 
+   
 }
 

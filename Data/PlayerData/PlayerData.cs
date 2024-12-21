@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace Data
 {
-    public class PlayerData : StaticInstance<PlayerData>
+    public class PlayerData : StaticInstance<PlayerData> 
     {
 
         public PlayerScriptableObject playerSO, slowPlayerSO, currentPlayerSO;
@@ -13,7 +13,7 @@ namespace Data
         public Rigidbody2D rb2D;
         public Rigidbody rb3D;
         public Transform trans2d, trans3d;
-        public MovementManager movementManager;
+  
 
 
         public override void Awake()
@@ -22,6 +22,20 @@ namespace Data
             currentPlayerSO = playerSO;
             SetUpPlayerData();
             base.Awake();
+        }
+        public override void OnEnable()
+        {
+            //assigning variables to playermovement onstart.
+
+            PlayerMovement.playerMovementActionCallOnStart.AddPriorityAction((PlayerMovement p) =>
+            {
+                p.playerRigidBody3d = rb3D;
+                p.playerRigidBody2d = rb2D;
+                p.playerMovementAnim = playerAnimator;
+                p.moveSpeed = playerSO.speed;
+
+            });
+
         }
 
         public void SetUpPlayerData()
@@ -33,10 +47,10 @@ namespace Data
             rb3D = FindObjectOfType<PlayerLook>().GetComponent<Rigidbody>();
             trans2d = FindObjectOfType<PlayerMovement>().transform;
             trans3d = FindObjectOfType<PlayerLook>().transform;
-            movementManager = GameEventManager.INSTANCE.OnEventFunc<MovementManager>("movementmanager");
-
+          
         }
-
+ 
+        
     }
 }
 

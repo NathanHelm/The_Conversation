@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public class Trigger : MonoBehaviour
 {
-    public TriggerData triggerData;
+
     public List<BodyMono> bodiesOnTrigger { get; set; } = new List<BodyMono>();
     public List<CharacterMono> charactersOnTrigger { get; set; } = new List<CharacterMono>();
     public Collider triggerCol;
@@ -15,7 +15,12 @@ public class Trigger : MonoBehaviour
 
     public void Start()
     {
-        triggerData = GameEventManager.INSTANCE.OnEventFunc<TriggerData>("data.triggerdata");
+
+    }
+
+    private void SetTriggerToTriggerData()
+    {
+
     }
 
 
@@ -24,7 +29,7 @@ public class Trigger : MonoBehaviour
         triggerCol = other;
         triggerState?.Invoke(triggerCol, this);
 
-    }
+    }  
     public void OnTriggerExit(Collider other)
     {
 

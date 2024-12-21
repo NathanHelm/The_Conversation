@@ -5,10 +5,28 @@ using System;
 using Data;
 public class TriggerActionManager : StaticInstance<TriggerActionManager>
 {
+	public static SystemActionCall<TriggerActionManager> onTriggerActionTriggerActionManager = new SystemActionCall<TriggerActionManager>();
 	public Dictionary<int, Action> characterIDToTriggerAction = new Dictionary<int, Action>();
 	public Dictionary<int, Action> characterIDToTriggerExitAction = new Dictionary<int, Action>();
+	public Trigger triggerOnTrigger { get; set; }
 
-	public void SetUpTriggerActionManager()
+    public override void OnEnable()
+    {
+        SetTriggerManager();
+        base.OnEnable();
+    }
+
+    public override void m_Start()
+    {
+		SetUpTriggerActionManager();
+		base.m_Start();
+    }
+	private void SetTriggerManager()
+	{
+        TriggerManager.onStartTriggerManagerAction.AddAction((TriggerManager t) => { t.triggerActionManager = this; });
+    }
+
+    public void SetUpTriggerActionManager()
 	{
 		//recall that IDs can be anything it doesn't nessecarily have to pertain to a character
 		//imagine a door. A door isn't nessecary a character but with a unique id (say door ids starts with a 3) it can be used like a door.
@@ -28,17 +46,23 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>
 
 			
 		});
+		characterIDToTriggerAction.Add(12, () =>
+		{
+			//Game
+		});
 
 	}
 	public Action GetTriggerAction(int characterID)
 	{
+        onTriggerActionTriggerActionManager?.RunAction(this);
+
 		if (!characterIDToTriggerAction.ContainsKey(characterID))
 		{
-			TriggerData trigger = GameEventManager.INSTANCE.OnEventFunc<TriggerData>("data.triggerdata");
+			
 
-			if (trigger.triggerOnTrigger.charactersOnTrigger.Count > 0)
+			if (triggerOnTrigger.charactersOnTrigger.Count > 0)
 			{
-				if (trigger.triggerOnTrigger.charactersOnTrigger[0] is CharacterMono)
+				if (triggerOnTrigger.charactersOnTrigger[0] is CharacterMono)
 				{
 					//enable default conversation
 					return () =>
@@ -50,7 +74,7 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>
 				}
 			}
 
-			if (trigger.triggerOnTrigger.bodiesOnTrigger.Count > 0)
+			if (triggerOnTrigger.bodiesOnTrigger.Count > 0)
 			{
 
 				return () => { Debug.Log("this is a body-- attach some character ID functionality @ triggeraction manager"); };

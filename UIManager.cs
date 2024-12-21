@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using System.Collections;
 using Data;
 using TMPro;
@@ -10,6 +11,14 @@ public class UIManager : StaticInstance<UIManager>
 
     TextMeshProUGUI dialogText;
 
+    public override void OnEnable()
+    {
+        MManager.onStartManagersAction.AddAction((MManager m) =>
+        {
+            m.uIManager = this;
+        });
+    }
+
     public override void m_Start()
     {
         uIData = GameEventManager.INSTANCE.OnEventFunc<UIData>("data.uidata");
@@ -17,6 +26,8 @@ public class UIManager : StaticInstance<UIManager>
         {
             dialogText = uIData.dialogText;
         }
+        //communcating to dialog manager, setting UI manager.
+        DialogueManager.actionOnStartConversation.AddAction((DialogueManager d) => { d.uIManager = this; });
     }
 
     private void UIFogIn()

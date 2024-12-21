@@ -6,10 +6,11 @@ public class DefaultTriggerState: TriggerState
 {
     public override void OnEnter(TriggerData data) //default state runs on start() 
     {
-        data.triggerManager.SetUpTrigger();
+       
+        TriggerManager.INSTANCE.SetUpTrigger();
         //changes triggers to default trigger state
-        data.triggerManager.ChangeTriggerStates(data.triggerManager.DefaultTrigger);
-        data.triggerManager.ChangeTriggerExitState(data.triggerManager.DefaultTriggerExit);
+        TriggerManager.INSTANCE.ChangeTriggerStates(TriggerManager.INSTANCE.DefaultTrigger);
+        TriggerManager.INSTANCE.ChangeTriggerExitState(TriggerManager.INSTANCE.DefaultTriggerExit);
            
     }
     
