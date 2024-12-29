@@ -9,6 +9,7 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
 
     new Dictionary<int, Dictionary<int, Dictionary<int, Action>>>();
 
+
     public override void m_Start()
     {
 
@@ -24,7 +25,7 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
         });
             DialogueManager.actionOnStartConversation.AddAction((DialogueManager d) => {
             /* set code goes here*/
-            d.dialogueLineToAction = GetActionOnConversation(d.characterID, d.questionID);
+            d.dialogueLineToAction = GetActionOnConversation(DialogueData.INSTANCE.currentCharacterID, DialogueData.INSTANCE.currentQuestionID);
         });
         base.OnEnable();
     }

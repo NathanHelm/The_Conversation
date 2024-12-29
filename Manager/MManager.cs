@@ -7,6 +7,7 @@ public class MManager : StaticInstance<MManager>
     public static SystemActionCall<MManager> onStartManagersAction { get; set; } = new SystemActionCall<MManager>();
 
     public CharacterManager characterManager { get; set; }
+    public TriggerActionManager triggerActionManager { get; set; }
     public TriggerManager triggerManager { get; set; }
     public DialogueManager dialogueManager { get; set; }
     public DialogueActionManager dialogueActionManager { get; set; }
@@ -20,6 +21,8 @@ public class MManager : StaticInstance<MManager>
         onStartManagersAction.RunAction(this); //todo subsribe all manager with
 
         characterManager?.m_Start();
+
+        triggerActionManager?.m_Start();
 
         triggerManager?.m_Start(); //empty
 
@@ -36,7 +39,7 @@ public class MManager : StaticInstance<MManager>
         //runs all other that are not defined.
 
     }
-    private void Start()
+    public void Start()
     {
         StartManagers();
     }

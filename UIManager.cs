@@ -27,7 +27,6 @@ public class UIManager : StaticInstance<UIManager>
             dialogText = uIData.dialogText;
         }
         //communcating to dialog manager, setting UI manager.
-        DialogueManager.actionOnStartConversation.AddAction((DialogueManager d) => { d.uIManager = this; });
     }
 
     private void UIFogIn()

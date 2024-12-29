@@ -13,8 +13,6 @@ public class DialogueManager : StaticInstance<DialogueManager>
 
 
     private int dialogueIndex = 0;
-    public int questionID { get; set; }
-    public int characterID { get; set; }
     public string currentLine { get; set; }
     private bool isDialogueScrolling = false;
 
@@ -22,7 +20,6 @@ public class DialogueManager : StaticInstance<DialogueManager>
     public DialogueObject[] dialogueObjects { get; set; } //dialog string, img, ... ect
     public Dictionary<int, Action> dialogueLineToAction { get; set; } //dialog action
 
-    public UIManager uIManager { get; set; }
 
     public override void OnEnable()
     {
@@ -56,7 +53,7 @@ public class DialogueManager : StaticInstance<DialogueManager>
     {
         if (dialogueIndex == 0)
         {
-            uIManager.EnableDialogUI();
+            UIManager.INSTANCE.EnableDialogUI();
         }
         if (dialogueIndex > dialogueObjects.Length - 1)
         {
@@ -74,7 +71,7 @@ public class DialogueManager : StaticInstance<DialogueManager>
 
         isDialogueScrolling = true;
 
-        uIManager.ResetText();
+        UIManager.INSTANCE.ResetText();
 
         DialogueObject currentdialogue = dialogueObject; //gets line before key is replaced.
 
@@ -83,7 +80,7 @@ public class DialogueManager : StaticInstance<DialogueManager>
         for (int i = 0; i < line.Length; i++)
         {
             char singleText = line[i];
-            uIManager.GetDialogText().text += singleText;
+            UIManager.INSTANCE.GetDialogText().text += singleText;
 
             yield return new WaitForSeconds(0.02f);
         }
@@ -124,7 +121,7 @@ public class DialogueManager : StaticInstance<DialogueManager>
     public void NoDialogue()
     {
         StopAllCoroutines();
-        uIManager.DisableDialogUI();
+        UIManager.INSTANCE.DisableDialogUI();
         dialogueIndex = 0;
         Debug.Log("no dialog");
     }

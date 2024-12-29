@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using Data;
 public class StateManager : StaticInstance<StateManager>
 {
     public DimensionDataMono dimensionState;
@@ -28,22 +28,35 @@ public class StateManager : StaticInstance<StateManager>
         playerDataState = gameObject.AddComponent<PlayerDataMono>();
         dialogueState = gameObject.AddComponent<DialogueStateMono>();
         triggerState = gameObject.AddComponent<TriggerStateMono>();
-
-        GameEventManager.INSTANCE.AddEvent(typeof(TransitionTo2d), () => { dimensionState.SwitchState(transitionTo2D); });
-        GameEventManager.INSTANCE.AddEvent(typeof(TransitionTo3d), () => { dimensionState.SwitchState(transitionTo3D); });
-        GameEventManager.INSTANCE.AddEvent(typeof(PlayerLook3dState), () => { playerDataState.SwitchState(playerLook3DState); });
-        GameEventManager.INSTANCE.AddEvent(typeof(PlayerMove2dState), () => { playerDataState.SwitchState(playerMove2DState); });
-
-        GameEventManager.INSTANCE.AddEvent(typeof(ConversationState), () => { dialogueState.SwitchState(conversationState); });
-        GameEventManager.INSTANCE.AddEvent(typeof(NoConversationState), () => { dialogueState.SwitchState(noConversationState); });
-        GameEventManager.INSTANCE.AddEvent(typeof(EndConversationState), () => { dialogueState.SwitchState(endConversationState); });
-
-        GameEventManager.INSTANCE.AddEvent(typeof(TriggerConversationState), () => { triggerState.SwitchState(triggerConversationState); });
-        GameEventManager.INSTANCE.AddEvent(typeof(DefaultTriggerState), () => { triggerState.SwitchState(defaultTriggerState); });
-
-         playerDataState.SwitchState(playerMove2DState);
-        dimensionState.SwitchState(transitionTo2D);
-        triggerState.SwitchState(defaultTriggerState);
+        if (DimensionData.INSTANCE != null)
+        {
+            GameEventManager.INSTANCE.AddEvent(typeof(TransitionTo2d), () => { dimensionState.SwitchState(transitionTo2D); });
+            GameEventManager.INSTANCE.AddEvent(typeof(TransitionTo3d), () => { dimensionState.SwitchState(transitionTo3D); });
+            dimensionState.SwitchState(transitionTo2D);
+        }
+        if (PlayerData.INSTANCE != null)
+        {
+            GameEventManager.INSTANCE.AddEvent(typeof(PlayerLook3dState), () => { playerDataState.SwitchState(playerLook3DState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(PlayerMove2dState), () => { playerDataState.SwitchState(playerMove2DState); });
+            playerDataState.SwitchState(playerMove2DState);
+        }
+        if (DialogueData.INSTANCE != null)
+        {
+            GameEventManager.INSTANCE.AddEvent(typeof(ConversationState), () => { dialogueState.SwitchState(conversationState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(NoConversationState), () => { dialogueState.SwitchState(noConversationState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(EndConversationState), () => { dialogueState.SwitchState(endConversationState); });
+           // dialogueState.SwitchState(endConversationState);
+        }
+        if (TriggerData.INSTANCE != null)
+        {
+            GameEventManager.INSTANCE.AddEvent(typeof(TriggerConversationState), () => { triggerState.SwitchState(triggerConversationState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(DefaultTriggerState), () => { triggerState.SwitchState(defaultTriggerState); });
+            triggerState.SwitchState(defaultTriggerState);
+        }
+  
+        
+       
+       
        
     }
 }

@@ -5,26 +5,28 @@ namespace Data
 	public class TriggerData : StaticInstance<TriggerData>
 	{
        
-		//public BodyMono currentBodyOnTrigger { get; set; }
+
 		public Trigger[] triggers { get; set; }
         public Trigger triggerOnTrigger { get; set; }
         public DialogueData dialogueData;
 
-        public void Start()
+        public override void OnEnable()
         {
             triggers = FindObjectsOfType<Trigger>();
             dialogueData = FindObjectOfType<DialogueData>();
             SetUpTriggerManager();
             SetUpTriggerActionManager();
+            
         }
         private void SetUpTriggerManager()
         {
-            //set up triggerManager's Trigger Data
+            //DO NOT null check static instance, it is expected that instance is null!!!
             TriggerManager.onStartTriggerManagerAction.AddAction((TriggerManager t) => { t.triggerData = this; t.triggers = triggers; });
         }
         private void SetUpTriggerActionManager()
         {
-            TriggerActionManager.onTriggerActionTriggerActionManager.AddAction((TriggerActionManager t) => {t.triggerOnTrigger = this.triggerOnTrigger;});
+           
+                TriggerActionManager.onTriggerActionTriggerActionManager.AddAction((TriggerActionManager t) => { t.triggerOnTrigger = this.triggerOnTrigger; });
         }
         
 

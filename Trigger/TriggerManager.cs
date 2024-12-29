@@ -18,9 +18,7 @@ public class TriggerManager : StaticInstance<TriggerManager>
         MManager.onStartManagersAction.AddAction((MManager m) => { m.triggerManager = this; });
         base.OnEnable();
     }
-
-
-    public void SetUpTrigger() //runs on enter dialog states
+    public override void m_Start()
     {
         onStartTriggerManagerAction.RunAction(this);
     }
@@ -63,7 +61,7 @@ public class TriggerManager : StaticInstance<TriggerManager>
         throw new NullReferenceException("characters is not found");
     }
 
-    public void ChangeTriggerStates(Action<Collider, Trigger> newTrigger)
+    public void ChangeTriggerStates(Trigger.ActionRef2 newTrigger)
     {
         //sets ALL trigger to a new state.
         foreach (Trigger trigger in triggers)
@@ -87,10 +85,10 @@ public class TriggerManager : StaticInstance<TriggerManager>
     //if both is true, set the data's current character to the character thats in the trigger.
     //also sets the current question id to be the character on trigger's persistent id (in case you set the dialog action to basic dialog, no questions)
 
-    public void DefaultTrigger(Collider other, Trigger trigger)
+    public void DefaultTrigger(Collider other, ref Trigger trigger)
     {
-        
-        PlayerLook player = other.GetComponent<PlayerLook>();
+
+        string playerTagName = other.gameObject.tag;
         BodyMono bodyMono = other.GetComponent<BodyMono>();
 
         triggerData.triggerOnTrigger = trigger;
@@ -100,13 +98,17 @@ public class TriggerManager : StaticInstance<TriggerManager>
         {
             trigger.bodiesOnTrigger.Add(bodyMono);
         }
-        if (other.GetComponent<CharacterMono>() != null)
+        if (other.GetComponent<CharacterMono>() != null) 
         {
-            trigger.charactersOnTrigger.Add(other.GetComponent<CharacterMono>());
+            trigger.charactersOnTrigger.Add(other.GetComponent<CharacterMono>()); //note that player is NOT character.
         }
+        if(trigger.charactersOnTrigger.Count > 1)
+        {
+            throw new Exception("2 or more characters on trigger");
+        }
+        
 
-
-        if (player != null && trigger.charactersOnTrigger.Count > 0) //if player != null return
+        if (playerTagName == "Player" && trigger.charactersOnTrigger.Count > 0) //if player != null return
         {
             int characterOnTrigger = GetCharacterID(trigger);
             dialogueData.currentCharacterID = characterOnTrigger;
@@ -115,9 +117,9 @@ public class TriggerManager : StaticInstance<TriggerManager>
             dialogueData.currentQuestionID =
             dialogueData.currentPersistentConversationID = trigger.charactersOnTrigger[0].persistentConversationId;
 
-            triggerActionManager.GetTriggerAction(characterOnTrigger)();
+            triggerActionManager.GetTriggerAction(characterOnTrigger)(); //will run a certain action based on character Id. 
         }
-        if(player != null && trigger.bodiesOnTrigger.Count > 0)
+        if(playerTagName == "Player" && trigger.bodiesOnTrigger.Count > 0)
         {
             int bodyOnTriggerId = GetBodyID(trigger);
             triggerActionManager.GetTriggerAction(bodyOnTriggerId)(); 
@@ -130,6 +132,15 @@ public class TriggerManager : StaticInstance<TriggerManager>
     public void DefaultTriggerExit(Collider other, Trigger trigger)
     {
         PlayerLook player = other.GetComponent<PlayerLook>();
+        if (other.GetComponent<CharacterMono>() != null)
+        {
+            trigger.charactersOnTrigger.Remove(other.GetComponent<CharacterMono>());
+        }
+        if(other.GetComponent<BodyMono>() != null)
+        {
+            trigger.bodiesOnTrigger.Remove(other.GetComponent<BodyMono>());
+        }
+
         if (player != null) //is player
         {
             GameEventManager.INSTANCE.OnEvent(typeof(NoConversationState));

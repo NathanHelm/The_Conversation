@@ -24,7 +24,7 @@ namespace Data
 		//public UIManager uIManager;
 		//public CharacterManager characterManager;
 
-		private void Start()
+		public void Start()
 		{
 			//manager, provide all logic in its class. 
 			//dialogueManager = GameEventManager.INSTANCE.OnEventFunc<DialogueManager>(typeof(DialogueManager).ToString().ToLower());
@@ -32,31 +32,22 @@ namespace Data
 			//uIManager = GameEventManager.INSTANCE.OnEventFunc<UIManager>(typeof(UIManager).ToString().ToLower());
 			//characterManager = GameEventManager.INSTANCE.OnEventFunc<CharacterManager>(typeof(CharacterManager).ToString().ToLower());
 
-			SetDialogueData();
-			SetTriggerManager();
-
-
+			//SetDialogueData();
+		 
 		}
         public override void OnEnable()
         {
-			//make sure that priority actions are used before the start function. 
-			SetDialogueData();
+            //make sure that priority actions are used before the start function. 
+            //SetDialogueData();
+            SetTriggerManager();
         }
-		//private void 
+		
 
-
-        private void SetDialogueData()
-		{
-			DialogueManager.actionOnStartConversation.AddPriorityAction((DialogueManager d)=> {
-				d.characterID = currentCharacterID;
-				d.questionID = currentPersistentConversationID;
-			});
-			//ClickDialog
-		}
 		private void SetTriggerManager()
 		{
 			TriggerManager.onStartTriggerManagerAction.AddAction((TriggerManager t) => { t.dialogueData = this; });
 		}
+		
 
       
     }

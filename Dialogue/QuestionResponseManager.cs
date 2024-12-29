@@ -9,7 +9,7 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 	//based on relevant Character and Question id; output a conversation response.
 
 	private DialogueData dialogueData;
-
+	
 	Dictionary<int, Dictionary<int, DialogueConversation>> npcToQuestionDialogueNpc = new Dictionary<int, Dictionary<int, DialogueConversation>>();
 
     public override void OnEnable()
@@ -28,7 +28,7 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 
         SetUpQuestionResponseManager();
 		//injecting 'set question' via quesetion and characterID
-		DialogueManager.actionOnStartConversation.AddAction((DialogueManager d) => { d.dialogueObjects = getDialogueConversation(d.characterID,d.questionID); });
+		DialogueManager.actionOnStartConversation.AddAction((DialogueManager d) => { d.dialogueObjects = getDialogueConversation(DialogueData.INSTANCE.currentCharacterID, DialogueData.INSTANCE.currentQuestionID); });
         Debug.Log(typeof(DialogueData).ToString().ToLower());
 		
     }
@@ -55,7 +55,7 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 
     }
 
-	public Dictionary<int, DialogueConversation> AddQuestionsIDToCharacterAnswer((int[], DialogueConversation)[] keys) 
+    public Dictionary<int, DialogueConversation> AddQuestionsIDToCharacterAnswer((int[], DialogueConversation)[] keys) 
 	{
 		Dictionary<int, DialogueConversation> keyValuePairs = new Dictionary<int, DialogueConversation>();
 

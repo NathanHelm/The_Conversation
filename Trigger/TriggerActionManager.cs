@@ -12,17 +12,18 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>
 
     public override void OnEnable()
     {
-        SetTriggerManager();
+        MManager.onStartManagersAction.AddAction((MManager m) => { m.triggerActionManager = this; });
         base.OnEnable();
     }
-
     public override void m_Start()
     {
 		SetUpTriggerActionManager();
-		base.m_Start();
+        SetTriggerManager();
+        base.m_Start();
     }
 	private void SetTriggerManager()
 	{
+		//set trigger manager with proper trigger actions.
         TriggerManager.onStartTriggerManagerAction.AddAction((TriggerManager t) => { t.triggerActionManager = this; });
     }
 
@@ -38,15 +39,27 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>
 		 */
 
 
-		characterIDToTriggerAction.Add(11, () => {
+		characterIDToTriggerAction.Add(21, () => {
 
-			//todo add trigger action here.
-			GameEventManager.INSTANCE.OnEvent(typeof(ConversationState));
+            //todo add trigger action here.
+        
+            GameEventManager.INSTANCE.OnEvent(typeof(ConversationState));
 
 
 			
 		});
-		characterIDToTriggerAction.Add(12, () =>
+        characterIDToTriggerAction.Add(22, () => {
+
+            //todo add trigger action here.
+            Debug.Log("this character has no action-- running default conversation state. Attach some character ID functionality @ triggeraction manager");
+
+            GameEventManager.INSTANCE.OnEvent(typeof(ConversationState));
+
+
+
+        });
+
+        characterIDToTriggerAction.Add(12, () =>
 		{
 			//Game
 		});
@@ -65,16 +78,11 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>
 				if (triggerOnTrigger.charactersOnTrigger[0] is CharacterMono)
 				{
 					//enable default conversation
-					return () =>
-					{
-						GameEventManager.INSTANCE.OnEvent(typeof(TriggerConversationState));
-
-						Debug.Log("this character has no action-- running default conversation state. Attach some character ID functionality @ triggeraction manager");
-					};
+					return characterIDToTriggerAction[22]; //writes message saying 'running default event...'
 				}
 			}
 
-			if (triggerOnTrigger.bodiesOnTrigger.Count > 0)
+			else if (triggerOnTrigger.bodiesOnTrigger.Count > 0)
 			{
 
 				return () => { Debug.Log("this is a body-- attach some character ID functionality @ triggeraction manager"); };

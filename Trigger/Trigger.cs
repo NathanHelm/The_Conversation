@@ -10,15 +10,23 @@ public class Trigger : MonoBehaviour
     public List<BodyMono> bodiesOnTrigger { get; set; } = new List<BodyMono>();
     public List<CharacterMono> charactersOnTrigger { get; set; } = new List<CharacterMono>();
     public Collider triggerCol;
-    public Action<Collider, Trigger> triggerState, triggerExitState;
+
+
+    public ActionRef2 triggerState;
+
+    public delegate void ActionRef2(Collider col, ref Trigger trigger);
+
+    public Action<Collider, Trigger> triggerExitState;
     public bool isPlayerOnTrigger { get; set; }
+    private Trigger trigger;
 
     public void Start()
     {
-
+        trigger = this;
+      
     }
 
-    private void SetTriggerToTriggerData()
+    public void GetCharacterOnTriggerCount()
     {
 
     }
@@ -27,7 +35,8 @@ public class Trigger : MonoBehaviour
     public void OnTriggerEnter(Collider other)
     {
         triggerCol = other;
-        triggerState?.Invoke(triggerCol, this);
+       
+        triggerState?.Invoke(triggerCol, ref trigger);
 
     }  
     public void OnTriggerExit(Collider other)

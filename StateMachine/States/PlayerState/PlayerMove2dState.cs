@@ -9,11 +9,14 @@ public class PlayerMove2dState : State<PlayerData>
     }
     public override void OnFixedUpdate(PlayerData data)
     {
-        data.playerMovement.PlayerMovementFunction();
+        data?.playerMovement.PlayerMovementFunction();
     }
     public override void OnExit(PlayerData data)
     {
-        data.playerMovement.coroutine = null;
+        if (data != null)
+        {
+            data.playerMovement.coroutine = null;
+        }
     }
 }
 

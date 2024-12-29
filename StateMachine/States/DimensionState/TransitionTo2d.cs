@@ -4,13 +4,15 @@ using Data;
 public class TransitionTo2d : State<DimensionData>
 {
     public override void OnEnter(DimensionData data)
-    {
-        
-        data.ToDimension(data.TransitionTo2dSo);
+    {   
+        data?.ToDimension(data.TransitionTo2dSo);
     }
     public override void OnExit(DimensionData data)
     {
-        data.TransitionTo3dSo.cinemachineVirtualCamera.Priority = 0; 
+        if (data != null)
+        {
+            data.TransitionTo3dSo.cinemachineVirtualCamera.Priority = 0;
+        }
     }
 }
 
