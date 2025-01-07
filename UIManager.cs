@@ -57,8 +57,21 @@ public class UIManager : StaticInstance<UIManager>
     {
         uIData.dialogText.text = "";
         uIData.dialogBlock.enabled = false;
-
-
     }
+
+    public void EnableUIObject(ref GameObject uiObject)
+    {
+        uiObject.SetActive(true);
+    }
+    public void DisableUIObject(ref GameObject uiObject)
+    {
+        uiObject.SetActive(false);
+    }
+    public void ChangePosition(ref GameObject uiObject, Vector3 uiObjectPos)
+    {
+        var rectTransform = uiObject.GetComponent<RectTransform>();
+        rectTransform.localPosition = uiObjectPos;
+    }
+    
 }
 

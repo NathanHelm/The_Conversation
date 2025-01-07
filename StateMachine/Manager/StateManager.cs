@@ -13,10 +13,12 @@ public class StateManager : StaticInstance<StateManager>
     public TransitionTo3d transitionTo3D = new TransitionTo3d();
     public PlayerMove2dState playerMove2DState = new PlayerMove2dState();
     public PlayerLook3dState playerLook3DState = new PlayerLook3dState();
+    public PlayerClickOnClueState playerClickOnClueState = new PlayerClickOnClueState();
 
     public ConversationState conversationState = new ConversationState();
     public EndConversationState endConversationState = new EndConversationState();
     public NoConversationState noConversationState = new NoConversationState();
+
 
     public TriggerConversationState triggerConversationState = new TriggerConversationState();
     public DefaultTriggerState defaultTriggerState = new DefaultTriggerState();
@@ -38,6 +40,7 @@ public class StateManager : StaticInstance<StateManager>
         {
             GameEventManager.INSTANCE.AddEvent(typeof(PlayerLook3dState), () => { playerDataState.SwitchState(playerLook3DState); });
             GameEventManager.INSTANCE.AddEvent(typeof(PlayerMove2dState), () => { playerDataState.SwitchState(playerMove2DState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(PlayerClickOnClueState), () => { playerDataState.SwitchState(playerClickOnClueState); });
             playerDataState.SwitchState(playerMove2DState);
         }
         if (DialogueData.INSTANCE != null)
@@ -45,7 +48,7 @@ public class StateManager : StaticInstance<StateManager>
             GameEventManager.INSTANCE.AddEvent(typeof(ConversationState), () => { dialogueState.SwitchState(conversationState); });
             GameEventManager.INSTANCE.AddEvent(typeof(NoConversationState), () => { dialogueState.SwitchState(noConversationState); });
             GameEventManager.INSTANCE.AddEvent(typeof(EndConversationState), () => { dialogueState.SwitchState(endConversationState); });
-           // dialogueState.SwitchState(endConversationState);
+            dialogueState.SwitchState(endConversationState);
         }
         if (TriggerData.INSTANCE != null)
         {
@@ -53,6 +56,7 @@ public class StateManager : StaticInstance<StateManager>
             GameEventManager.INSTANCE.AddEvent(typeof(DefaultTriggerState), () => { triggerState.SwitchState(defaultTriggerState); });
             triggerState.SwitchState(defaultTriggerState);
         }
+        
   
         
        

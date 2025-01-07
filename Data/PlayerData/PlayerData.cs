@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Data
 {
@@ -13,6 +14,7 @@ namespace Data
         public Rigidbody2D rb2D;
         public Rigidbody rb3D;
         public Transform trans2d, trans3d;
+        public List<int> playerQuestions = new List<int>();
   
 
 

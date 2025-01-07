@@ -6,6 +6,7 @@ using System;
 public class CharacterManager : StaticInstance<CharacterManager>
 {
     private CharacterMono[] characterMono;
+    private ClueMono[] clueMono;
 
     Dictionary<int, Dictionary<int, DialogueConversation>> characterIDtoConverationIdtoConversation = new Dictionary<int, Dictionary<int, DialogueConversation>>();
 
@@ -23,6 +24,7 @@ public class CharacterManager : StaticInstance<CharacterManager>
     {
         characterMono = FindObjectsOfType<CharacterMono>();
 
+
         if(characterMono == null)
         {
             throw new NullReferenceException("no characters found");
@@ -31,25 +33,32 @@ public class CharacterManager : StaticInstance<CharacterManager>
         for(int i = 0; i < characterMono.Length; i++)
         {
             int bodyId = characterMono[i].bodyID;
+            AddDialogueObjToDict(characterMono[i].dialogueConversation, bodyId);
             //add the body id, makes a new dictionary.
-            characterIDtoConverationIdtoConversation.Add(bodyId, new Dictionary<int, DialogueConversation>());
-            
-            DialogueConversation[] dialogueConversation = characterMono[i].dialogueConversation;
+        }
+        for(int i = 0; i < clueMono.Length; i++)
+        {
+            int bodyId = clueMono[i].bodyID;
+            AddDialogueObjToDict(clueMono[i].vetClueConversation, clueMono[i].bodyID);
+        }
+    }
+    public void AddDialogueObjToDict(DialogueConversation[] dialogueConversation,int bodyId)
+    {
+        characterIDtoConverationIdtoConversation.Add(bodyId, new Dictionary<int, DialogueConversation>());
 
-            if(dialogueConversation == null) //character is removed from the dictionary if there is no conversation added to it.
+        if (dialogueConversation == null) //character is removed from the dictionary if there is no conversation added to it.
+        {
+            characterIDtoConverationIdtoConversation.Remove(bodyId);
+            throw new NullReferenceException("no dialogue conversation added to character bodyId" + bodyId);
+        }
+        for (int j = 0; j < dialogueConversation.Length; j++)
+        {
+            if (characterIDtoConverationIdtoConversation[bodyId].ContainsKey(dialogueConversation[j].ID))
             {
-                characterIDtoConverationIdtoConversation.Remove(bodyId);
-                throw new NullReferenceException("no dialogue conversation added to character " + characterMono[i].name);
+                throw new KeyNotFoundException("character bodyId " + bodyId + " already contains" + dialogueConversation[j].ID + "check conversation index " + j);
             }
-            for(int j = 0; j < dialogueConversation.Length; j++)
-            {
-                if (characterIDtoConverationIdtoConversation[bodyId].ContainsKey(dialogueConversation[j].ID))
-                {
-                    throw new KeyNotFoundException("character " + characterMono[i].name + " already contains" + dialogueConversation[j].ID +"check conversation index " + j);
-                }
-                //adds the conversation to the respective body id.
-                characterIDtoConverationIdtoConversation[bodyId].Add(dialogueConversation[j].ID, dialogueConversation[j]);
-            }
+            //adds the conversation to the respective body id.
+            characterIDtoConverationIdtoConversation[bodyId].Add(dialogueConversation[j].ID, dialogueConversation[j]);
         }
     }
     public DialogueConversation GetConversationOnCharacterID(int characterID, int characterConversationID)

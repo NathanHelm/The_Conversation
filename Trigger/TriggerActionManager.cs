@@ -41,7 +41,6 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>
 
 		characterIDToTriggerAction.Add(21, () => {
 
-            //todo add trigger action here.
         
             GameEventManager.INSTANCE.OnEvent(typeof(ConversationState));
 

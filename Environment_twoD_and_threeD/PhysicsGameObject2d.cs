@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PhysicsGameObject2d : BodyMono{
+public class PhysicsGameObject2d : BodyMono
+{
 
     public Rigidbody2D rb2D { get; set; }
     public Vector2 initialPos { get; set; }
@@ -17,13 +18,6 @@ public class PhysicsGameObject2d : BodyMono{
     {
         currentPos = rb2D.position;
     }
-
-
-
-
-
-
-
 
 
 

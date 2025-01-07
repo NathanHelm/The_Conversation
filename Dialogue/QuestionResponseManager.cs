@@ -45,10 +45,21 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 		//question id							
 			new (new int[] { 2, 3, 4}, CharacterManager.INSTANCE.GetConversationOnCharacterID(1,2)), //based on character & conversation id, return conversation
 			
-			
+			/*
+			 here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
+			 */
+		});
+							//character Id
+		npcToQuestionDialogueNpc.Add(3, new Dictionary<int, DialogueConversation>());
+							//character Id
+        npcToQuestionDialogueNpc[3] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[] {
+
+		new(new int[] { 0 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(3, 0)),
+		/*
+		 here, question 0 returns a conversation response of character 2, with question id 1. 
+		 */
 
 		});
-
 
         //todo add npcs here
 

@@ -14,9 +14,11 @@ public class TwoTo3dPositions : MonoBehaviour
 
     public void FixedUpdate()
     {
-
-        transform.position = initialPosition + threeToTwoDMovement;// movementManager.SetThreeDMovementOnTwoDMovement(physicsGameObject2D.currentPos, physicsGameObject2D.initialPos);
-        transform.localEulerAngles = new Vector3(initialRot.x + physicsGameObject2D.rb2D.transform.localEulerAngles.z, 270, 90);
+        Vector3 currentPosition = physicsGameObject2D.currentPos - physicsGameObject2D.initialPos;
+       // transform.localEulerAngles = Vector3.zero;
+        threeToTwoDMovement = new Vector3(currentPosition.x + initialPosition.x, initialPosition.y, currentPosition.y + initialPosition.z);
+        transform.position =  threeToTwoDMovement;// movementManager.SetThreeDMovementOnTwoDMovement(physicsGameObject2D.currentPos, physicsGameObject2D.initialPos);
+        transform.localEulerAngles = new Vector3(initialRot.x + physicsGameObject2D.rb2D.transform.localEulerAngles.z, initialRot.y, initialRot.z);
     }
     private void Start()
     {

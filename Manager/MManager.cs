@@ -14,6 +14,7 @@ public class MManager : StaticInstance<MManager>
     public QuestionResponseManager questionResponseManager { get; set; }
     public UIManager uIManager { get; set; }
     public MovementManager movementManager { get; set; }
+    public LedgerManager ledgerManager { get; set; }
 
 
     public void StartManagers()
@@ -35,6 +36,8 @@ public class MManager : StaticInstance<MManager>
         uIManager?.m_Start();
 
         movementManager?.m_Start();
+
+        ledgerManager?.m_Start();
 
         //runs all other that are not defined.
 

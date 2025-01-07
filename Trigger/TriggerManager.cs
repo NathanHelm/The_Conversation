@@ -111,6 +111,7 @@ public class TriggerManager : StaticInstance<TriggerManager>
         if (playerTagName == "Player" && trigger.charactersOnTrigger.Count > 0) //if player != null return
         {
             int characterOnTrigger = GetCharacterID(trigger);
+
             dialogueData.currentCharacterID = characterOnTrigger;
 
                                                     //will change with further state changes

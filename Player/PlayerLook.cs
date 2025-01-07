@@ -46,6 +46,11 @@ public class PlayerLook : MonoBehaviour
         {
             Switch();
         }
+
+        if(Input.GetKey("mouse 0"))
+        {
+            SwitchToPlayerRaycast();
+        }
      }
     private void Switch()
     {
@@ -58,6 +63,10 @@ public class PlayerLook : MonoBehaviour
         GameEventManager.INSTANCE.AddEvent(typeof(PlayerLook));
         */
        StateManager.INSTANCE.dimensionState.SwitchState(StateManager.INSTANCE.transitionTo2D);
+    }
+    private void SwitchToPlayerRaycast()
+    {
+        StateManager.INSTANCE.playerDataState.SwitchState(StateManager.INSTANCE.playerClickOnClueState);
     }
 }
 
