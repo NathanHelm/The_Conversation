@@ -36,12 +36,19 @@ public class CharacterManager : StaticInstance<CharacterManager>
             AddDialogueObjToDict(characterMono[i].dialogueConversation, bodyId);
             //add the body id, makes a new dictionary.
         }
-        for(int i = 0; i < clueMono.Length; i++)
+        if(clueMono == null)
+        {
+            return;
+        }
+        for(int i = 0; i < clueMono.Length; i++) //we also add clue mono from game env
         {
             int bodyId = clueMono[i].bodyID;
             AddDialogueObjToDict(clueMono[i].vetClueConversation, clueMono[i].bodyID);
         }
     }
+    /*
+     todo when loading and persistent information -im thinking ledger data- we should use this function
+     */
     public void AddDialogueObjToDict(DialogueConversation[] dialogueConversation,int bodyId)
     {
         characterIDtoConverationIdtoConversation.Add(bodyId, new Dictionary<int, DialogueConversation>());

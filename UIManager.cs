@@ -7,7 +7,7 @@ using System;
 
 public class UIManager : StaticInstance<UIManager>
 {
-    UIData uIData;
+    
 
     TextMeshProUGUI dialogText;
 
@@ -21,10 +21,14 @@ public class UIManager : StaticInstance<UIManager>
 
     public override void m_Start()
     {
-        uIData = GameEventManager.INSTANCE.OnEventFunc<UIData>("data.uidata");
-        if (uIData != null)
+       
+        if (UIData.INSTANCE != null)
         {
-            dialogText = uIData.dialogText;
+            dialogText = UIData.INSTANCE.dialogText;
+        }
+        else
+        {
+            throw new Exception("UI data is null");
         }
         //communcating to dialog manager, setting UI manager.
     }
@@ -49,14 +53,17 @@ public class UIManager : StaticInstance<UIManager>
 
     public void EnableDialogUI()
     {
-        uIData.dialogBlock.enabled = true;
+        UIData.INSTANCE.dialogBlock.enabled = true;
         UIFogIn();
         //todo show character
     }
     public void DisableDialogUI()
     {
-        uIData.dialogText.text = "";
-        uIData.dialogBlock.enabled = false;
+        if (UIData.INSTANCE.dialogText != null)
+        {
+            UIData.INSTANCE.dialogText.text = "";
+            UIData.INSTANCE.dialogBlock.enabled = false;
+        }
     }
 
     public void EnableUIObject(ref GameObject uiObject)

@@ -99,6 +99,11 @@ public class PlayerMovement : MonoBehaviour
         }
 
     }
+    public void stopMovement()
+    {
+        StopAllCoroutines();
+        coroutine = null;
+    }
 
     public Vector3 get2dAnd3dOffset()
     {

@@ -25,7 +25,7 @@ public class StaticInstance<T> : MonoBehaviour
     {
         //adds static values to the event hashmap.
        // MManager.onStartManagersAction.AddAction((MManager m) => { m_Start(); /*add m_start action*/ });
-        GameEventManager.INSTANCE.AddEventFunc(typeof(T).ToString().ToLower(),ReturnStaticType);
+       // GameEventManager.INSTANCE.AddEventFunc(typeof(T).ToString().ToLower(),ReturnStaticType);
 		
     }
 	public T ReturnStaticType()

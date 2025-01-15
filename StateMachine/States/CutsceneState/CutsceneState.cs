@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Data;
-public class DialogueState : State<DialogueData>
+public class CutsceneState : State<CutsceneData>
 {
 	 
 }

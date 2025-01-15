@@ -7,6 +7,7 @@ public class ClueScriptableObject : ScriptableObject
 {
     //conversation already included
     public int[] clueQuestions; //questions 'unlocked' after clicking on image.
-    public string clueDescription;
+    public string imgDescription;
+    public int bodyId;
     public DialogueConversation[] dialogueConversations;
 }

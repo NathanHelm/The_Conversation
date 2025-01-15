@@ -150,6 +150,15 @@ public class TriggerManager : StaticInstance<TriggerManager>
 
     }
 
+    public void IdleTriggerEnterState(Collider other, Trigger trigger)
+    {
+
+    }
+    public void IdleTriggerExitState(Collider other, Trigger trigger)
+    {
+
+    }
+
 
 
 

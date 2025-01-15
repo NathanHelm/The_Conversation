@@ -15,7 +15,6 @@ public class ConversationState : DialogueState
     }
     public override void OnExit(DialogueData data)
     {
-       
     }
     public override void OnUpdate(DialogueData data)
     {

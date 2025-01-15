@@ -8,32 +8,43 @@ public class PlayerRaycast : MonoBehaviour
     RaycastHit raycastHit;
     LayerMask layerMask;
     float distance = 100;
+    public ClueMono[] hitClues { get; set; }
     private void OnEnable()
     {
-        //Input.getmouse
         
-        layerMask = LayerMask.GetMask("cluecollider");
+        
+        layerMask = LayerMask.GetMask(new string[] { "cluecollider" });
+        //OmitRaycast(new Vector3(10, 10, 10));
     }
-    public void OmitRaycast()
+    
+    public void OmitRaycast(Vector3 target)
     {
         //character does on click down....
 
-        Vector2 mousePos = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-        if (Physics.Raycast(transform.position, mousePos.normalized, out raycastHit, distance, layerMask))
+       
+        // If target is a normalized direction vector:
+        Debug.DrawRay(transform.position, target * distance, Color.yellow);
+
+        if (Physics.Raycast(transform.position, target.normalized, out raycastHit, distance, layerMask))
         {
-            var isHit = raycastHit.collider.GetComponents<ClueMono>();
-            if(isHit.Length > 1)
+            hitClues = raycastHit.collider.GetComponents<ClueMono>();
+            if(hitClues.Length > 1)
             {
-                throw new Exception("ray has hit more than 1 cluemono");
+                Debug.Log("ray cast hit multiple objects, getting first one");
             }
-            if(isHit[0] != null) //check to see if the raycast omitted has hit a cluemono.
+            if(hitClues[0] != null) //check to see if the raycast omitted has hit a cluemono.
             {
                 //if hit, set dialogueData
-                ClueMono clueMonoInRay = isHit[0];
+                ClueMono clueMonoInRay = hitClues[0];
                 DialogueData.INSTANCE.currentCharacterID = clueMonoInRay.bodyID;
                 DialogueData.INSTANCE.currentQuestionID = 0; //clue mono has default 0 as vet is not asking a question.
 
+                //I argue we should add question id and character id instead. 
+
+                LedgerManager.INSTANCE.AddRayInfoToLedgerImage(clueMonoInRay.bodyID, clueMonoInRay.imgDescription, (clueMonoInRay.bodyID, 0), clueMonoInRay.clueQuestions); //adding 'hit data information to ledger manager'
+
             }
+            
             Debug.Log("hit!!!!");
         }
 

@@ -10,11 +10,15 @@ namespace Data
         public PlayerScriptableObject playerSO, slowPlayerSO, currentPlayerSO;
         public PlayerMovement playerMovement;
         public PlayerLook playerLook;
+        public PlayerRaycast playerRaycast { get; set; }
         public Animator playerAnimator;
         public Rigidbody2D rb2D;
         public Rigidbody rb3D;
         public Transform trans2d, trans3d;
+
+
         public List<int> playerQuestions = new List<int>();
+
   
 
 
@@ -46,6 +50,8 @@ namespace Data
             rb2D = FindObjectOfType<PlayerMovement>().GetComponent<Rigidbody2D>();
             playerMovement = FindObjectOfType<PlayerMovement>();
             playerLook = FindObjectOfType<PlayerLook>();
+            playerRaycast = FindObjectOfType<PlayerRaycast>();
+
             rb3D = FindObjectOfType<PlayerLook>().GetComponent<Rigidbody>();
             trans2d = FindObjectOfType<PlayerMovement>().transform;
             trans3d = FindObjectOfType<PlayerLook>().transform;

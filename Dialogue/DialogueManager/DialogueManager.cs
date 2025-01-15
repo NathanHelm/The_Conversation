@@ -44,6 +44,7 @@ public class DialogueManager : StaticInstance<DialogueManager>
 
         if (Input.GetKeyDown(KeyCode.Return) && !isDialogueScrolling)
         {
+            GameEventManager.INSTANCE.OnEvent(typeof(PlayerIdleState)); //player is idle
             ShowDialogUIAndDialogScroll();
         }
 
@@ -110,7 +111,9 @@ public class DialogueManager : StaticInstance<DialogueManager>
     }
     //endconversationstate
     public void RunDialogAgain()
-    { 
+    {
+      
+
         if (Input.GetKeyDown(KeyCode.Return)) //plays the dialog again
         {
             ShowDialogUIAndDialogScroll();
@@ -121,6 +124,7 @@ public class DialogueManager : StaticInstance<DialogueManager>
     public void NoDialogue()
     {
         StopAllCoroutines();
+        GameEventManager.INSTANCE.OnEvent(typeof(PlayerMove2dState)); //player moves to 2d state
         UIManager.INSTANCE.DisableDialogUI();
         dialogueIndex = 0;
         Debug.Log("no dialog");

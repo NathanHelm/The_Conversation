@@ -10,7 +10,10 @@ public class BodyMono : MonoBehaviour
 
     public virtual void OnEnable()
     {
-        bodyScriptableObject.bodyID = bodyID;
+        if (bodyScriptableObject != null)
+        {
+            bodyScriptableObject.bodyID = bodyID;
+        }
     }
 }
 

@@ -49,7 +49,7 @@ public class PlayerLook : MonoBehaviour
 
         if(Input.GetKey("mouse 0"))
         {
-            SwitchToPlayerRaycast();
+        //    SwitchToPlayerRaycast();
         }
      }
     private void Switch()

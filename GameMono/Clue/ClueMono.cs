@@ -7,15 +7,27 @@ public class ClueMono : BodyMono
     [SerializeField]
     private ClueScriptableObject clueScriptableObject;
 
-
-    public static int questionId { get; set; } = 0;
+    public string imgDescription { get; set; }
+    public readonly int questionId = 0;
+    public int[] clueQuestions { get; set; } 
 	public DialogueConversation[] vetClueConversation { get; set; }
 
     public override void OnEnable()
     {
         //note that dialogueconversation index = 0 will only run
-        vetClueConversation = clueScriptableObject.dialogueConversations;
-        base.OnEnable();
+        if (clueScriptableObject != null)
+        {
+            vetClueConversation = clueScriptableObject.dialogueConversations;
+            imgDescription = clueScriptableObject.imgDescription;
+            clueQuestions = clueScriptableObject.clueQuestions;
+
+            gameObject.layer = LayerMask.NameToLayer("cluecollider");
+            base.OnEnable();
+        }
+    }
+    public void SetClueScriptableObject(ClueScriptableObject clueScriptableObject) //function is mostly testing purposes 
+    {
+        this.clueScriptableObject = clueScriptableObject;
     }
 
 }

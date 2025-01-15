@@ -3,13 +3,18 @@ using System.Collections;
 
 public class Tester_Script : MonoBehaviour
 {
+    [SerializeField]
+    GameObject g;
+    PlayerRaycast temp;
+    private void Start()
+    {
+        temp = g.GetComponent<PlayerRaycast>();
+    }
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.T))
-        {
-            StateManager.INSTANCE.playerDataState.SwitchState(StateManager.INSTANCE.playerLook3DState);
-            StateManager.INSTANCE.dimensionState.SwitchState(StateManager.INSTANCE.transitionTo3D);
-        }
+       
+            temp.OmitRaycast(new Vector3(0, 10, 0));
+  
     }
 }
 
