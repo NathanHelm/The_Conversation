@@ -2,11 +2,11 @@
 using System.Collections;
 using Data;
 
-public class NoConversationState : DialogueState
+public class LeaveConversationState : ConversationState
 {
     public override void OnEnter(DialogueData data)
     {
-        Debug.Log("no conversation state");
+        base.OnEnter(data);
     }
 }
 

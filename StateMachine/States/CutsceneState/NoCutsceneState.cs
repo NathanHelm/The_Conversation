@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Data;
-public class StopCutsceneState : CutsceneState
+
+public class NoCutsceneState : CutsceneState
 {
     public override void OnEnter(CutsceneData data)
     {
-        Debug.Log("stop cutscene");
+        Debug.Log("cutscene in idle mode");
+        base.OnEnter(data);
     }
 }
 

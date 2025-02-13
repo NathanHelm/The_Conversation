@@ -79,6 +79,7 @@ public class UIManager : StaticInstance<UIManager>
         var rectTransform = uiObject.GetComponent<RectTransform>();
         rectTransform.localPosition = uiObjectPos;
     }
+ 
     
 }
 

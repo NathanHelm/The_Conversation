@@ -29,8 +29,14 @@ public class PlayerLook : MonoBehaviour
         var yQuat = Quaternion.AngleAxis(rot.y, Vector3.left);
 
         playerData.trans3d.localRotation = xQuat * yQuat;
-       
-        if(Input.GetKey(KeyCode.A))
+
+
+        if (Input.GetKey("mouse 0"))
+        {
+            SwitchToPlayerRaycast();
+        }
+
+        if (Input.GetKey(KeyCode.A))
         {
             Switch();
         }
@@ -47,13 +53,11 @@ public class PlayerLook : MonoBehaviour
             Switch();
         }
 
-        if(Input.GetKey("mouse 0"))
-        {
-        //    SwitchToPlayerRaycast();
-        }
+        
      }
     private void Switch()
     {
+        Debug.Log("going");
         GameEventManager.INSTANCE.OnEvent(typeof(TransitionTo2d));
         GameEventManager.INSTANCE.OnEvent(typeof(PlayerMove2dState));
         
@@ -62,7 +66,7 @@ public class PlayerLook : MonoBehaviour
         GameEventManager.INSTANCE.AddEvent(typeof(TransitionTo2d), ()=> );
         GameEventManager.INSTANCE.AddEvent(typeof(PlayerLook));
         */
-       StateManager.INSTANCE.dimensionState.SwitchState(StateManager.INSTANCE.transitionTo2D);
+      // StateManager.INSTANCE.dimensionState.SwitchState(StateManager.INSTANCE.transitionTo2D);
     }
     private void SwitchToPlayerRaycast()
     {

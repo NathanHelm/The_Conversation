@@ -17,12 +17,22 @@ public class DimensionData : StaticInstance<DimensionData>
 
     public override void Awake()
     {
-		cam = FindObjectOfType<Camera>().GetComponent<Camera>();
+			try
+			{
+				cam = FindObjectOfType<Camera>().GetComponent<Camera>();
 
-		CinemachineVirtualCamera[] cinemachineVirtualCamera = FindObjectsOfType<CinemachineVirtualCamera>();
-		TransitionTo2dSo.cinemachineVirtualCamera = cinemachineVirtualCamera[0];
-		TransitionTo3dSo.cinemachineVirtualCamera = cinemachineVirtualCamera[1];
-		base.Awake();
+				CinemachineVirtualCamera[] cinemachineVirtualCamera = FindObjectsOfType<CinemachineVirtualCamera>();
+				TransitionTo2dSo.cinemachineVirtualCamera = cinemachineVirtualCamera[0];
+				TransitionTo3dSo.cinemachineVirtualCamera = cinemachineVirtualCamera[1];
+			}
+			catch (System.NullReferenceException e)
+			{
+				Debug.Log(e);
+			}
+			finally
+			{
+				base.Awake();
+			}
     }
     private void Start()
     {

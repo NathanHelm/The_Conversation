@@ -42,7 +42,7 @@ public class CharacterManager : StaticInstance<CharacterManager>
         }
         for(int i = 0; i < clueMono.Length; i++) //we also add clue mono from game env
         {
-            int bodyId = clueMono[i].bodyID;
+            
             AddDialogueObjToDict(clueMono[i].vetClueConversation, clueMono[i].bodyID);
         }
     }

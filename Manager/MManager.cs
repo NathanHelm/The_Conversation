@@ -1,6 +1,8 @@
 ﻿
 using UnityEngine;
 using System.Collections;
+using UI;
+
 public class MManager : StaticInstance<MManager>
 {
     //character
@@ -15,6 +17,7 @@ public class MManager : StaticInstance<MManager>
     public UIManager uIManager { get; set; }
     public MovementManager movementManager { get; set; }
     public LedgerManager ledgerManager { get; set; }
+    public LedgerUIManager ledgerUIManager { get; set; }
     public CutsceneManager cutsceneManager { get; set; }
 
 
@@ -40,7 +43,11 @@ public class MManager : StaticInstance<MManager>
 
         ledgerManager?.m_Start();
 
+        ledgerUIManager?.m_Start();
+
         cutsceneManager?.m_Start();
+
+
 
         //runs all other that are not defined.
 

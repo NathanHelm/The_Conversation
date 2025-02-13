@@ -124,10 +124,14 @@ public class DialogueManager : StaticInstance<DialogueManager>
     public void NoDialogue()
     {
         StopAllCoroutines();
-        GameEventManager.INSTANCE.OnEvent(typeof(PlayerMove2dState)); //player moves to 2d state
+        //player moves to 2d state
         UIManager.INSTANCE.DisableDialogUI();
         dialogueIndex = 0;
         Debug.Log("no dialog");
+    }
+    public void PlayerMove()
+    {
+        GameEventManager.INSTANCE.OnEvent(typeof(PlayerMove2dState));
     }
 
 

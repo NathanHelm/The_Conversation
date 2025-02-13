@@ -3,18 +3,21 @@ using System.Collections;
 
 public class Tester_Script : MonoBehaviour
 {
-    [SerializeField]
-    GameObject g;
-    PlayerRaycast temp;
+
     private void Start()
     {
-        temp = g.GetComponent<PlayerRaycast>();
+        UI.LedgerUIManager.INSTANCE.m_Start();
+        LedgerManager.INSTANCE.m_Start();
+       
     }
     private void Update()
     {
-       
-            temp.OmitRaycast(new Vector3(0, 10, 0));
-  
+       if(Input.GetKeyDown(KeyCode.Return))
+        {
+            Debug.Log("add a page");
+            LedgerManager.INSTANCE.AddRayInfoToLedgerImage(1, "descriptionExample", (1, 2), new int[] { 2, 4 }, null);
+        }
     }
+    
 }
 

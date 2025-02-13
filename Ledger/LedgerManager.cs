@@ -8,76 +8,134 @@ public class LedgerManager : StaticInstance<LedgerManager>
 {
     public static SystemActionCall<LedgerManager> onStartLedgerData = new SystemActionCall<LedgerManager>();
     public static SystemActionCall<LedgerManager> onShowLedgerImages = new SystemActionCall<LedgerManager>();
-    public readonly int ledgerLength = 5;
+
+    private bool isLedgerEnabled;
+
+    int index = 0;
+
+    public readonly int ledgerLength = 10;
+
     public List<LedgerImage> ledgerImages { get; set; }
 
-    public GameObject bookObj { get; set; }
+  
 
     public override void OnEnable()
     {
 
-        MManager.onStartManagersAction.AddAction((MManager m) => { m.ledgerManager = this; });
+        MManager.onStartManagersAction?.AddAction((MManager m) => { m.ledgerManager = this; });
+
         base.OnEnable();
     }
 
 
     public override void m_Start()
     {
-        if (GameObject.FindGameObjectWithTag("Book") != null)
-        {
-            bookObj = GameObject.FindGameObjectWithTag("Book");
-        }
+        CreateLedger();
         base.m_Start();
         onStartLedgerData.RunAction(this);
     }
 
-    //todo create a ledger state machine...
-
-    public void OpenBook() //enables book gameobject 
+    public void UseLedger()
     {
-        GameObject nbookObj = GetBookObj();
-        UIManager.INSTANCE.EnableUIObject(ref nbookObj);
-    }
-    public void CloseBook()
-    {
-        GameObject nbookObj = GetBookObj();
-        UIManager.INSTANCE.DisableUIObject(ref nbookObj);
-    }
-
-
-    public GameObject GetBookObj()
-    {
-        return bookObj;
-    }
-    public void AddRayInfoToLedgerImage(int bodyId, string dialogueDescription, (int, int) characterNameQuestion, int[] customQuestions) //converts ray information to ledger image object
-    {
-        LedgerImage ledgerImage = new (dialogueDescription, characterNameQuestion, customQuestions, bodyId);
-        if(LedgerData.INSTANCE.ledgerImages.Count > ledgerLength)
+        //Pressing tab opens the ledger
+        if(Input.GetKeyDown(KeyCode.Tab))
         {
-            //todo apply restart animation.
-            ledgerImages = new List<LedgerImage>();
-            //todo destroy ledgerimages in persistent data
+            PlayUICutscene();
         }
-        LedgerData.INSTANCE.ledgerImages.Add(ledgerImage);
+
     }
 
-    public void ShowLedgerImages()
+    public void MovePages()
+    {
+        if(Input.GetKeyDown(KeyCode.A))
+        {
+            --index;
+            // index = Mathf.Clamp(index, 0, ledgerLength - 1);
+            Debug.Log("index " + index);
+            if (index < 0)
+            {
+                index = Mathf.Clamp(index, 0, ledgerLength - 1);
+                return;
+            }
+           
+            index = Mathf.Clamp(index, 0, ledgerLength - 1);
+            UI.LedgerUIManager.INSTANCE.FlipPageLeft(index);
+        }
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+            ++index;
+            //  index = Mathf.Clamp(index, 0, ledgerLength - 1);
+            Debug.Log("index " + index);
+            if (index > ledgerLength - 1)
+            {
+                index = Mathf.Clamp(index, 0, ledgerLength - 1);
+                return;
+            }
+            index = Mathf.Clamp(index, 0, ledgerLength - 1);
+            UI.LedgerUIManager.INSTANCE.FlipPageRight(index);
+        }
+    }
+    public void EnableLedger()
+    {
+        UI.LedgerUIManager.INSTANCE.OpenBook();
+    }
+    public void DisableLedger()
+    {
+        UI.LedgerUIManager.INSTANCE.CloseBook();
+    }
+
+    //todo create a ledger state machine...
+    public void CreateLedger()
     {
         onShowLedgerImages.RunAction(this);
-        if(ledgerImages == null)
+
+        if (ledgerImages == null)
         {
             throw new Exception("ledger images are null");
         }
-        for(int i = 0; i < ledgerImages.Count; i ++)
-        {
-            //to do add animation
-            Debug.Log("added image");
-        }
 
-       
+        for (int i = 0; i < ledgerLength; i++)
+        {
+            //adds page
+            /*
+            if(i == 0 || i == ledgerLength - 1)
+            {
+                UI.LedgerUIManager.INSTANCE.add
+                continue;
+            }
+            */
+            UI.LedgerUIManager.INSTANCE.AddPage(i, ledgerLength - 1);
+        }
     }
     
-   
+
+    public void AddRayInfoToLedgerImage(int bodyId, string dialogueDescription, (int, int) characterIdQuestionId, int[] customQuestions, Sprite ledgerImageSprite) //converts ray information to ledger image object
+    {
+        LedgerImage ledgerImage = new(dialogueDescription, characterIdQuestionId, customQuestions, bodyId, ledgerImageSprite);
+        if (LedgerData.INSTANCE.ledgerImages.Count > ledgerLength)
+        {
+            //todo apply restart animation.
+            throw new Exception("ledger image count greater the ledger page cap.\n give last page a time limit ");
+            //todo destroy ledgerimages in persistent data
+        }
+        LedgerData.INSTANCE.ledgerImages.Add(ledgerImage);
+        UI.LedgerUIManager.INSTANCE.ReplacePageSprite(LedgerData.INSTANCE.ledgerImages.Count - 1, ledgerImageSprite);
+        
+    }
+
+
+    private void PlayUICutscene()
+    {
+        //add this as ledger state
+        isLedgerEnabled = true;
+        /*
+        CutsceneManager.INSTANCE.SetSnapShot( new (string, Type)[] { new("LedgerState",typeof(ActiveLedgerState)),  });
+        CutsceneManager.INSTANCE.SetCutSceneConditions(new (Action, bool)[] { ( () => { Debug.Log("cutscene with condition is active..."); }, isLedgerEnabled)});
+        CutsceneManager.INSTANCE.PlayCutscene();
+        */
+        GameEventManager.INSTANCE.OnEvent(typeof(ActiveLedgerState));
+
+    }
 
 
 }

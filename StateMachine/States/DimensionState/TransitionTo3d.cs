@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Data;
-public class TransitionTo3d : State<DimensionData>
+public class TransitionTo3d : DimensionState
 {
     public override void OnEnter(DimensionData data)
     {
-       
+        Debug.Log("3d state");
         data.ToDimension(data.TransitionTo3dSo);
     }
     public override void OnExit(DimensionData data)

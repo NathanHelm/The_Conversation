@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Data;
-public class TransitionTo2d : State<DimensionData>
+public class TransitionTo2d : DimensionState
 {
     public override void OnEnter(DimensionData data)
-    {   
+    {
+        Debug.Log("2d state");
         data?.ToDimension(data.TransitionTo2dSo);
     }
     public override void OnExit(DimensionData data)

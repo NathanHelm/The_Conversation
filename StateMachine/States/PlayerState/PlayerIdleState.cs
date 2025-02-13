@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Data;
-public class PlayerIdleState : State<PlayerData>
+public class PlayerIdleState : PlayerState
 {
     public override void OnEnter(PlayerData data)
     {

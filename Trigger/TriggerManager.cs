@@ -144,19 +144,19 @@ public class TriggerManager : StaticInstance<TriggerManager>
 
         if (player != null) //is player
         {
-            GameEventManager.INSTANCE.OnEvent(typeof(NoConversationState));
+            GameEventManager.INSTANCE.OnEvent(typeof(LeaveConversationState));
             return;
         }
 
     }
 
-    public void IdleTriggerEnterState(Collider other, Trigger trigger)
+    public void IdleTriggerEnterState(Collider other, ref Trigger trigger)
     {
-
+        Debug.Log("trigger enter is in idle");
     }
     public void IdleTriggerExitState(Collider other, Trigger trigger)
     {
-
+        Debug.Log("trigger exit is in idle");
     }
 
 

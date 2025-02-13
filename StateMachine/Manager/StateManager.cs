@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Data;
+using System;
+using System.Collections.Generic;
+
 public class StateManager : StaticInstance<StateManager>
 {
     /*
@@ -10,6 +13,7 @@ public class StateManager : StaticInstance<StateManager>
     public PlayerDataMono playerDataState;
     public DialogueStateMono dialogueState;
     public TriggerStateMono triggerState;
+    public LedgerStateMono ledgerState;
     public CutsceneMono cutsceneState;
 
     /*
@@ -28,13 +32,25 @@ public class StateManager : StaticInstance<StateManager>
 
     public PlayCutsceneState playCutsceneState = new();
     public StopCutsceneState stopCutsceneState = new();
-
-   // public  custceneState = new 
-
+    public NoCutsceneState noCutsceneState = new();
 
     public TriggerConversationState triggerConversationState = new TriggerConversationState();
     public DefaultTriggerState defaultTriggerState = new DefaultTriggerState();
+    public NoTriggerState noTriggerState = new NoTriggerState();
 
+    public ActiveLedgerState activeLedgerState = new ActiveLedgerState();
+    public IdleLedgerState idleLedgerState = new IdleLedgerState();
+    public DisableLedgerState disableLedgerState = new DisableLedgerState();
+
+    public readonly object[] stopStates = new object[] {
+        new TransitionTo3d(),
+        new NoConversationState(),
+        new NoTriggerState(),
+        new PlayerIdleState(),
+        new IdleLedgerState()
+        // CUTSCENE STAYS LAST. If No Cutscene is not last stop state, cutscene will not stop states after it... 
+       
+    };
 
     public void Start()
     {
@@ -43,6 +59,8 @@ public class StateManager : StaticInstance<StateManager>
         dialogueState = gameObject.AddComponent<DialogueStateMono>();
         triggerState = gameObject.AddComponent<TriggerStateMono>();
         cutsceneState = gameObject.AddComponent<CutsceneMono>();
+        ledgerState = gameObject.AddComponent<LedgerStateMono>();
+        
 
 
         if (DimensionData.INSTANCE != null)
@@ -70,18 +88,71 @@ public class StateManager : StaticInstance<StateManager>
         {
             GameEventManager.INSTANCE.AddEvent(typeof(TriggerConversationState), () => { triggerState.SwitchState(triggerConversationState); });
             GameEventManager.INSTANCE.AddEvent(typeof(DefaultTriggerState), () => { triggerState.SwitchState(defaultTriggerState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(NoTriggerState), () => { triggerState.SwitchState(noTriggerState); });
+
             triggerState.SwitchState(defaultTriggerState);
         }
-        if(CutsceneData.INSTANCE != null)
+        if (CutsceneData.INSTANCE != null)
         {
             GameEventManager.INSTANCE.AddEvent(typeof(PlayCutsceneState), () => { cutsceneState.SwitchState(playCutsceneState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(NoCutsceneState), () => {cutsceneState.SwitchState(noCutsceneState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(StopCutsceneState), () => { cutsceneState.SwitchState(stopCutsceneState); });
+            cutsceneState.SwitchState(noCutsceneState);
         }
-
-        
-        
-       
-       
-       
+        if(LedgerData.INSTANCE != null)
+        {
+            GameEventManager.INSTANCE.AddEvent(typeof(ActiveLedgerState), () => { ledgerState.SwitchState(activeLedgerState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(IdleLedgerState), () => { ledgerState.SwitchState(idleLedgerState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(DisableLedgerState), () => { ledgerState.SwitchState(disableLedgerState); });
+            ledgerState.SwitchState(disableLedgerState);
+        }
+      
     }
+
+    public Dictionary<string, Type> GetStateHashmap(object[] newStates) //key = root name, val = state that it has
+    {
+        Dictionary<string, Type> keyValuePairs = new Dictionary<string, Type>();
+        
+        string[] stateParent = new string[] { "PlayerState", "CutsceneState", "DialogueState", "TriggerState", "DimensionState", "LedgerState" };
+
+        for (int i = 0; i < newStates.Length; i++)
+        {
+            if (newStates[i] is PlayerState)
+            {
+                keyValuePairs.Add(stateParent[0], newStates[i].GetType());
+            }
+            else if (newStates[i] is CutsceneState)
+            {
+                keyValuePairs.Add(stateParent[1], newStates[i].GetType());
+            }
+            else if (newStates[i] is DialogueState)
+            {
+                keyValuePairs.Add(stateParent[2], newStates[i].GetType());
+            }
+            else if (newStates[i] is TriggerState)
+            {
+                keyValuePairs.Add(stateParent[3], newStates[i].GetType());
+            }
+            else if (newStates[i] is DimensionState)
+            {
+                keyValuePairs.Add(stateParent[4], newStates[i].GetType());
+            }
+            else if (newStates[i] is LedgerState)
+            {
+                keyValuePairs.Add(stateParent[5], newStates[i].GetType());
+            }
+            else
+            {
+                throw new Exception("state " + newStates[i].ToString() + " has no state");
+            }
+         
+        }
+        return keyValuePairs;
+    }
+    public object[] SnapShotCurrentStates()
+    {
+        return new object[] { dimensionState.currentState, playerDataState.currentState, dialogueState.currentState, triggerState.currentState, cutsceneState.currentState, ledgerState.currentState} ;
+    }
+    
 }
 
