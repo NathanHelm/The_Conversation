@@ -36,7 +36,7 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 
     public void SetUpQuestionResponseManager()
 	{
-   
+		Debug.Log("add Questions and Response here!");
         npcToQuestionDialogueNpc.Add(1, new Dictionary<int, DialogueConversation>());
 
 		npcToQuestionDialogueNpc[1] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[] {
@@ -49,6 +49,21 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 			 here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
 			 */
 		});
+
+		npcToQuestionDialogueNpc.Add(2, new Dictionary<int, DialogueConversation>());
+
+		npcToQuestionDialogueNpc[2] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[] {
+
+		//key pair value code goes here.
+		//question id							
+			new (new int[] { 4, 5}, CharacterManager.INSTANCE.GetConversationOnCharacterID(1,2)), //based on character & conversation id, return conversation
+			
+			/*
+			 here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
+			 */
+		});
+
+
 		/*
 							//character Id
 		npcToQuestionDialogueNpc.Add(3, new Dictionary<int, DialogueConversation>());
@@ -108,6 +123,7 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 			//can act like a normal conversation.
 
 		}
+		Debug.Log("LOG: obtained conversation dialogue objects from character " + characterID + "based on question: " + playerQuestionID);
 		return npcToQuestionDialogueNpc[characterID][playerQuestionID].dialogueObjects;
 		
 	}

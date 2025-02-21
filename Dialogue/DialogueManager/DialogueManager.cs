@@ -127,7 +127,6 @@ public class DialogueManager : StaticInstance<DialogueManager>
         //player moves to 2d state
         UIManager.INSTANCE.DisableDialogUI();
         dialogueIndex = 0;
-        Debug.Log("no dialog");
     }
     public void PlayerMove()
     {

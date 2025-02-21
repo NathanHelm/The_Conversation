@@ -27,6 +27,11 @@ public class PlayerMovement : MonoBehaviour
     public Vector2 startPosition = Vector3.zero;
     public Vector3 start3dPosition = Vector3.zero;
 
+    private Vector2 direction = Vector2.zero;
+
+    public PlayerLook playerLook {get; set;}
+
+
 
     private void Start()
     {
@@ -56,6 +61,8 @@ public class PlayerMovement : MonoBehaviour
         {
 
             playerRigidBody2d.velocity = movement * moveSpeed;
+            
+           
 
             if (playerMovementActionCallOnUpdate == null)
             {
@@ -67,7 +74,15 @@ public class PlayerMovement : MonoBehaviour
 
 
             movement.x = Input.GetAxisRaw("Horizontal");
-            movement.y = Input.GetAxisRaw("Vertical");
+            movement.y = Input.GetAxisRaw("Vertical");    
+            
+            if(movement != Vector2.zero)
+            {
+            direction = movement;  //here, we are getting the movement direction, if we the CURRENT direction is zero we revert to the previous direction. 
+            
+             Debug.Log("direction ==> " + direction);
+            }
+         //  Debug.Log("direction ==> " + direction);
 
 
             playerMovementAnim.SetFloat("Horizontal", movement.x);
@@ -103,6 +118,17 @@ public class PlayerMovement : MonoBehaviour
     {
         StopAllCoroutines();
         coroutine = null;
+    }
+    public void SetPlayer3dRotation()
+    {
+        if(playerLook != null)
+        {
+            playerLook.PlayerFacesDirection(direction);
+        }
+        else
+        {
+            Debug.LogError("player data is null!");
+        }
     }
 
     public Vector3 get2dAnd3dOffset()

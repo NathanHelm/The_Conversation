@@ -24,7 +24,7 @@ public class PlayerClickOnClueState : PlayerState
         }
         );
 
-        CutsceneManager.INSTANCE.SetSnapShot(new (string, Type)[] { new("DimensionState", typeof(TransitionTo3d)), new("PlayerState", typeof(PlayerLook3dState)), new ("DialogueState",typeof(NoConversationState)) });
+        CutsceneManager.INSTANCE.SetSnapShot(new (string, Type)[] { new("DimensionState", typeof(TransitionTo3d)), new("PlayerState", typeof(PlayerLook3dState)), new ("DialogueState",typeof(NoConversationState)), });
         GameEventManager.INSTANCE.OnEvent(typeof(PlayCutsceneState));
 
         //0) player clicks on clue!

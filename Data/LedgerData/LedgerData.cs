@@ -3,6 +3,8 @@ using System.Collections;
 using Data;
 using System.Collections.Generic;
 
+namespace Data
+{
 public class LedgerData : StaticInstance<LedgerData>
 {
 	public List<LedgerImage> ledgerImages { get; set; } = new List<LedgerImage>();
@@ -15,5 +17,6 @@ public class LedgerData : StaticInstance<LedgerData>
         base.OnEnable();
     }
 
+}
 }
 

@@ -34,17 +34,18 @@ public class DimensionData : StaticInstance<DimensionData>
 				base.Awake();
 			}
     }
-    private void Start()
+        public override void OnEnable()
+        {
+          
+			TransitionManager.actionOnStartConversation.AddAction((TransitionManager e)=>{e.cam = this.cam;});
+			  base.OnEnable();
+        }
+        private void Start()
     {
-        uIData = GameEventManager.INSTANCE.OnEventFunc<UIData>("data.uidata");
+        uIData = UIData.INSTANCE;
     }
-    public void ToDimension(DimensionScriptableObject dimensionScriptableObject)
-	{
-		cam.orthographic = dimensionScriptableObject.isOrthographic;
-		dimensionScriptableObject.cinemachineVirtualCamera.Priority = 1;
-		
-	}
-	 
+
+    
 }
 }
 

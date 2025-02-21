@@ -3,7 +3,7 @@ using System.Collections;
 
 public class IdleLedgerState : LedgerState
 {
-    public override void OnEnter(LedgerData data)
+    public override void OnEnter(Data.LedgerData data)
     {
         Debug.Log("Idle ledger state.");
     }

@@ -3,7 +3,7 @@ using System.Collections;
 
 public class TwoTo3dPositions : MonoBehaviour
 {
-    //move the 3d position based on 2d position velocity
+    //move the 3d position based on 2d position position
     public static SystemActionCall<TwoTo3dPositions> twoTo3dPostionOnActionStart = new SystemActionCall<TwoTo3dPositions>();
     [SerializeField]
     public PhysicsGameObject2d physicsGameObject2D;

@@ -144,7 +144,8 @@ public class TriggerManager : StaticInstance<TriggerManager>
 
         if (player != null) //is player
         {
-            GameEventManager.INSTANCE.OnEvent(typeof(LeaveConversationState));
+            DialogueManager.INSTANCE.NoDialogue();
+            GameEventManager.INSTANCE.OnEvent(typeof(NoConversationState));
             return;
         }
 

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 namespace UI 
 {
@@ -15,11 +14,12 @@ namespace UI
         private LedgerScriptableObject ledgerScriptableObject;
 
         private Sprite pageSprite;
-        private Sprite lastFrontPageSprite, lastBackPageSprite;
-        private Sprite firstFrontPageSprite, firstBackPageSprite;
+        private Material firstPageMat, lastPageMat, defaultMat;
         private GameObject pagePrefab, doubleSidedPagePrefab;
 
         private List<GameObject> pageObjects = new List<GameObject>();
+
+        public bool isPageMoving = false;
 
         /*
 
@@ -32,13 +32,12 @@ namespace UI
             MManager.onStartManagersAction.AddAction((MManager m) => { m.ledgerUIManager = this; });
 
 
-            pageSprite = ledgerScriptableObject.pageSprite;
-            lastFrontPageSprite = ledgerScriptableObject.lastFrontPageSprite;
-            firstFrontPageSprite = ledgerScriptableObject.firstFrontPageSprite;
-            firstBackPageSprite = ledgerScriptableObject.firstBackPageSprite;
-            lastBackPageSprite = ledgerScriptableObject.lastBackPageSprite;
-            pagePrefab = ledgerScriptableObject.pagePrefab;
+            firstPageMat = ledgerScriptableObject.firstPageMat;
+            lastPageMat = ledgerScriptableObject.lastPageMat;
+            defaultMat = ledgerScriptableObject.defaultMat;
 
+            pagePrefab = ledgerScriptableObject.pagePrefab;
+            doubleSidedPagePrefab = ledgerScriptableObject.doubleSidedPagePrefab;
 
             base.OnEnable();
         }
@@ -67,23 +66,22 @@ namespace UI
         {
             Debug.Log("adding page");
             GameObject page = null;
-            if (index == 0)
+            page = CreatePage();
+            Material mat = null;
+            if(index == 0)
             {
-                page = CreateDoubleSidedPage();
-                page.GetComponentInChildren<Image>().sprite = firstFrontPageSprite;
-               page.GetComponentsInChildren<Image>()[1].sprite = firstBackPageSprite;
+                Debug.Log("index ==>" + index);
+                mat = firstPageMat;
             }
             else if(index == max)
             {
-                page = CreateDoubleSidedPage();
-                page.GetComponentInChildren<Image>().sprite = lastFrontPageSprite;
-                page.GetComponentsInChildren<Image>()[1].sprite = lastBackPageSprite;
+                mat = lastPageMat;
             }
-            else
-            {
-                page = CreatePage();
-                page.GetComponentInChildren<Image>().sprite = pageSprite;
+            else{
+                mat = defaultMat;
             }
+            page.GetComponentInChildren<Renderer>().material = mat; //setting material.
+            
             pageObjects.Add(page);
         }
 
@@ -91,7 +89,10 @@ namespace UI
         {
             if(ledgerObject == null)
             {
-                throw new NullReferenceException("ledger not found");
+                Debug.LogError("ledger not found");
+                //throw new NullReferenceException("ledger not found");
+                return null;
+               
             }
             GameObject g = Instantiate(pagePrefab, GetLedger().transform);
             return g;
@@ -106,9 +107,9 @@ namespace UI
             return g;
         }
 
-        public void ReplacePageSprite(int index, Sprite newSprite)
+        public void ReplaceMatSprite(int index, Material material)
         {
-            pageObjects[index].GetComponentInChildren<Image>().sprite = newSprite;
+            pageObjects[index].GetComponentInChildren<Renderer>().material = material;
         }
 
         public void RemovePage(int index)
@@ -123,15 +124,45 @@ namespace UI
 
         public void FlipPageLeft(int index)
         {
+           // ChangeLayerLeft(index, pageObjects.Count - 1);
             StartCoroutine(FlipPageAnimation(index, 180, 0));
         }
         public void FlipPageRight(int index)
         {
+           // ChangeLayerRight(index, pageObjects.Count - 1);
             StartCoroutine(FlipPageAnimation(index, 0, 180));
+        }
+
+        private void ChangeLayerLeft(int index, int max)
+        {
+            if(index == 0)
+            {
+                pageObjects[index].GetComponentInChildren<Renderer>().sortingOrder = 1;
+               return;
+            }
+            pageObjects[index].GetComponentInChildren<Renderer>().sortingOrder = 0;
+            pageObjects[index - 1].GetComponentInChildren<Renderer>().sortingOrder = 1;
+        }
+        private void ChangeLayerRight(int index, int max)
+        {
+            if(index == max)
+            {
+                Debug.Log("prev layer -->" + pageObjects[index - 1].GetComponentInChildren<Renderer>().sortingOrder+ "this layer -->" +pageObjects[index].GetComponentInChildren<Renderer>().sortingOrder );
+                // pageObjects[index - 1].GetComponentInChildren<Renderer>().sortingOrder = 0;
+                pageObjects[index].GetComponentInChildren<Renderer>().sortingOrder = 1;
+                return;
+            }
+            pageObjects[index].GetComponentInChildren<Renderer>().sortingOrder = 0;
+            pageObjects[index + 1].GetComponentInChildren<Renderer>().sortingOrder = 1;
+        }
+        private void RenderPage()
+        {
+            
         }
 
         private IEnumerator FlipPageAnimation(int index, float startAngle, float endAngle)
         {
+            isPageMoving = true;
             float seconds = 1.0f;
             float time = 0.0f;
             Debug.Log("FLIPPING ANIMATION IS GOING");
@@ -144,7 +175,9 @@ namespace UI
                 yield return new WaitForFixedUpdate();
             }
             pageObjects[index].transform.localEulerAngles = new Vector3(0, endAngle, 0);
+            isPageMoving = false;
             yield return null;
+            
         }
         
     

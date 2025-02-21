@@ -4,7 +4,7 @@ using Data;
 using System;
 using System.Collections.Generic;
 
-public class StateManager : StaticInstance<StateManager>
+public class  StateManager: StaticInstance<StateManager>
 {
     /*
       add monobehaviour states here
@@ -51,9 +51,15 @@ public class StateManager : StaticInstance<StateManager>
         // CUTSCENE STAYS LAST. If No Cutscene is not last stop state, cutscene will not stop states after it... 
        
     };
-
-    public void Start()
+    public override void OnEnable()
     {
+        MManager.onStartManagersAction.AddAction((MManager e) =>{e.stateManager = this;});
+        base.OnEnable();
+    }
+
+    public override void m_Start()
+    {
+        Debug.Log("start is going!!!!! ");
         dimensionState = gameObject.AddComponent<DimensionDataMono>();
         playerDataState = gameObject.AddComponent<PlayerDataMono>();
         dialogueState = gameObject.AddComponent<DialogueStateMono>();

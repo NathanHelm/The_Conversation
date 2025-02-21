@@ -21,6 +21,12 @@ public class MManager : StaticInstance<MManager>
     public CutsceneManager cutsceneManager { get; set; }
 
 
+
+    public TransitionManager transitionManager {get; set;}
+
+    public StateManager stateManager {get; set;} //this one stays last
+
+
     public void StartManagers()
     {
         onStartManagersAction.RunAction(this); //todo subsribe all manager with
@@ -46,6 +52,10 @@ public class MManager : StaticInstance<MManager>
         ledgerUIManager?.m_Start();
 
         cutsceneManager?.m_Start();
+
+        transitionManager?.m_Start();
+
+        stateManager?.m_Start();
 
 
 

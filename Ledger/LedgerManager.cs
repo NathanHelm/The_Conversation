@@ -3,6 +3,9 @@ using System.Collections;
 using System;
 using Data;
 using System.Collections.Generic;
+using UI;
+using System.Threading.Tasks;
+using Unity.VisualScripting.YamlDotNet.Serialization;
 
 public class LedgerManager : StaticInstance<LedgerManager>
 {
@@ -13,9 +16,13 @@ public class LedgerManager : StaticInstance<LedgerManager>
 
     int index = 0;
 
-    public readonly int ledgerLength = 10;
+    public readonly int ledgerLength = 3;
 
     public List<LedgerImage> ledgerImages { get; set; }
+
+    int previousPage;
+
+
 
   
 
@@ -30,7 +37,8 @@ public class LedgerManager : StaticInstance<LedgerManager>
 
     public override void m_Start()
     {
-        CreateLedger();
+        Debug.Log("NOTE: ledger has not been made");
+        //CreateLedger();
         base.m_Start();
         onStartLedgerData.RunAction(this);
     }
@@ -47,32 +55,48 @@ public class LedgerManager : StaticInstance<LedgerManager>
 
     public void MovePages()
     {
+     
         if(Input.GetKeyDown(KeyCode.A))
         {
-            --index;
-            // index = Mathf.Clamp(index, 0, ledgerLength - 1);
-            Debug.Log("index " + index);
-            if (index < 0)
-            {
-                index = Mathf.Clamp(index, 0, ledgerLength - 1);
-                return;
-            }
-           
-            index = Mathf.Clamp(index, 0, ledgerLength - 1);
+          
+           if(previousPage > index) //i want to previous page
+           {
+             index = previousPage;
+             UI.LedgerUIManager.INSTANCE.FlipPageLeft(previousPage);
+             return;
+           }
+
             UI.LedgerUIManager.INSTANCE.FlipPageLeft(index);
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-            ++index;
-            //  index = Mathf.Clamp(index, 0, ledgerLength - 1);
-            Debug.Log("index " + index);
-            if (index > ledgerLength - 1)
-            {
-                index = Mathf.Clamp(index, 0, ledgerLength - 1);
-                return;
-            }
+
+            previousPage = index;
+
+            --index;
+
             index = Mathf.Clamp(index, 0, ledgerLength - 1);
+            Debug.Log("index " + index);
+
+        }
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+           if(previousPage < index) //i want to previous page
+           {
+             index = previousPage;
+             UI.LedgerUIManager.INSTANCE.FlipPageRight(previousPage);
+             return;
+           }
+          
+        
             UI.LedgerUIManager.INSTANCE.FlipPageRight(index);
+
+            previousPage = index;
+
+             ++index;
+
+            index = Mathf.Clamp(index, 0, ledgerLength - 1);
+            Debug.Log("index " + index);
+            
+           
+      
         }
     }
     public void EnableLedger()
@@ -91,7 +115,8 @@ public class LedgerManager : StaticInstance<LedgerManager>
 
         if (ledgerImages == null)
         {
-            throw new Exception("ledger images are null");
+           Debug.LogError("ledger images are null");
+           return;
         }
 
         for (int i = 0; i < ledgerLength; i++)
@@ -119,7 +144,12 @@ public class LedgerManager : StaticInstance<LedgerManager>
             //todo destroy ledgerimages in persistent data
         }
         LedgerData.INSTANCE.ledgerImages.Add(ledgerImage);
-        UI.LedgerUIManager.INSTANCE.ReplacePageSprite(LedgerData.INSTANCE.ledgerImages.Count - 1, ledgerImageSprite);
+
+        //TODO --> interesting.... I want to change the page's material BASED on the image drawn. (some function called image drawn sprite)
+        //an idea: make drawing sprite THEN overlay it.
+        //another idea = set drawing sprite as a texture and use some lerping function with the page. 
+
+       // UI.LedgerUIManager.INSTANCE.ReplacePageSprite(LedgerData.INSTANCE.ledgerImages.Count - 1, ledgerImageSprite);
         
     }
 

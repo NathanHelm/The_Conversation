@@ -3,6 +3,7 @@ using System.Collections;
 using Data;
 using System.Collections.Generic;
 using System;
+using Codice.Client.BaseCommands.BranchExplorer;
 public class CharacterManager : StaticInstance<CharacterManager>
 {
     private CharacterMono[] characterMono;
@@ -22,7 +23,9 @@ public class CharacterManager : StaticInstance<CharacterManager>
 
     public void SetUpCharacterIDtoConversationIdToConversation() //method adds all occuring characterMono and their lines to the dictionary
     {
+        
         characterMono = FindObjectsOfType<CharacterMono>();
+        clueMono = FindObjectsOfType<ClueMono>();
 
 
         if(characterMono == null)
@@ -45,6 +48,7 @@ public class CharacterManager : StaticInstance<CharacterManager>
             
             AddDialogueObjToDict(clueMono[i].vetClueConversation, clueMono[i].bodyID);
         }
+        Debug.Log("LOG: Got all character from the scene, their id and conversation [see dialogue SO] are now in the character manager dictionary.");
     }
     /*
      todo when loading and persistent information -im thinking ledger data- we should use this function
@@ -70,6 +74,25 @@ public class CharacterManager : StaticInstance<CharacterManager>
     }
     public DialogueConversation GetConversationOnCharacterID(int characterID, int characterConversationID)
     {
+        //making dummy dialogue conversation in case character is not in scene. 
+        DialogueConversation dialogueConversationDummy = new DialogueConversation();
+        DialogueObject dialogueObject = new DialogueObject();
+        dialogueObject.line = "dummy dialogue because character doesn't exist in scene";
+        dialogueConversationDummy.dialogueObjects = new DialogueObject[] { dialogueObject };
+
+
+        if(!characterIDtoConverationIdtoConversation.ContainsKey(characterID))
+        {
+            Debug.LogError("character id " + characterID + " not found in scene, therefore we can't obtain it.");
+            return dialogueConversationDummy;
+        }
+        if(!characterIDtoConverationIdtoConversation[characterID].ContainsKey(characterConversationID))
+        {
+            dialogueObject.line = "dummy dialogue because character: " + characterID + " does not conversation id " + characterConversationID;
+            Debug.LogError("conversation id " + characterConversationID  +" therefore we can't obtain it.");
+            return dialogueConversationDummy;
+        }
+        Debug.Log("LOG: obtained character ID: " + characterID + "and: " + characterConversationID); 
         return characterIDtoConverationIdtoConversation[characterID][characterConversationID];
     }
 }

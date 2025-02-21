@@ -18,7 +18,7 @@ public class StaticInstance<T> : MonoBehaviour
 	}
 	public virtual void m_Start()
 	{
-		
+		actionCall.RunAction(INSTANCE);
 	}
 	
     public virtual void OnEnable()

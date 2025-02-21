@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using Data;
 public class ActiveLedgerState : LedgerState
 {
     public override void OnEnter(LedgerData data)

@@ -13,7 +13,7 @@ public class PlayerMove2dState : PlayerState
     }
     public override void OnExit(PlayerData data)
     {
-      
+        data?.playerMovement.SetPlayer3dRotation();
         data?.playerMovement.stopMovement();
     }
 }
