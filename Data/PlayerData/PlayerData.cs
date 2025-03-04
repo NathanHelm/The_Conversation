@@ -17,10 +17,7 @@ namespace Data
         public Rigidbody rb3D;
         public Transform trans2d, trans3d;
 
-
-        public List<int> playerQuestions = new List<int>();
-
-  
+        public int currentQuestionID; //question that the player asks
 
 
         public override void Awake()

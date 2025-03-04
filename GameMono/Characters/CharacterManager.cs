@@ -9,7 +9,8 @@ public class CharacterManager : StaticInstance<CharacterManager>
     private CharacterMono[] characterMono;
     private ClueMono[] clueMono;
 
-    Dictionary<int, Dictionary<int, DialogueConversation>> characterIDtoConverationIdtoConversation = new Dictionary<int, Dictionary<int, DialogueConversation>>();
+    private Dictionary<int, Dictionary<int, DialogueConversation>> characterIDtoConverationIdtoConversation = new Dictionary<int, Dictionary<int, DialogueConversation>>();
+    private Dictionary<int, Dictionary<int, MemoryStage>> characterStageIdToMemory = new Dictionary<int, Dictionary<int, MemoryStage>>();
 
     public override void OnEnable()
     {
@@ -37,6 +38,7 @@ public class CharacterManager : StaticInstance<CharacterManager>
         {
             int bodyId = characterMono[i].bodyID;
             AddDialogueObjToDict(characterMono[i].dialogueConversation, bodyId);
+            AddMemoryFromCharacter(characterMono[i].memoryStages, bodyId);
             //add the body id, makes a new dictionary.
         }
         if(clueMono == null)
@@ -49,12 +51,18 @@ public class CharacterManager : StaticInstance<CharacterManager>
             AddDialogueObjToDict(clueMono[i].vetClueConversation, clueMono[i].bodyID);
         }
         Debug.Log("LOG: Got all character from the scene, their id and conversation [see dialogue SO] are now in the character manager dictionary.");
+        Debug.Log("LOG: obtained all memories from characters in scene. --data can be accessed from memory manager. ");
     }
     /*
      todo when loading and persistent information -im thinking ledger data- we should use this function
      */
     public void AddDialogueObjToDict(DialogueConversation[] dialogueConversation,int bodyId)
     {
+        if(characterIDtoConverationIdtoConversation.ContainsKey(bodyId))
+        {
+            Debug.LogError("duplicate character id's "+ bodyId + "in scene.");
+            return;
+        }
         characterIDtoConverationIdtoConversation.Add(bodyId, new Dictionary<int, DialogueConversation>());
 
         if (dialogueConversation == null) //character is removed from the dictionary if there is no conversation added to it.
@@ -71,6 +79,18 @@ public class CharacterManager : StaticInstance<CharacterManager>
             //adds the conversation to the respective body id.
             characterIDtoConverationIdtoConversation[bodyId].Add(dialogueConversation[j].ID, dialogueConversation[j]);
         }
+    }
+    public void AddMemoryFromCharacter(MemoryStage[] memoryStages,int bodyID)
+    {
+       
+        characterStageIdToMemory.Add(bodyID,new Dictionary<int, MemoryStage>());
+      
+        for(int i = 0; i < memoryStages.Length; i++)
+        {
+        characterStageIdToMemory[bodyID].Add(memoryStages[i].memoryId,memoryStages[i]);
+        }
+        
+        
     }
     public DialogueConversation GetConversationOnCharacterID(int characterID, int characterConversationID)
     {
@@ -95,5 +115,27 @@ public class CharacterManager : StaticInstance<CharacterManager>
         Debug.Log("LOG: obtained character ID: " + characterID + "and: " + characterConversationID); 
         return characterIDtoConverationIdtoConversation[characterID][characterConversationID];
     }
+
+      public MemoryStage GetMemoriesOnCharacterID(int characterID, int memoryID)
+    {
+        //making dummy dialogue conversation in case character is not in scene. 
+        MemoryStage dummymemorystage = new MemoryStage(); 
+        dummymemorystage.stage = null;
+        dummymemorystage.memoryId = 1000;
+
+        if(!characterStageIdToMemory.ContainsKey(characterID))
+        {
+            Debug.LogError("character id " + memoryID + " not found in scene, therefore we can't obtain it. [for memory]");
+            return dummymemorystage;
+        }
+        if(!characterIDtoConverationIdtoConversation[characterID].ContainsKey(memoryID))
+        {
+         Debug.LogError("character id " + characterID + " does not have memory id" + memoryID +" therefore we can't obtain memory. [for memory]");
+            return dummymemorystage;
+        }
+        Debug.Log("LOG: obtained character ID: " + characterID + "and memory id: " + memoryID); 
+        return characterStageIdToMemory[characterID][memoryID];
+    }
+
 }
 

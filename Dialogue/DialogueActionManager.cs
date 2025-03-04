@@ -46,7 +46,7 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
             //index in the conversation
             { 1,
 
-                ()=>{ GameEventManager.INSTANCE.AddEvent("", ()=>{ });  }
+                ()=>{  }
 
             }
 
@@ -54,7 +54,7 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
             
         }
         });
-                                    //2 = vetID
+                                        //character id example     
         conversationKeyToDialogActions.Add(2, new Dictionary<int, Dictionary<int, Action>>()
         {
            //QuestionID -- the 'response' to a paticular question id, character id determines which lists what
@@ -62,21 +62,42 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
             { 0,
             new Dictionary<int, Action>() { 
             //index in the conversation
-            { 1,
-                ()=>{ Debug.Log("testing"); }
+            { 1, ()=>{
+
+
+            }
+
+              //  ()=>{Debug.Log("On index 1, play button option dialog"); GameEventManager.INSTANCE.OnEvent(typeof(ButtonOptionDialogState));
             }
             
             }
-        }
+            }
         });
-        conversationKeyToDialogActions.Add(3, new Dictionary<int, Dictionary<int, Action>>()
+        conversationKeyToDialogActions.Add(210, new Dictionary<int, Dictionary<int, Action>>()
         {
             {
-                0, //question 
+                2, //question 
                 new Dictionary<int, Action>(){
                     { 0,
 
-                    ()=>{ Debug.Log("test");}
+                    ()=>{ Debug.Log("210 has been triggered!"); 
+                        //setting action to button manager.
+
+                        ButtonDialogueManager.INSTANCE.SetActions(()=> {
+                            //open journal
+                            //todo ==> add ledger state based on currentcharacterId. 
+
+                            int currentCharacter = DialogueData.INSTANCE.currentCharacterID;
+
+                            GameEventManager.INSTANCE.OnEvent(typeof(ActiveLedgerState));
+
+                        }, ()=>{
+                            //play dialogue? 
+                            GameEventManager.INSTANCE.OnEvent(typeof(ImmediateConversationState));
+                        });
+                        GameEventManager.INSTANCE.OnEvent(typeof(ButtonOptionDialogState));
+                    
+                     }
 
                     }
 

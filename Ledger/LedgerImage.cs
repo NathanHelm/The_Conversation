@@ -3,20 +3,21 @@ using System.Collections;
 
 public class LedgerImage
 {
-	private string imageDescription = ""; 
-	private (int, int) characterAndQuestionId; //character id and question interaction to run dialog (recall that question is almost always equal to 0)
-	private int[] customQuestions; //certain images unlocks questions that vet can ask to others.
-    private int bodyID;
-    public Sprite ledgerImageSprite { get; private set; }
-   
+	public string imageDescription  {get;set;} = ""; 
+	public int[] customQuestions {get;set;} //certain images unlocks questions that vet can ask to others.
+    public int bodyID {get; set;}
 
-    public LedgerImage(string imageDescription, (int, int) characterAndQuestionId, int[] customQuestions, int bodyID, Sprite ledgerImageSprite)
+    public int[] memoryId;
+    public Sprite ledgerImageSprite { get; private set; }
+    
+
+    public LedgerImage(string imageDescription, int[] customQuestions, int bodyID, Sprite ledgerImageSprite, int[] memoryID)
     {
         this.imageDescription = imageDescription;
-        this.characterAndQuestionId = characterAndQuestionId;
         this.customQuestions = customQuestions;
         this.bodyID = bodyID;
         this.ledgerImageSprite = ledgerImageSprite;
+        this.memoryId = memoryID;
     }
 }
 

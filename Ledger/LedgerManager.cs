@@ -5,7 +5,6 @@ using Data;
 using System.Collections.Generic;
 using UI;
 using System.Threading.Tasks;
-using Unity.VisualScripting.YamlDotNet.Serialization;
 
 public class LedgerManager : StaticInstance<LedgerManager>
 {
@@ -28,7 +27,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
 
     public override void OnEnable()
     {
-
+        Debug.LogError("OI bruv its time you lock tf in and get pages rights for ledger manager.");
         MManager.onStartManagersAction?.AddAction((MManager m) => { m.ledgerManager = this; });
 
         base.OnEnable();
@@ -134,9 +133,9 @@ public class LedgerManager : StaticInstance<LedgerManager>
     }
     
 
-    public void AddRayInfoToLedgerImage(int bodyId, string dialogueDescription, (int, int) characterIdQuestionId, int[] customQuestions, Sprite ledgerImageSprite) //converts ray information to ledger image object
+    public void AddRayInfoToLedgerImage(int bodyId, string dialogueDescription, int[] customQuestions, Sprite ledgerImageSprite, int[] memoryID) //converts ray information to ledger image object
     {
-        LedgerImage ledgerImage = new(dialogueDescription, characterIdQuestionId, customQuestions, bodyId, ledgerImageSprite);
+        LedgerImage ledgerImage = new(dialogueDescription, customQuestions, bodyId, ledgerImageSprite, memoryID);
         if (LedgerData.INSTANCE.ledgerImages.Count > ledgerLength)
         {
             //todo apply restart animation.
@@ -165,6 +164,10 @@ public class LedgerManager : StaticInstance<LedgerManager>
         */
         GameEventManager.INSTANCE.OnEvent(typeof(ActiveLedgerState));
 
+    }
+    public int[] GetQuestionsIDFromPage()
+    {
+       return ledgerImages[index].customQuestions;
     }
 
 

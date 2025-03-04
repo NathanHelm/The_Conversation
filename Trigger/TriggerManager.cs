@@ -89,14 +89,17 @@ public class TriggerManager : StaticInstance<TriggerManager>
     {
 
         string playerTagName = other.gameObject.tag;
-        BodyMono bodyMono = other.GetComponent<BodyMono>();
+        BodyMono[] bodyMono = other.GetComponents<BodyMono>();
 
         triggerData.triggerOnTrigger = trigger;
        
-
-        if (bodyMono != null) //adds collider which is in trigger to a list
+        for(int i = 0; i < bodyMono.Length; i++)
         {
-            trigger.bodiesOnTrigger.Add(bodyMono);
+        if (bodyMono[i] is not CharacterMono) //adds collider which is in trigger to a list
+        {
+            trigger.bodiesOnTrigger.Add(bodyMono[i]);
+            break;
+        }
         }
         if (other.GetComponent<CharacterMono>() != null) 
         {

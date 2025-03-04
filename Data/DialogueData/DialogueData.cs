@@ -46,6 +46,7 @@ namespace Data
 		private void SetTriggerManager()
 		{
 			TriggerManager.onStartTriggerManagerAction.AddAction((TriggerManager t) => { t.dialogueData = this; });
+			
 		}
 		
 

@@ -36,15 +36,12 @@ public class PlayerRaycast : MonoBehaviour
             {
                 //if hit, set dialogueData
                 ClueMono clueMonoInRay = hitClues[0];
-                DialogueData.INSTANCE.currentCharacterID = clueMonoInRay.bodyID;
-                DialogueData.INSTANCE.currentQuestionID = 0; //clue mono has default 0 as vet is not asking a question.
-
                 //I argue we should add question id and character id instead.
 
                 //todo CREATE A DrawImageManager to create the image drawn in game.
                 Sprite IMAGECREATORSPRITE = null;
 
-                LedgerManager.INSTANCE.AddRayInfoToLedgerImage(clueMonoInRay.bodyID, clueMonoInRay.imgDescription, (clueMonoInRay.bodyID, 0), clueMonoInRay.clueQuestions, IMAGECREATORSPRITE); //adding 'hit data information to ledger manager'
+                LedgerManager.INSTANCE.AddRayInfoToLedgerImage(clueMonoInRay.bodyID, clueMonoInRay.imgDescription, clueMonoInRay.clueQuestions, IMAGECREATORSPRITE, clueMonoInRay.memories); //adding 'hit data information to ledger manager'
 
             }
             

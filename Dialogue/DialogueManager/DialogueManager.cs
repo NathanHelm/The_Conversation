@@ -32,6 +32,7 @@ public class DialogueManager : StaticInstance<DialogueManager>
         //runs on dialogue state (on enter)
         if(actionOnStartConversation != null)
         {
+            Debug.Log("conversation state");
             actionOnStartConversation.RunAction(this);  // sets your code for you! (sort of)
         }
         //If the trigger state is switched and the character ID doesn't have a custom trigger action, it will set currentQuestionID to persistentconversationID. 
@@ -49,6 +50,12 @@ public class DialogueManager : StaticInstance<DialogueManager>
         }
 
     }
+    public void RunDialogueNoInput()
+    {
+        GameEventManager.INSTANCE.OnEvent(typeof(PlayerIdleState)); //player is idle
+        UIManager.INSTANCE.EnableDialogUI();
+        ShowDialogUIAndDialogScroll();
+    }
 
     public void ShowDialogUIAndDialogScroll()
     {
@@ -56,6 +63,7 @@ public class DialogueManager : StaticInstance<DialogueManager>
         {
             UIManager.INSTANCE.EnableDialogUI();
         }
+        
         if (dialogueIndex > dialogueObjects.Length - 1)
         {
 

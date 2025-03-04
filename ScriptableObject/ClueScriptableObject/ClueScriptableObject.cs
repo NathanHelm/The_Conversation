@@ -6,7 +6,9 @@ using UnityEngine;
 public class ClueScriptableObject : ScriptableObject
 {
     //conversation already included
-    public int[] clueQuestions; //questions 'unlocked' after clicking on image.
+    public int[] clueQuestions; //questions 'unlocked' after clicking on image. 
+
+    public int[] memories; //clue memories that are evoked
     public string imgDescription;
     public int bodyId;
     public DialogueConversation[] dialogueConversations;

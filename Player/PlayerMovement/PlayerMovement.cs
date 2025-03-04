@@ -79,8 +79,6 @@ public class PlayerMovement : MonoBehaviour
             if(movement != Vector2.zero)
             {
             direction = movement;  //here, we are getting the movement direction, if we the CURRENT direction is zero we revert to the previous direction. 
-            
-             Debug.Log("direction ==> " + direction);
             }
          //  Debug.Log("direction ==> " + direction);
 
@@ -116,6 +114,14 @@ public class PlayerMovement : MonoBehaviour
     }
     public void stopMovement()
     {
+        if(playerRigidBody2d != null)
+        {
+            Debug.Log("stop movement is going!");
+        playerRigidBody2d.velocity = Vector2.zero;
+        playerMovementAnim.SetFloat("Speed", 0);
+        playerMovementAnim.SetFloat("Last Horizontal", direction.x);
+        playerMovementAnim.SetFloat("Last Vertical", direction.y);
+        }
         StopAllCoroutines();
         coroutine = null;
     }

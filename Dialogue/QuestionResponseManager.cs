@@ -28,8 +28,8 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 
         SetUpQuestionResponseManager();
 		//injecting 'set question' via quesetion and characterID
-		DialogueManager.actionOnStartConversation.AddAction((DialogueManager d) => { d.dialogueObjects = getDialogueConversation(DialogueData.INSTANCE.currentCharacterID, DialogueData.INSTANCE.currentQuestionID); });
-        Debug.Log(typeof(DialogueData).ToString().ToLower());
+		DialogueManager.actionOnStartConversation.AddAction((DialogueManager d) => { Debug.Log("uhhhhhhhh"); d.dialogueObjects = getDialogueConversation(DialogueData.INSTANCE.currentCharacterID, DialogueData.INSTANCE.currentQuestionID); });
+        Debug.Log("LOG: Adding character id: " + DialogueData.INSTANCE.currentCharacterID + " and question ID to: " + DialogueData.INSTANCE.currentCharacterID);
 		
     }
 
@@ -43,25 +43,39 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 
 		//key pair value code goes here.
 		//question id							
-			new (new int[] { 2, 3, 4}, CharacterManager.INSTANCE.GetConversationOnCharacterID(1,2)), //based on character & conversation id, return conversation
+			new (new int[] { 2, 3, 4}, CharacterManager.INSTANCE.GetConversationOnCharacterID(2,2)), //based on character & conversation id, return conversation
 			
 			/*
 			 here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
 			 */
 		});
-
 		npcToQuestionDialogueNpc.Add(2, new Dictionary<int, DialogueConversation>());
 
 		npcToQuestionDialogueNpc[2] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[] {
 
 		//key pair value code goes here.
 		//question id							
-			new (new int[] { 4, 5}, CharacterManager.INSTANCE.GetConversationOnCharacterID(1,2)), //based on character & conversation id, return conversation
+			new (new int[] { 2, 4, 5}, CharacterManager.INSTANCE.GetConversationOnCharacterID(2,2)), //based on character & conversation id, return conversation
 			
 			/*
 			 here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
 			 */
 		});
+
+		npcToQuestionDialogueNpc.Add(210, new Dictionary<int, DialogueConversation>());
+
+		npcToQuestionDialogueNpc[210] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[] {
+
+		//key pair value code goes here.
+		//question id							
+			new (new int[] { 2, 4, 5}, CharacterManager.INSTANCE.GetConversationOnCharacterID(210,2)), //based on character & conversation id, return conversation
+			
+			/*
+			 here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
+			 */
+		});
+
+		
 
 
 		/*
@@ -112,18 +126,18 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 		if (!npcToQuestionDialogueNpc[characterID].ContainsKey(playerQuestionID))
 		{
 			Debug.Log("playerQuestion ID " + playerQuestionID + " does not match player question value for character " + characterID);
-
+			/*
 			if (!npcToQuestionDialogueNpc[characterID].ContainsKey(dialogueData.currentPersistentConversationID))
 			{
 				throw new KeyNotFoundException("cannot link the persistentconversationID to character" + characterID);
-			}
+			}*/
 
 			return npcToQuestionDialogueNpc[characterID][dialogueData.currentPersistentConversationID].dialogueObjects;
 			//default key if no question is provided.
 			//can act like a normal conversation.
 
 		}
-		Debug.Log("LOG: obtained conversation dialogue objects from character " + characterID + "based on question: " + playerQuestionID);
+		Debug.Log("LOG: obtained conversation dialogue objects from character " + characterID + " based on question: " + playerQuestionID);
 		return npcToQuestionDialogueNpc[characterID][playerQuestionID].dialogueObjects;
 		
 	}

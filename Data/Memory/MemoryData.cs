@@ -5,11 +5,12 @@ using UnityEngine;
 
 public class MemoryData : StaticInstance<MemoryData>
 {
-    public List<MemoryStage> memoryStages {get; set;} = new List<MemoryStage>();
+    public MemoryStage[] memoryStages {get; set;}  //all memories in the dream scene.
+
 
     public override void OnEnable()
     {
-       
+     //todo memoryStages = PersistentFile.getCurrentStages
     }
 
 

@@ -6,5 +6,6 @@ public class CharacterScriptableObject : ScriptableObject
 {
 	[SerializeField]
 	public Character character;
+
 }
 

@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using UI;
+using System.Buffers;
 
 public class MManager : StaticInstance<MManager>
 {
@@ -15,10 +16,13 @@ public class MManager : StaticInstance<MManager>
     public DialogueActionManager dialogueActionManager { get; set; }
     public QuestionResponseManager questionResponseManager { get; set; }
     public UIManager uIManager { get; set; }
+
+    public ButtonDialogueManager buttonDialogueManager {get; set;}
     public MovementManager movementManager { get; set; }
     public LedgerManager ledgerManager { get; set; }
     public LedgerUIManager ledgerUIManager { get; set; }
     public CutsceneManager cutsceneManager { get; set; }
+    public MemoryManager memoryManager {get; set;}
 
 
 
@@ -45,6 +49,8 @@ public class MManager : StaticInstance<MManager>
 
         uIManager?.m_Start();
 
+        buttonDialogueManager?.m_Start();
+
         movementManager?.m_Start();
 
         ledgerManager?.m_Start();
@@ -55,8 +61,12 @@ public class MManager : StaticInstance<MManager>
 
         transitionManager?.m_Start();
 
-        stateManager?.m_Start();
+         memoryManager?.m_Start();
 
+        stateManager?.m_Start(); //state manager ALWAYS comes last. 
+
+       
+        Debug.Log("LOG: managers ran their m_Start!");
 
 
         //runs all other that are not defined.

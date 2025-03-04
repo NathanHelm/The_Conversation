@@ -8,8 +8,9 @@ public class ClueMono : BodyMono
     private ClueScriptableObject clueScriptableObject;
 
     public string imgDescription { get; set; }
-    public readonly int questionId = 0;
     public int[] clueQuestions { get; set; } 
+    public int[] memories {get; set;}
+
 	public DialogueConversation[] vetClueConversation { get; set; }
 
     public override void OnEnable()
@@ -20,6 +21,11 @@ public class ClueMono : BodyMono
             vetClueConversation = clueScriptableObject.dialogueConversations;
             imgDescription = clueScriptableObject.imgDescription;
             clueQuestions = clueScriptableObject.clueQuestions;
+            if(memories == null)
+            {
+               Debug.LogError("there are no memories attached to clue " + bodyID);
+            }
+            memories = clueScriptableObject.memories;
 
             gameObject.layer = LayerMask.NameToLayer("cluecollider");
             base.OnEnable();

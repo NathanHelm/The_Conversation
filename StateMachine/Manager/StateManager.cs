@@ -3,6 +3,7 @@ using System.Collections;
 using Data;
 using System;
 using System.Collections.Generic;
+using Codice.CM.SEIDInfo;
 
 public class  StateManager: StaticInstance<StateManager>
 {
@@ -29,6 +30,9 @@ public class  StateManager: StaticInstance<StateManager>
     public ConversationState conversationState = new ConversationState();
     public EndConversationState endConversationState = new EndConversationState();
     public NoConversationState noConversationState = new NoConversationState();
+    public ImmediateConversationState immediateConversationState = new();
+
+    public ButtonOptionDialogState buttonOptionDialogState = new();
 
     public PlayCutsceneState playCutsceneState = new();
     public StopCutsceneState stopCutsceneState = new();
@@ -88,6 +92,8 @@ public class  StateManager: StaticInstance<StateManager>
             GameEventManager.INSTANCE.AddEvent(typeof(ConversationState), () => { dialogueState.SwitchState(conversationState); });
             GameEventManager.INSTANCE.AddEvent(typeof(NoConversationState), () => { dialogueState.SwitchState(noConversationState); });
             GameEventManager.INSTANCE.AddEvent(typeof(EndConversationState), () => { dialogueState.SwitchState(endConversationState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(ImmediateConversationState), ()=>{dialogueState.SwitchState(immediateConversationState);});
+            GameEventManager.INSTANCE.AddEvent(typeof(ButtonOptionDialogState), ()=>{dialogueState.SwitchState(buttonOptionDialogState);});
             dialogueState.SwitchState(endConversationState);
         }
         if (TriggerData.INSTANCE != null)
