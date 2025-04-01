@@ -4,6 +4,7 @@ using System.Collections;
 //using UnityEngine.InputSystem.UI;
 using Data;
 using System;
+using Codice.Client.Common.GameUI;
 
 public class PlayerLook : MonoBehaviour
 {
@@ -44,13 +45,19 @@ public class PlayerLook : MonoBehaviour
        //playerData.trans3d.localEulerAngles = openingRot;
     
     }
-
-    public void LookContorl()
+    public void Look()
     {
-         
+        if(rot == null || playerData == null)
+        {
+            //Debug.LogError("rot is null");
+            return;
+        }
+        if(playerData.trans3d == null)
+        {
+            return;
+        }
         rot.x += Input.GetAxis("Mouse X") * mouseSensitivity;
         rot.y += Input.GetAxis("Mouse Y") * mouseSensitivity;
-
 
         rot.y = Mathf.Clamp(rot.y, -cameraVerticalRot, cameraVerticalRot);
        
@@ -60,7 +67,11 @@ public class PlayerLook : MonoBehaviour
         var yQuat = Quaternion.AngleAxis(rot.y, Vector3.left);
 
         playerData.trans3d.localRotation = xQuat * yQuat;
+    }
 
+    public void LookContorl()
+    {
+        Look();
 
         if (Input.GetKey("mouse 0"))
         {
@@ -88,6 +99,7 @@ public class PlayerLook : MonoBehaviour
      }
     private void Switch()
     {
+        Debug.Log("switching to 2d");
         GameEventManager.INSTANCE.OnEvent(typeof(TransitionTo2d));
         GameEventManager.INSTANCE.OnEvent(typeof(PlayerMove2dState));
         

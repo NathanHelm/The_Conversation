@@ -89,12 +89,24 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
 
                             int currentCharacter = DialogueData.INSTANCE.currentCharacterID;
 
-                            GameEventManager.INSTANCE.OnEvent(typeof(ActiveLedgerState));
+                            Debug.Log("you said YES!");
+
+                           // GameEventManager.INSTANCE.OnEvent(typeof(NoConversationState));
+                            GameEventManager.INSTANCE.OnEvent(typeof(TransitionTo2d));
+                            GameEventManager.INSTANCE.OnEvent(typeof(PlayerLook3dState));
+                            GameEventManager.INSTANCE.OnEvent(typeof(EndConversationState));
+
 
                         }, ()=>{
                             //play dialogue? 
-                            GameEventManager.INSTANCE.OnEvent(typeof(ImmediateConversationState));
+                            Debug.Log("you said No!");
+                           // GameEventManager.INSTANCE.OnEvent(typeof(ImmediateConversationState));
+                           //GameEventManager.INSTANCE.OnEvent()
+                            GameEventManager.INSTANCE.OnEvent(typeof(TransitionTo2d));
+                            GameEventManager.INSTANCE.OnEvent(typeof(PlayerLook3dState));
+                            GameEventManager.INSTANCE.OnEvent(typeof(EndConversationState));
                         });
+
                         GameEventManager.INSTANCE.OnEvent(typeof(ButtonOptionDialogState));
                     
                      }

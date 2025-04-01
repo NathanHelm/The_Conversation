@@ -9,6 +9,10 @@ namespace UI
     public class LedgerUIManager : StaticInstance<LedgerUIManager>
     {
         public static SystemActionCall<LedgerUIManager> onStartLedgerData = new SystemActionCall<LedgerUIManager>();
+        public static SystemActionCall<LedgerUIManager> onFlipPage = new SystemActionCall<LedgerUIManager>();
+     
+        [SerializeField]
+        [Header("the object that will contain the ledger.")]
         private GameObject ledgerObject;
         [SerializeField]
         private LedgerScriptableObject ledgerScriptableObject;
@@ -17,15 +21,21 @@ namespace UI
         private Material firstPageMat, lastPageMat, defaultMat;
         private GameObject pagePrefab, doubleSidedPagePrefab;
 
-        private List<GameObject> pageObjects = new List<GameObject>();
-
+        private List<GameObject> pageObjects = new List<GameObject>(); //besides front and back page, page are double the size
+        private List<GameObject> rotatePageObjects = new List<GameObject>();
         public bool isPageMoving = false;
+
+        public float flipPageSpeed = 1f; //in seconds
 
         /*
 
          ledger based functionality.
 
          */
+        public int GetPageLength()
+        {
+            return pageObjects.Count;
+        }
         public override void OnEnable()
         {
 
@@ -66,23 +76,46 @@ namespace UI
         {
             Debug.Log("adding page");
             GameObject page = null;
-            page = CreatePage();
+
+            GameObject frontPage = null;
+            GameObject backPage = null;
+            
             Material mat = null;
             if(index == 0)
             {
                 Debug.Log("index ==>" + index);
+                page = CreatePage();
                 mat = firstPageMat;
+                rotatePageObjects.Add(page);
+                page.GetComponentInChildren<Renderer>().material = mat; //setting material.
+                return;
             }
-            else if(index == max)
+             if(index == max)
             {
+                page = CreatePage();
                 mat = lastPageMat;
+                rotatePageObjects.Add(page);
+                page.GetComponentInChildren<Renderer>().material = mat; //setting material.
+                return;
             }
-            else{
-                mat = defaultMat;
-            }
-            page.GetComponentInChildren<Renderer>().material = mat; //setting material.
+       
+                page = CreateDoubleSidedPage();
+                frontPage = page.transform.GetChild(0).gameObject;
+                backPage = page.transform.GetChild(1).gameObject;
+
+                pageObjects.Add(frontPage);
+                pageObjects.Add(backPage);
+                rotatePageObjects.Add(page);
+        }
+        public void MakePageColor(int index, Color c){
+            pageObjects[index].GetComponentInChildren<Renderer>().material.SetColor("_Color", c);
+        }
+
+        public void DestroyLedger()
+        {
+            GameObject pages = GetLedger().transform.GetComponentInChildren<Transform>().gameObject;
             
-            pageObjects.Add(page);
+            
         }
 
         private GameObject CreatePage()
@@ -133,48 +166,51 @@ namespace UI
             StartCoroutine(FlipPageAnimation(index, 0, 180));
         }
 
-        private void ChangeLayerLeft(int index, int max)
+        public void ChangeLayerLeft(int index)
         {
-            if(index == 0)
-            {
-                pageObjects[index].GetComponentInChildren<Renderer>().sortingOrder = 1;
-               return;
-            }
-            pageObjects[index].GetComponentInChildren<Renderer>().sortingOrder = 0;
-            pageObjects[index - 1].GetComponentInChildren<Renderer>().sortingOrder = 1;
+           pageObjects[index].GetComponent<Renderer>().sortingOrder = 1;
+
         }
-        private void ChangeLayerRight(int index, int max)
+        public void ChangeLayerDown(int i)
         {
-            if(index == max)
-            {
-                Debug.Log("prev layer -->" + pageObjects[index - 1].GetComponentInChildren<Renderer>().sortingOrder+ "this layer -->" +pageObjects[index].GetComponentInChildren<Renderer>().sortingOrder );
-                // pageObjects[index - 1].GetComponentInChildren<Renderer>().sortingOrder = 0;
-                pageObjects[index].GetComponentInChildren<Renderer>().sortingOrder = 1;
-                return;
-            }
-            pageObjects[index].GetComponentInChildren<Renderer>().sortingOrder = 0;
-            pageObjects[index + 1].GetComponentInChildren<Renderer>().sortingOrder = 1;
+            pageObjects[i].GetComponent<Renderer>().sortingOrder = 0;
         }
-        private void RenderPage()
+       
+        public void ChangeBorderLeft()
         {
-            
+            rotatePageObjects[0].GetComponentInChildren<Renderer>().sortingOrder = 1;
+            rotatePageObjects[0].GetComponentInChildren<Renderer>().material.SetColor("_Color", new Color(1, 0, 0 , 1));
+        
+        }
+        public void NoBorder()
+        {
+            rotatePageObjects[0].GetComponentInChildren<Renderer>().sortingOrder = -1;
+            rotatePageObjects[0].GetComponentInChildren<Renderer>().material.SetColor("_Color", new Color(1, 1, 1 , 1));
+            rotatePageObjects[rotatePageObjects.Count - 1].GetComponentInChildren<Renderer>().sortingOrder = -1;
+            rotatePageObjects[rotatePageObjects.Count - 1].GetComponentInChildren<Renderer>().material.SetColor("_Color", new Color(1, 1, 1 , 1));
+      
+        }
+        public void ChangeBorderRight()
+        {
+            rotatePageObjects[rotatePageObjects.Count - 1].GetComponentInChildren<Renderer>().sortingOrder = 1;
+            rotatePageObjects[rotatePageObjects.Count - 1].GetComponentInChildren<Renderer>().material.SetColor("_Color", new Color(1, 0, 0 , 1));
         }
 
         private IEnumerator FlipPageAnimation(int index, float startAngle, float endAngle)
         {
+            onFlipPage.RunAction(this);
             isPageMoving = true;
-            float seconds = 1.0f;
             float time = 0.0f;
             Debug.Log("FLIPPING ANIMATION IS GOING");
             while(time < 1.0f)
             {
                 Debug.Log("going!");
-                time += Time.deltaTime / seconds;
+                time += Time.deltaTime / flipPageSpeed;
                 float theta = Mathf.Lerp(startAngle, endAngle, time);
-                pageObjects[index].transform.localEulerAngles = new Vector3(0 ,theta, 0);
+                rotatePageObjects[index].transform.localEulerAngles = new Vector3(0 ,theta, 0);
                 yield return new WaitForFixedUpdate();
             }
-            pageObjects[index].transform.localEulerAngles = new Vector3(0, endAngle, 0);
+            rotatePageObjects[index].transform.localEulerAngles = new Vector3(0, endAngle, 0);
             isPageMoving = false;
             yield return null;
             

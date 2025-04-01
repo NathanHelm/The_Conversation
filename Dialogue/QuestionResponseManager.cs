@@ -28,7 +28,7 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 
         SetUpQuestionResponseManager();
 		//injecting 'set question' via quesetion and characterID
-		DialogueManager.actionOnStartConversation.AddAction((DialogueManager d) => { Debug.Log("uhhhhhhhh"); d.dialogueObjects = getDialogueConversation(DialogueData.INSTANCE.currentCharacterID, DialogueData.INSTANCE.currentQuestionID); });
+		DialogueManager.actionOnStartConversation.AddAction((DialogueManager d) => {d.dialogueObjects = getDialogueConversation(DialogueData.INSTANCE.currentCharacterID, DialogueData.INSTANCE.currentQuestionID); });
         Debug.Log("LOG: Adding character id: " + DialogueData.INSTANCE.currentCharacterID + " and question ID to: " + DialogueData.INSTANCE.currentCharacterID);
 		
     }

@@ -132,13 +132,13 @@ public class DialogueManager : StaticInstance<DialogueManager>
     public void NoDialogue()
     {
         StopAllCoroutines();
-        //player moves to 2d state
+    
         UIManager.INSTANCE.DisableDialogUI();
         dialogueIndex = 0;
     }
     public void PlayerMove()
     {
-        GameEventManager.INSTANCE.OnEvent(typeof(PlayerMove2dState));
+        GameEventManager.INSTANCE.OnEvent(typeof(PlayerLook3dState));
     }
 
 

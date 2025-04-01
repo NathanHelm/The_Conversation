@@ -7,6 +7,7 @@ public class PlayerLook3dState : PlayerState
     {
         data.playerLook.mouseSensitivity = data.currentPlayerSO.cameraSensitivity;
         data?.playerLook.SetOpeningPlayerRotation();
+        data?.playerLook.Look();
         Debug.Log("player look 3d state");
     }
     public override void OnUpdate(PlayerData data)

@@ -42,7 +42,7 @@ public class PlayerRaycast : MonoBehaviour
                 Sprite IMAGECREATORSPRITE = null;
 
                 LedgerManager.INSTANCE.AddRayInfoToLedgerImage(clueMonoInRay.bodyID, clueMonoInRay.imgDescription, clueMonoInRay.clueQuestions, IMAGECREATORSPRITE, clueMonoInRay.memories); //adding 'hit data information to ledger manager'
-
+                GameEventManager.INSTANCE.OnEvent(typeof(WriteToPageLedgerState));
             }
             
             Debug.Log("hit!!!!");

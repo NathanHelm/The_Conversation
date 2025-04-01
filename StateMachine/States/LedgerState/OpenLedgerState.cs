@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Data;
-public class ActiveLedgerState : LedgerState
+public class OpenLedgerState : LedgerState
 {
     public override void OnEnter(LedgerData data)
     {
+        Debug.Log("Active ledger state");
         LedgerManager.INSTANCE.EnableLedger();
         base.OnEnter(data);
 

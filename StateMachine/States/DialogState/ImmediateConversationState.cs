@@ -8,6 +8,7 @@ public class ImmediateConversationState : DialogueState
     /*conversation is triggered right away!*/
     public override void OnEnter(DialogueData data)
     {
+        GameEventManager.INSTANCE.OnEvent(typeof(TransitionTo3d));
         if (DialogueManager.INSTANCE != null)
         {
            DialogueManager.INSTANCE.StartConversation(DialogueData.INSTANCE);

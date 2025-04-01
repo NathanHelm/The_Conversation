@@ -42,7 +42,7 @@ public class  StateManager: StaticInstance<StateManager>
     public DefaultTriggerState defaultTriggerState = new DefaultTriggerState();
     public NoTriggerState noTriggerState = new NoTriggerState();
 
-    public ActiveLedgerState activeLedgerState = new ActiveLedgerState();
+    public OpenLedgerState openLedgerState = new OpenLedgerState();
     public IdleLedgerState idleLedgerState = new IdleLedgerState();
     public DisableLedgerState disableLedgerState = new DisableLedgerState();
 
@@ -113,14 +113,14 @@ public class  StateManager: StaticInstance<StateManager>
         }
         if(LedgerData.INSTANCE != null)
         {
-            GameEventManager.INSTANCE.AddEvent(typeof(ActiveLedgerState), () => { ledgerState.SwitchState(activeLedgerState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(OpenLedgerState), () => { ledgerState.SwitchState(openLedgerState); });
             GameEventManager.INSTANCE.AddEvent(typeof(IdleLedgerState), () => { ledgerState.SwitchState(idleLedgerState); });
             GameEventManager.INSTANCE.AddEvent(typeof(DisableLedgerState), () => { ledgerState.SwitchState(disableLedgerState); });
             ledgerState.SwitchState(disableLedgerState);
         }
       
     }
-
+    /*TODO explain this function below*/
     public Dictionary<string, Type> GetStateHashmap(object[] newStates) //key = root name, val = state that it has
     {
         Dictionary<string, Type> keyValuePairs = new Dictionary<string, Type>();

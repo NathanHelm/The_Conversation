@@ -10,7 +10,7 @@ public class DisableLedgerState : LedgerState
     }
     public override void OnUpdate(Data.LedgerData data)
     {
-        LedgerManager.INSTANCE.UseLedger();
+      //  LedgerManager.INSTANCE.des
     }
 }
 
