@@ -8,11 +8,13 @@ public class WriteToPageLedgerState : LedgerState
     public override void OnEnter(LedgerData data)
     {
         Debug.Log("write to ledger");
+        LedgerManager.INSTANCE.WriteToPageInLedger();
     }
     public override void OnUpdate(LedgerData data)
     {
         //0) start cutscene. --done already
         //1) if images index > page index (10) move to replace state.
+        LedgerManager.INSTANCE.MovePages();
        //2) go to images index 
        //3) if press d : replace state 
        //4) flip to page image index

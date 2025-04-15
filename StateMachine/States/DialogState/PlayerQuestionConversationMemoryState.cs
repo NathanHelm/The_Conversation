@@ -19,7 +19,7 @@ public class PlayerQuestionConversationMemoryState: ConversationState{
         if(Input.GetKeyDown(KeyCode.Return))
         {
           
-           PlayerData.INSTANCE.currentQuestionID = LedgerManager.INSTANCE.GetQuestionsIDFromPage()[0];
+          // PlayerData.INSTANCE.currentQuestionID = LedgerManager.INSTANCE.GetQuestionsIDFromPage()[0];
            Debug.Log("Got question from page image");
 
           // GameEventManager.INSTANCE.OnEvent();

@@ -7,6 +7,7 @@ using UI;
 using System.Threading.Tasks;
 using UnityEngine.UIElements;
 using Codice.Client.BaseCommands.TubeClient;
+using Codice.Client.BaseCommands;
 
 public class LedgerManager : StaticInstance<LedgerManager>
 {
@@ -22,15 +23,10 @@ public class LedgerManager : StaticInstance<LedgerManager>
     
     int pageL; 
 
-    [SerializeField]
-    private int imageCount = 5; 
-
     bool edgechecker = true;
 
-    public List<LedgerImage> ledgerImages;
-
     [SerializeField]
-    float speed = 1.5f; 
+    float speed = 2.7f; 
     float animationSpeed;
 
 
@@ -49,6 +45,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
         
         base.m_Start();
         onStartLedgerData.RunAction(this);
+        
        
        
     }
@@ -69,7 +66,11 @@ public class LedgerManager : StaticInstance<LedgerManager>
             CreateLedger(); //make a ten page ledger
             isLedgerCreated = false;
         }
+
         pageL = UI.LedgerUIManager.INSTANCE.GetPageLength();
+        LedgerImageManager.INSTANCE.MaxLedgerImageLength = pageL;
+
+        animationSpeed = speed / pageL;
         UI.LedgerUIManager.INSTANCE.FlipPageRight(0);
         ChangeColorAndLayering(index);
  
@@ -77,15 +78,23 @@ public class LedgerManager : StaticInstance<LedgerManager>
     //==run on state start ==================================================================================================================
     public void WriteToPageInLedger()
     {
-        //when player clicks perform drawing here
-        RunLedger();
-        if(pageL < imageCount)
-        {
-              //GameEventManager.INSTANCE.OnEvent(typeof(ReplaceLedgerState));
-        }
-        animationSpeed = speed / (pageL * 2 - 2);
-        StartCoroutine(MoveRightUntilIndex(0, 15, animationSpeed));
         
+        RunLedger();
+        if(LedgerImageManager.INSTANCE.IsLedgerNull())
+        {
+              GameEventManager.INSTANCE.OnEvent(typeof(ReplaceLedgerState));
+              return;
+        }
+        //TODO make 15 a desired variable... 
+        
+        MovePagesFurthestRight();
+        //TODO
+        DrawImageManager.INSTANCE.Drawing();
+        
+    }
+    public void MovePagesFurthestRight()
+    {
+         StartCoroutine(MoveRightUntilIndex(0, 15, animationSpeed));
     }
     public void OpenLedger()
     {
@@ -127,8 +136,6 @@ public class LedgerManager : StaticInstance<LedgerManager>
         }   
         
     }
-
-   
 
     public void MovePages()
     {
@@ -198,10 +205,17 @@ public class LedgerManager : StaticInstance<LedgerManager>
 
    
    
-    public void ReplacePage()
+    public void ReplacePageToLedger()
     {
-        
+        MovePagesFurthestRight();
+       if(Input.GetKeyDown(KeyCode.Return))
+       {
+         LedgerImage temporaryImage = LedgerImageManager.INSTANCE.temporaryImage;
+         LedgerImageManager.INSTANCE.ReplaceImage(index, temporaryImage);
+       } 
     }
+
+ 
 
     public IEnumerator MoveRightUntilIndex(int startIndex,int toIndex, float speed)
     {
@@ -233,7 +247,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
     {
        
 
-        if (ledgerImages == null)
+        if (LedgerImageManager.INSTANCE.IsLedgerNull())
         {
            Debug.LogError("ledger images are null");
            //return;
@@ -255,24 +269,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
     }
     
 
-    public void AddRayInfoToLedgerImage(int bodyId, string dialogueDescription, int[] customQuestions, Sprite ledgerImageSprite, int[] memoryID) //converts ray information to ledger image object
-    {
-        LedgerImage ledgerImage = new(dialogueDescription, customQuestions, bodyId, ledgerImageSprite, memoryID);
-        if (LedgerData.INSTANCE.ledgerImages.Count > ledgerLength)
-        {
-            //todo apply restart animation.
-            throw new Exception("ledger image count greater the ledger page cap.\n give last page a time limit ");
-            //todo destroy ledgerimages in persistent data
-        }
-        LedgerData.INSTANCE.ledgerImages.Add(ledgerImage);
-
-        //TODO --> interesting.... I want to change the page's material BASED on the image drawn. (some function called image drawn sprite)
-        //an idea: make drawing sprite THEN overlay it.
-        //another idea = set drawing sprite as a texture and use some lerping function with the page. 
-
-       // UI.LedgerUIManager.INSTANCE.ReplacePageSprite(LedgerData.INSTANCE.ledgerImages.Count - 1, ledgerImageSprite);
-        
-    }
+   
 
 
     private void OpenLedgerState()
@@ -286,11 +283,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
        // GameEventManager.INSTANCE.OnEvent(typeof(OpenLedgerState));
 
     }
-    public int[] GetQuestionsIDFromPage()
-    {
-       return ledgerImages[index].customQuestions;
-    }
-
+ 
 
 }
 

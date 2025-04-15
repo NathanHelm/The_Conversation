@@ -15,8 +15,12 @@ public class LedgerData : StaticInstance<LedgerData>
 
     public override void OnEnable()
     {
-        LedgerManager.onStartLedgerData.AddAction((LedgerManager lm) => { lm.ledgerImages = ledgerImages; });
-        LedgerManager.onActiveLedger.AddAction((LedgerManager lm) => { lm.ledgerImages = ledgerImages; });
+        LedgerManager.onStartLedgerData.AddAction((LedgerManager lm) => {  });
+        LedgerManager.onActiveLedger.AddAction((LedgerManager lm) => {  });
+        
+        LedgerImageManager.onStartLedgerData.AddAction((LedgerImageManager lm) =>{ lm.ledgerImages = ledgerImages; });
+        
+        
         LedgerManager.onActiveLedger.AddAction((LedgerManager lm) => { lm.isLedgerCreated = isLedgerCreated;});
         UI.LedgerUIManager.onFlipPage.AddAction((LedgerUIManager luim) => {  luim.flipPageSpeed = this.flipPageSpeed; });
         base.OnEnable();

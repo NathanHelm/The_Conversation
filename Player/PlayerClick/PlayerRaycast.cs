@@ -41,7 +41,8 @@ public class PlayerRaycast : MonoBehaviour
                 //todo CREATE A DrawImageManager to create the image drawn in game.
                 Sprite IMAGECREATORSPRITE = null;
 
-                LedgerManager.INSTANCE.AddRayInfoToLedgerImage(clueMonoInRay.bodyID, clueMonoInRay.imgDescription, clueMonoInRay.clueQuestions, IMAGECREATORSPRITE, clueMonoInRay.memories); //adding 'hit data information to ledger manager'
+                LedgerImageManager.INSTANCE.AddRayInfoToLedgerImage(clueMonoInRay.bodyID, clueMonoInRay.imgDescription, clueMonoInRay.clueQuestions, IMAGECREATORSPRITE, clueMonoInRay.memories); //adding 'hit data information to ledger manager'
+                
                 GameEventManager.INSTANCE.OnEvent(typeof(WriteToPageLedgerState));
             }
             
