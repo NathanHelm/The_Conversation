@@ -91,6 +91,11 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>
 		Debug.Log("action id" + actionId + " found and running!");
 	    characterIDToTriggerAction[actionId]();
 	}
+	/*
+	I fkn hate this code below, 
+	I think I made the mistake on over relying on integer ids which suck if you want multiple paticular events to kick off because of you id... 
+	
+	*/
 	public Action GetTriggerAction(int characterID) //really only used for ontrigger events :/ 
 	{
         onTriggerActionTriggerActionManager?.RunAction(this);

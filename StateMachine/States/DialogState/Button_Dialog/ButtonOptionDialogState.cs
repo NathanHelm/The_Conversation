@@ -1,8 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
 using Data;
 using UnityEngine;
 
-public class ButtonOptionDialogState : ConversationState{
+public class ButtonOptionDialogState : DialogueState{
     public override void OnEnter(DialogueData data)
     {
        Debug.Log("ButtonOptionDialogState");
@@ -19,7 +20,10 @@ public class ButtonOptionDialogState : ConversationState{
     {
        ButtonDialogueManager.INSTANCE.RemoveEventsToButtons();
        ButtonDialogueManager.INSTANCE.HideButtons();
+       ButtonDialogueManager.INSTANCE.R();
+
     }
+    
 
    
 }

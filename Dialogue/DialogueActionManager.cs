@@ -83,7 +83,7 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
                     ()=>{ Debug.Log("210 has been triggered!"); 
                         //setting action to button manager.
 
-                        ButtonDialogueManager.INSTANCE.SetActions(()=> {
+                            ButtonDialogueManager.INSTANCE.SetActions(()=> {
                             //open journal
                             //todo ==> add ledger state based on currentcharacterId. 
 

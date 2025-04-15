@@ -7,6 +7,7 @@ public class DialogueButton : MonoBehaviour,IPointerEnterHandler, IPointerExitHa
     private bool isOnPointer = false;
    public void OnPointerEnter(PointerEventData eventData)
     {
+        /*
         if(ButtonDialogueManager.INSTANCE != null)
         {
             if(ID == 1)
@@ -27,6 +28,7 @@ public class DialogueButton : MonoBehaviour,IPointerEnterHandler, IPointerExitHa
             Debug.Log("ON!");
             
         }
+        */
     }
 
           
@@ -34,6 +36,7 @@ public class DialogueButton : MonoBehaviour,IPointerEnterHandler, IPointerExitHa
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        /*
         if(ButtonDialogueManager.INSTANCE != null)
         {
             ButtonDialogueManager.INSTANCE.ButtonYesColorYellow();
@@ -42,6 +45,7 @@ public class DialogueButton : MonoBehaviour,IPointerEnterHandler, IPointerExitHa
             
         }
        Debug.Log("OFF!");
+       */
     }
 
     public void OnPointerClick(PointerEventData eventData)

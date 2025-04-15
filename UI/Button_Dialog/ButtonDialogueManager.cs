@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -121,6 +122,17 @@ public void BetweenButtons()
     if(Input.GetKeyDown(KeyCode.Return))
     {
       Select();
+      return;
     }
 }
+public void R()
+{
+    StartCoroutine(waitjustalittle());
+}
+
+public IEnumerator waitjustalittle()
+{
+    yield return new WaitForSeconds(0.1f);
+}
+
 }

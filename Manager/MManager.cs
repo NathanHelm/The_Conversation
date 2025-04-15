@@ -9,6 +9,7 @@ public class MManager : StaticInstance<MManager>
     //character
     public static SystemActionCall<MManager> onStartManagersAction { get; set; } = new SystemActionCall<MManager>();
 
+    public SavePersistenceManager savePersistenceManager {get; set;}
     public CharacterManager characterManager { get; set; }
     public TriggerActionManager triggerActionManager { get; set; }
     public TriggerManager triggerManager { get; set; }
@@ -35,6 +36,8 @@ public class MManager : StaticInstance<MManager>
     {
         onStartManagersAction.RunAction(this); //todo subsribe all manager with
 
+        savePersistenceManager?.m_Start();
+        
         characterManager?.m_Start();
 
         triggerActionManager?.m_Start();
@@ -61,7 +64,7 @@ public class MManager : StaticInstance<MManager>
 
         transitionManager?.m_Start();
 
-         memoryManager?.m_Start();
+        memoryManager?.m_Start();
 
         stateManager?.m_Start(); //state manager ALWAYS comes last. 
 

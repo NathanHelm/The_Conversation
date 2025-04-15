@@ -4,7 +4,10 @@ using Data;
 using System.Collections.Generic;
 using System;
 using Codice.Client.BaseCommands.BranchExplorer;
-public class CharacterManager : StaticInstance<CharacterManager>
+using System.IO;
+using System.Linq;
+using Persistence;
+public class CharacterManager : StaticInstance<CharacterManager>, ISaveLoad
 {
     private CharacterMono[] characterMono;
     private ClueMono[] clueMono;
@@ -19,6 +22,8 @@ public class CharacterManager : StaticInstance<CharacterManager>
     }
     public override void m_Start()
     {
+        //FIRST: add dialogue object to start function
+        
         SetUpCharacterIDtoConversationIdToConversation();
     }
 
@@ -54,7 +59,7 @@ public class CharacterManager : StaticInstance<CharacterManager>
         Debug.Log("LOG: obtained all memories from characters in scene. --data can be accessed from memory manager. ");
     }
     /*
-     todo when loading and persistent information -im thinking ledger data- we should use this function
+     TODO when loading and persistent information -im thinking ledger data- we should use this function
      */
     public void AddDialogueObjToDict(DialogueConversation[] dialogueConversation,int bodyId)
     {
@@ -137,5 +142,77 @@ public class CharacterManager : StaticInstance<CharacterManager>
         return characterStageIdToMemory[characterID][memoryID];
     }
 
+    public (FileNames, JsonObject[])[] Save()
+    {
+        FileNames currentFile = FileNames.DialogueConversationFile;
+        List<JsonDialogueConversationObject> jsonObjectsArr = new List<JsonDialogueConversationObject>();
+
+        foreach(int key in characterIDtoConverationIdtoConversation.Keys)
+        {
+            Dictionary<int, DialogueConversation> idToDialogueConversation = characterIDtoConverationIdtoConversation[key];
+            List<DialogueConversation> dialogueConversations = new List<DialogueConversation>();
+            foreach(DialogueConversation dialogueVal in idToDialogueConversation.Values)
+            {
+               dialogueConversations.Add(dialogueVal);
+            }
+            
+            JsonDialogueConversationObject jsonDialogueConversationObject = 
+            new JsonDialogueConversationObject(dialogueConversations, key);
+
+            jsonObjectsArr.Add(jsonDialogueConversationObject);
+            
+        }
+
+
+        return new (FileNames, JsonObject[])[] { 
+            
+            new (currentFile, jsonObjectsArr.ToArray()) //DialogueConversationFile is handling characterid --> dialogueId --> dialogueObj...
+            
+        };
+       /*
+       here I am saving 
+       hopefully in json, I will achieve this:
+
+       {
+
+       "characterID_1":{
+        "dialogueID_1" : [
+        
+       ...DialogueConversation...
+
+        
+        
+        ]
+       
+       }
+       ...
+
+       "characterID_2":{
+       
+       }
+       
+
+       }
+       
+       
+       
+       
+
+       */
+        throw new NotImplementedException();
+    }
+
+    public void Load() //get contents from file handler
+    {
+        //1) we have obtained the json from the desired file
+        List<JsonDialogueConversationObject> jsonDialogueConversationObjects = SavePersistenceManager.INSTANCE.LoadDataFromFile<JsonDialogueConversationObject>(FileNames.DialogueConversationFile);
+        //2) iterate through list and add to hashmap 
+        for(int i = 0; i < jsonDialogueConversationObjects.Count; i++)
+        {
+           AddDialogueObjToDict(jsonDialogueConversationObjects[i].dialogueObjects.ToArray(), jsonDialogueConversationObjects[i].Id);
+        }
+    }
+
+   
 }
 

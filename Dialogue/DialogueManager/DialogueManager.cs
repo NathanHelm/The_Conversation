@@ -122,7 +122,7 @@ public class DialogueManager : StaticInstance<DialogueManager>
     {
       
 
-        if (Input.GetKeyDown(KeyCode.Return)) //plays the dialog again
+        if (Input.GetKeyDown(KeyCode.Return) && dialogueIndex == 0) //plays the dialog again
         {
             ShowDialogUIAndDialogScroll();
             GameEventManager.INSTANCE.OnEvent(typeof(ConversationState));

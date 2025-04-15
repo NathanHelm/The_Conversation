@@ -12,7 +12,10 @@ public class EndConversationState: DialogueState
     }
     public override void OnUpdate(DialogueData data)
     {
-        DialogueManager.INSTANCE.RunDialogAgain();
+        if (Input.GetKeyDown(KeyCode.Return)) //plays the dialog again
+        {
+            DialogueManager.INSTANCE.RunDialogAgain();
+        }
     }
 
 }

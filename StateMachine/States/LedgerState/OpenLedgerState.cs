@@ -8,7 +8,6 @@ public class OpenLedgerState : LedgerState
         Debug.Log("Active ledger state");
         LedgerManager.INSTANCE.EnableLedger();
         base.OnEnter(data);
-
     }
     public override void OnUpdate(LedgerData data)
     {

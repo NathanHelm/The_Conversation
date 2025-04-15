@@ -29,7 +29,9 @@ public class LedgerManager : StaticInstance<LedgerManager>
 
     public List<LedgerImage> ledgerImages;
 
-    float animationSpeed; 
+    [SerializeField]
+    float speed = 1.5f; 
+    float animationSpeed;
 
 
   
@@ -81,7 +83,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
         {
               //GameEventManager.INSTANCE.OnEvent(typeof(ReplaceLedgerState));
         }
-        animationSpeed  = Mathf.Max(0.1f, .03f * (pageL - imageCount));
+        animationSpeed = speed / (pageL * 2 - 2);
         StartCoroutine(MoveRightUntilIndex(0, 15, animationSpeed));
         
     }
