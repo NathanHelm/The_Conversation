@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using Codice.CM.Common;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Rendering;
@@ -202,7 +204,7 @@ namespace UI
                 Debug.LogError("no color found");
             }
         }
-         public void ChangeRenderQueueImage(ref Renderer renderer, int r, Color c)
+        public void ChangeRenderQueueImage(ref Renderer renderer, int r, Color c)
         {
             renderer = renderer.GetComponentsInChildren<Renderer>()[1]; //obtain the image
             if(renderer == null)
@@ -220,11 +222,23 @@ namespace UI
                 Debug.LogError("no color found");
             }
         }
-        
+        public void ChangeTexture(ref Renderer renderer, Texture texture)
+        {
+             if(renderer.material.HasTexture("_MainTex"))
+             {
+                renderer.material.SetTexture("_MainTex", texture);
+             }
+             else
+             {
+                Debug.Log("_MainTex does not exist for this shader");
+             }
+        }
+
+
 
         public void ChangeLayerLeft(int rotateIndex, int index)
         {
-         
+          Color c = Color.white;
          //  onBorderCheck.RunAction(this); //obtain whether is left or right page movement
 
            //new idea ==> 
@@ -241,7 +255,7 @@ namespace UI
              Renderer frontPage = GetChildrenOfRotateIndex(rotateIndex).Item1;
              if(rotateIndex == 1)
              {
-                ChangeRenderQueueImage(ref frontPage, 3100, new Color(1,0,0,1));
+                ChangeRenderQueueImage(ref frontPage, 3100, c);
                 return;
              }
             int max = rotatePageObjects.Count; 
@@ -255,15 +269,15 @@ namespace UI
            previousNeighbourIndex = neighbourIndex;
            neighbourIndex = rotateIndex;
            frontPage = GetChildrenOfRotateIndex(neighbourIndex).Item1;
-           ChangeRenderQueueImage(ref frontPage, 3100, Color.yellow);
-           ChangeRenderQueueImage(ref backPage, 3100,  Color.red);
+           ChangeRenderQueueImage(ref frontPage, 3100, c);
+           ChangeRenderQueueImage(ref backPage, 3100,  c);
            }
            else //is left
            {
              Renderer frontPage = GetChildrenOfRotateIndex(rotateIndex).Item1;
              if(rotateIndex == 1)
              {
-                ChangeRenderQueueImage(ref frontPage, 3100, Color.red);
+                ChangeRenderQueueImage(ref frontPage, 3100, c);
                 return;
              }
              
@@ -271,8 +285,8 @@ namespace UI
             neighbourIndex = rotateIndex - 1;
             Renderer backPage = GetChildrenOfRotateIndex(neighbourIndex).Item2;
 
-           ChangeRenderQueueImage(ref frontPage, 3100, Color.red);
-           ChangeRenderQueueImage(ref backPage, 3100, Color.green);
+           ChangeRenderQueueImage(ref frontPage, 3100, c);
+           ChangeRenderQueueImage(ref backPage, 3100, c);
            }
           
         
@@ -286,8 +300,8 @@ namespace UI
             }
             Renderer neighbour = pageObjects[previousNeighbourIndex].GetComponent<Renderer>();
             Renderer current = pageObjects[i].GetComponent<Renderer>();
-            ChangeRenderQueueImage(ref neighbour, 3000, Color.black);
-            ChangeRenderQueueImage(ref current, 3000, Color.black);
+            ChangeRenderQueueImage(ref neighbour, 3000, Color.white);
+            ChangeRenderQueueImage(ref current, 3000, Color.white);
 
 
             
@@ -318,6 +332,12 @@ namespace UI
             ChangeRenderQueue(ref r, 3200, Color.red);
 
          //   rotatePageObjects[rotatePageObjects.Count - 1].GetComponentInChildren<Renderer>().material.SetColor("_Color", new Color(1, 0, 0 , 1));
+        }
+        public void SetTextureToPage(int index, Texture tex)
+        {
+            Renderer pageObjectRenderer = pageObjects[index].GetComponent<Renderer>();
+            Renderer overlayImage = pageObjectRenderer.GetComponentsInChildren<Renderer>()[1];
+            ChangeTexture(ref overlayImage, tex);
         }
 
         private IEnumerator FlipPageAnimation(int index, float startAngle, float endAngle)

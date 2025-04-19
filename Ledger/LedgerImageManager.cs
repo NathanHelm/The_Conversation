@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Data;
 using PlasticGui.WorkspaceWindow;
@@ -22,7 +23,11 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>{
        // base.m_Start();
       onStartLedgerData.RunAction(this);
     }
-    
+    public List<LedgerImage> GetLedgerImageList()
+    {
+        return ledgerImages;
+    }
+
     
     public void AddLedgerImage(LedgerImage ledgerImage)
     {
@@ -60,10 +65,11 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>{
     {
        return ledgerImages[index].customQuestions;
     }
+  //  public void 
 
-     public void AddRayInfoToLedgerImage(int bodyId, string dialogueDescription, int[] customQuestions, Sprite ledgerImageSprite, int[] memoryID) //converts ray information to ledger image object
+     public void AddRayInfoToLedgerImage(int bodyId, string dialogueDescription, int[] customQuestions, Texture ledgerImg, int[] memoryID) //converts ray information to ledger image object
     {
-        LedgerImage ledgerImage = new(dialogueDescription, customQuestions, bodyId, ledgerImageSprite, memoryID);
+        LedgerImage ledgerImage = new(dialogueDescription, customQuestions, bodyId, ledgerImg, memoryID);
         
         if(ledgerImages.Count > MaxLedgerImageLength)
         {
@@ -81,6 +87,5 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>{
         
     }
 
-    
-  
+
 }

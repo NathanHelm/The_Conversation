@@ -19,14 +19,15 @@ public class LedgerData : StaticInstance<LedgerData>
     public override void OnEnable()
     {
         LedgerManager.onStartLedgerData.AddAction((LedgerManager lm) => {  });
-        LedgerManager.onActiveLedger.AddAction((LedgerManager lm) => {  });
+        LedgerManager.onActiveLedger.AddAction((LedgerManager lm) => { ledgerImages = LedgerImageManager.INSTANCE.GetLedgerImageList(); lm.ledgerImages = ledgerImages;  });
         
-        LedgerImageManager.onStartLedgerData.AddAction((LedgerImageManager lm) =>{ lm.ledgerImages = ledgerImages; });
+        LedgerImageManager.onStartLedgerData.AddAction((LedgerImageManager lm) =>{ lm.ledgerImages = ledgerImages; lm.MaxLedgerImageLength = 15; /*change this to a proper variable*/ });
         
         
         LedgerManager.onActiveLedger.AddAction((LedgerManager lm) => { lm.isLedgerCreated = isLedgerCreated;});
         UI.LedgerUIManager.onFlipPage.AddAction((LedgerUIManager luim) => {  luim.flipPageSpeed = this.flipPageSpeed; });
         LedgerUIManager.onBorderCheck.AddAction((LedgerUIManager ledgerManagerUI) => { ledgerManagerUI.isLeft = this.isLeft; });
+        
 
 
     //   LedgerUIManager.INSTANCE.onFlipAt90Degrees.AddAction((LedgerUIManager ledgerManagerUI) => { LedgerManager.INSTANCE.ChangeColorAndLayering(5) ;});

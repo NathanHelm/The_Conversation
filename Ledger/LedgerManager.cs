@@ -14,6 +14,8 @@ public class LedgerManager : StaticInstance<LedgerManager>
     public static SystemActionCall<LedgerManager> onStartLedgerData = new SystemActionCall<LedgerManager>();
     public static SystemActionCall<LedgerManager> onActiveLedger = new SystemActionCall<LedgerManager>();
 
+    public List<LedgerImage> ledgerImages = new List<LedgerImage>();
+    
     public int index{get; set;} = 0;
     int rotateIndex = 0;
 
@@ -22,6 +24,8 @@ public class LedgerManager : StaticInstance<LedgerManager>
     public bool isLedgerCreated = true;
     
     int pageL; 
+
+    int furthestRight; //
 
     public bool edgechecker {get; private set;} = true;
 
@@ -47,7 +51,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
     public override void m_Start()
     {
         LedgerUIManager.INSTANCE.onFlipAt90Degrees.AddPriorityAction(((int,LedgerUIManager) ledgerManagerUI) => { ChangeColorAndLayering(index) ;});
-        
+        furthestRight = 2 * (ledgerLength - 2);
         base.m_Start();
         onStartLedgerData.RunAction(this);
          
@@ -74,8 +78,17 @@ public class LedgerManager : StaticInstance<LedgerManager>
         LedgerImageManager.INSTANCE.MaxLedgerImageLength = pageL;
 
         animationSpeed = speed / pageL;
+
+
+        
+        onActiveLedger.RunAction(this); //for one, upadte ledgerimages list...
+        AddImagesToLedgerPages();
+
+
         UI.LedgerUIManager.INSTANCE.FlipPageRight(0);
         ChangeColorLayeringBorderLeft();
+
+      
  
     }
     //==run on state start ==================================================================================================================
@@ -97,7 +110,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
     }
     public void MovePagesFurthestRight()
     {
-         StartCoroutine(MoveRightUntilIndex(0, 15, animationSpeed));
+         StartCoroutine(MoveRightUntilIndex(0, furthestRight, animationSpeed));
     }
     public void OpenLedger()
     {
@@ -238,7 +251,8 @@ public class LedgerManager : StaticInstance<LedgerManager>
     }
 
    
-   
+    //==replace functions ==================================================================================================================
+
     public void ReplacePageToLedger()
     {
         MovePagesFurthestRight();
@@ -257,14 +271,25 @@ public class LedgerManager : StaticInstance<LedgerManager>
        } 
       
     }
-    
-    public void ChangeOverlay(Texture2D page1texture2D, Texture2D page2texture)
+
+     
+
+    // ==================================================================================================================
+
+    public void AddImagesToLedgerPages()
     {
-       
-        
+        if(ledgerImages.Count == 0)
+        {
+            Debug.Log("LOG: ledger Images lis has no ledgerimage's");
+            return;
+        }
+        for(int i = 0; i < ledgerImages.Count; i++)
+        {
+           UI.LedgerUIManager.INSTANCE.SetTextureToPage(i, ledgerImages[i].ledgerImage);
+        }
     }
 
- 
+
 
     public IEnumerator MoveRightUntilIndex(int startIndex,int toIndex, float speed)
     {

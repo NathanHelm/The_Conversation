@@ -8,15 +8,15 @@ public class LedgerImage
     public int bodyID {get; set;}
 
     public int[] memoryId;
-    public Sprite ledgerImageSprite { get; private set; }
+    public Texture ledgerImage { get; private set; }
     
 
-    public LedgerImage(string imageDescription, int[] customQuestions, int bodyID, Sprite ledgerImageSprite, int[] memoryID)
+    public LedgerImage(string imageDescription, int[] customQuestions, int bodyID, Texture ledgerImg, int[] memoryID)
     {
         this.imageDescription = imageDescription;
         this.customQuestions = customQuestions;
         this.bodyID = bodyID;
-        this.ledgerImageSprite = ledgerImageSprite;
+        this.ledgerImage = ledgerImg;
         this.memoryId = memoryID;
     }
 }
