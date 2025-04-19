@@ -3,6 +3,7 @@ using System.Collections;
 using Data;
 using System.Collections.Generic;
 using UI;
+using System;
 
 namespace Data
 {
@@ -11,7 +12,9 @@ public class LedgerData : StaticInstance<LedgerData>
 	public List<LedgerImage> ledgerImages { get; set; } = new List<LedgerImage>();
     public bool isLedgerCreated {get; set;} = true;
 
-    public float flipPageSpeed {get; set;}
+    public bool isLeft {get; set;} = false;
+
+    public float flipPageSpeed {get; set;} = 1.0f;
 
     public override void OnEnable()
     {
@@ -23,6 +26,11 @@ public class LedgerData : StaticInstance<LedgerData>
         
         LedgerManager.onActiveLedger.AddAction((LedgerManager lm) => { lm.isLedgerCreated = isLedgerCreated;});
         UI.LedgerUIManager.onFlipPage.AddAction((LedgerUIManager luim) => {  luim.flipPageSpeed = this.flipPageSpeed; });
+        LedgerUIManager.onBorderCheck.AddAction((LedgerUIManager ledgerManagerUI) => { ledgerManagerUI.isLeft = this.isLeft; });
+
+
+    //   LedgerUIManager.INSTANCE.onFlipAt90Degrees.AddAction((LedgerUIManager ledgerManagerUI) => { LedgerManager.INSTANCE.ChangeColorAndLayering(5) ;});
+
         base.OnEnable();
     }
 

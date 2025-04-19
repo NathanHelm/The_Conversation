@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Animations;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 namespace UI 
@@ -10,7 +13,9 @@ namespace UI
     {
         public static SystemActionCall<LedgerUIManager> onStartLedgerData = new SystemActionCall<LedgerUIManager>();
         public static SystemActionCall<LedgerUIManager> onFlipPage = new SystemActionCall<LedgerUIManager>();
-     
+        public static SystemActionCall<(int,LedgerUIManager)> onAfterFlipPage = new SystemActionCall<(int,LedgerUIManager)>();
+        public SystemActionCall<(int,LedgerUIManager)> onFlipAt90Degrees = new SystemActionCall<(int,LedgerUIManager)>();
+        public static SystemActionCall<LedgerUIManager> onBorderCheck = new SystemActionCall<LedgerUIManager>();
         [SerializeField]
         [Header("the object that will contain the ledger.")]
         private GameObject ledgerObject;
@@ -25,7 +30,12 @@ namespace UI
         private List<GameObject> rotatePageObjects = new List<GameObject>();
         public bool isPageMoving = false;
 
-        public float flipPageSpeed = 1f; //in seconds
+        public bool isLeft {get; set;} = false;
+
+        private int previousNeighbourIndex = -1;
+        private int neighbourIndex = -1;
+
+        public float flipPageSpeed; //in seconds
 
         /*
 
@@ -84,10 +94,12 @@ namespace UI
             if(index == 0)
             {
                 Debug.Log("index ==>" + index);
+
                 page = CreatePage();
                 mat = firstPageMat;
                 rotatePageObjects.Add(page);
                 page.GetComponentInChildren<Renderer>().material = mat; //setting material.
+               // page.GetComponent<RectTransform>().localPosition = new Vector3(0, 0, .1f);
                 return;
             }
              if(index == max)
@@ -96,6 +108,7 @@ namespace UI
                 mat = lastPageMat;
                 rotatePageObjects.Add(page);
                 page.GetComponentInChildren<Renderer>().material = mat; //setting material.
+               // page.GetComponent<RectTransform>().localPosition = new Vector3(0, 0, -.1f);
                 return;
             }
        
@@ -165,53 +178,173 @@ namespace UI
            // ChangeLayerRight(index, pageObjects.Count - 1);
             StartCoroutine(FlipPageAnimation(index, 0, 180));
         }
-
-        public void ChangeLayerLeft(int index)
+        
+        public (Renderer, Renderer) GetChildrenOfRotateIndex(int rotateIndex)
         {
-           pageObjects[index].GetComponent<Renderer>().sortingOrder = 1;
+            
+            Renderer[] pages = rotatePageObjects[rotateIndex].GetComponentsInChildren<Renderer>();
+            if(pages.Length < 4)
+            {
+                return (null, null);
+            }
+            return (pages[0], pages[2]);
+        }
+        public void ChangeRenderQueue(ref Renderer renderer, int r, Color c)
+        {
+            renderer.material.renderQueue = r; 
+           
+            if(renderer.material.HasColor("_Color"))
+            {
+            renderer.material.SetColor("_Color", c);
+            }
+            else
+            {
+                Debug.LogError("no color found");
+            }
+        }
+         public void ChangeRenderQueueImage(ref Renderer renderer, int r, Color c)
+        {
+            renderer = renderer.GetComponentsInChildren<Renderer>()[1]; //obtain the image
+            if(renderer == null)
+            {
+                Debug.Log("image was not obtained");
+            }
+            renderer.material.renderQueue = r; 
+           
+            if(renderer.material.HasColor("_Color"))
+            {
+            renderer.material.SetColor("_Color", c);
+            }
+            else
+            {
+                Debug.LogError("no color found");
+            }
+        }
+        
 
+        public void ChangeLayerLeft(int rotateIndex, int index)
+        {
+         
+         //  onBorderCheck.RunAction(this); //obtain whether is left or right page movement
+
+           //new idea ==> 
+           Renderer renderer =  pageObjects[index].GetComponent<Renderer>();
+           ChangeRenderQueue(ref renderer, 3000, Color.blue);
+            
+           if(GetChildrenOfRotateIndex(rotateIndex).Item1 == null || GetChildrenOfRotateIndex(rotateIndex).Item2 == null)
+           {
+            return;
+           }
+           if(!isLeft)
+           {
+               
+             Renderer frontPage = GetChildrenOfRotateIndex(rotateIndex).Item1;
+             if(rotateIndex == 1)
+             {
+                ChangeRenderQueueImage(ref frontPage, 3100, new Color(1,0,0,1));
+                return;
+             }
+            int max = rotatePageObjects.Count; 
+            if(rotateIndex > max - 2)
+            {
+                return;
+            }
+          // Renderer frontPage = GetChildrenOfRotateIndex(rotateIndex).Item1; //frontpage
+           Renderer backPage = GetChildrenOfRotateIndex(rotateIndex - 1).Item2;
+
+           previousNeighbourIndex = neighbourIndex;
+           neighbourIndex = rotateIndex;
+           frontPage = GetChildrenOfRotateIndex(neighbourIndex).Item1;
+           ChangeRenderQueueImage(ref frontPage, 3100, Color.yellow);
+           ChangeRenderQueueImage(ref backPage, 3100,  Color.red);
+           }
+           else //is left
+           {
+             Renderer frontPage = GetChildrenOfRotateIndex(rotateIndex).Item1;
+             if(rotateIndex == 1)
+             {
+                ChangeRenderQueueImage(ref frontPage, 3100, Color.red);
+                return;
+             }
+             
+            previousNeighbourIndex = neighbourIndex;
+            neighbourIndex = rotateIndex - 1;
+            Renderer backPage = GetChildrenOfRotateIndex(neighbourIndex).Item2;
+
+           ChangeRenderQueueImage(ref frontPage, 3100, Color.red);
+           ChangeRenderQueueImage(ref backPage, 3100, Color.green);
+           }
+          
+        
+
+        }
+        public void ChangeOverLayDown(int i) //i hate this
+        {
+            if(previousNeighbourIndex == -1)
+            {
+                return;
+            }
+            Renderer neighbour = pageObjects[previousNeighbourIndex].GetComponent<Renderer>();
+            Renderer current = pageObjects[i].GetComponent<Renderer>();
+            ChangeRenderQueueImage(ref neighbour, 3000, Color.black);
+            ChangeRenderQueueImage(ref current, 3000, Color.black);
+
+
+            
         }
         public void ChangeLayerDown(int i)
         {
-            pageObjects[i].GetComponent<Renderer>().sortingOrder = 0;
+           Renderer r = pageObjects[i].GetComponent<Renderer>();
+           ChangeRenderQueue(ref r, 2000, Color.grey);
         }
        
         public void ChangeBorderLeft()
         {
-            rotatePageObjects[0].GetComponentInChildren<Renderer>().sortingOrder = 1;
-            rotatePageObjects[0].GetComponentInChildren<Renderer>().material.SetColor("_Color", new Color(1, 0, 0 , 1));
+            Renderer r = rotatePageObjects[0].GetComponentInChildren<Renderer>();
+            ChangeRenderQueue(ref r, 3300, Color.red);
         
         }
         public void NoBorder()
         {
-            rotatePageObjects[0].GetComponentInChildren<Renderer>().sortingOrder = -1;
-            rotatePageObjects[0].GetComponentInChildren<Renderer>().material.SetColor("_Color", new Color(1, 1, 1 , 1));
-            rotatePageObjects[rotatePageObjects.Count - 1].GetComponentInChildren<Renderer>().sortingOrder = -1;
-            rotatePageObjects[rotatePageObjects.Count - 1].GetComponentInChildren<Renderer>().material.SetColor("_Color", new Color(1, 1, 1 , 1));
-      
+            Renderer r = rotatePageObjects[0].GetComponentInChildren<Renderer>();
+            ChangeRenderQueue(ref r, 3000, Color.white);
+
+            Renderer r2 = rotatePageObjects[^1].GetComponentInChildren<Renderer>();
+            ChangeRenderQueue(ref r2, 3000, Color.white);
         }
         public void ChangeBorderRight()
         {
-            rotatePageObjects[rotatePageObjects.Count - 1].GetComponentInChildren<Renderer>().sortingOrder = 1;
-            rotatePageObjects[rotatePageObjects.Count - 1].GetComponentInChildren<Renderer>().material.SetColor("_Color", new Color(1, 0, 0 , 1));
+            Renderer r = rotatePageObjects[^1].GetComponentInChildren<Renderer>();
+            ChangeRenderQueue(ref r, 3200, Color.red);
+
+         //   rotatePageObjects[rotatePageObjects.Count - 1].GetComponentInChildren<Renderer>().material.SetColor("_Color", new Color(1, 0, 0 , 1));
         }
 
         private IEnumerator FlipPageAnimation(int index, float startAngle, float endAngle)
         {
+            int nindex = index;
             onFlipPage.RunAction(this);
             isPageMoving = true;
             float time = 0.0f;
+            bool runOnce = false;
             Debug.Log("FLIPPING ANIMATION IS GOING");
             while(time < 1.0f)
             {
-                Debug.Log("going!");
+                if((Mathf.Floor(time * 10f) / 10f) == 0.5 && runOnce == false)
+                {
+                    onFlipAt90Degrees.RunAction((nindex,this)); 
+                    runOnce = true;
+                }
+                Debug.Log("going! " + flipPageSpeed);
                 time += Time.deltaTime / flipPageSpeed;
                 float theta = Mathf.Lerp(startAngle, endAngle, time);
                 rotatePageObjects[index].transform.localEulerAngles = new Vector3(0 ,theta, 0);
                 yield return new WaitForFixedUpdate();
             }
             rotatePageObjects[index].transform.localEulerAngles = new Vector3(0, endAngle, 0);
+            onAfterFlipPage.RunAction((nindex,this));
             isPageMoving = false;
+            
             yield return null;
             
         }

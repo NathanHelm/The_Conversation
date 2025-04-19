@@ -10,12 +10,12 @@ public class ReplaceLedgerState : LedgerState
   */
     public override void OnEnter(LedgerData data)
     {
-      
-
+      LedgerManager.INSTANCE.ReplacePageToLedger();
     }
     public override void OnUpdate(LedgerData data)
     {
-        
+        LedgerManager.INSTANCE.MovePages();
+        LedgerManager.INSTANCE.ReplacePage();
     }
     public override void OnExit(LedgerData data)
     {

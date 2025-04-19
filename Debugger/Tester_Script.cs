@@ -8,6 +8,8 @@ public class Tester_Script : MonoBehaviour
     {
         UI.LedgerUIManager.INSTANCE.m_Start();
         LedgerManager.INSTANCE.m_Start();
+
+        
        
        
     }
@@ -24,6 +26,10 @@ public class Tester_Script : MonoBehaviour
         {
             LedgerManager.INSTANCE.WriteToPageInLedger();
         }
+
+        LedgerManager.INSTANCE.MovePages();
+       // LedgerManager.INSTANCE.ReplacePage();
+     
     }
     
 }
