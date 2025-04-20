@@ -82,7 +82,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
 
         
         onActiveLedger.RunAction(this); //for one, upadte ledgerimages list...
-        AddImagesToLedgerPages();
+        //AddImagesToLedgerPages();
 
 
         UI.LedgerUIManager.INSTANCE.FlipPageRight(0);
@@ -98,20 +98,27 @@ public class LedgerManager : StaticInstance<LedgerManager>
         RunLedger();
         if(!LedgerImageManager.INSTANCE.IsTemporyImageNull()) //we have a temporary image which we can replace!
         {
-              GameEventManager.INSTANCE?.OnEvent(typeof(ReplaceLedgerState));
-              return;
+            Debug.Log("LOG: there is a temporary that is not null, list has reached limit.");
+            GameEventManager.INSTANCE?.OnEvent(typeof(ReplaceLedgerState));
+            return;
         }
-        //TODO make 15 a variable... 
         
-        MovePagesFurthestRight();
+        MovePagesToFurthestLedgerImage();
         //TODO
         DrawImageManager.INSTANCE?.Drawing();
+        AddImagesToLedgerPages();
+      //  LedgerImageManager.INSTANCE.ReplaceImage(ledgerImagesMax, ledgerImages[ledgerImagesMax]);
         
     }
     public void MovePagesFurthestRight()
     {
          StartCoroutine(MoveRightUntilIndex(0, furthestRight, animationSpeed));
     }
+    public void MovePagesToFurthestLedgerImage()
+    {
+         StartCoroutine(MoveRightUntilIndex(0, ledgerImages.Count - 1, animationSpeed));
+    }
+
     public void OpenLedger()
     {
         RunLedger(); //since you opening the ledger, just run run ledger. open ledger avoids confusion. 
@@ -127,6 +134,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
             }  
         UI.LedgerUIManager.INSTANCE.ChangeBorderLeft();
     }
+
      public void ChangeColorLayeringBorderRight()
     {
         for(int i = 0; i < pageL; i++)
@@ -153,6 +161,10 @@ public class LedgerManager : StaticInstance<LedgerManager>
         }
          UI.LedgerUIManager.INSTANCE.ChangeLayerLeft(rotateIndex + 1, ind);   
         
+    }
+    public void StayIndex(int rIndex)
+    {
+        UI.LedgerUIManager.INSTANCE.ChangeLayerLeft(rIndex, index - 1);   
     }
 
     public void MovePages()
@@ -205,6 +217,8 @@ public class LedgerManager : StaticInstance<LedgerManager>
             {
                 UI.LedgerUIManager.INSTANCE.FlipPageRight(rotateIndex + 1);
                 ++rotateIndex;
+               // UI.LedgerUIManager.INSTANCE.ChangeBorderLeft();
+                StayIndex(rotateIndex); 
                 //and change color
                 return;
             }
@@ -240,6 +254,8 @@ public class LedgerManager : StaticInstance<LedgerManager>
                  --rotateIndex;
    
                 UI.LedgerUIManager.INSTANCE.FlipPageLeft(rotateIndex + 1);
+                StayIndex(rotateIndex + 1); 
+               // UI.LedgerUIManager.INSTANCE.ChangeBorderLeft();
                 --index;
                 //add change color and layer
 
@@ -253,10 +269,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
    
     //==replace functions ==================================================================================================================
 
-    public void ReplacePageToLedger()
-    {
-        MovePagesFurthestRight();
-    }
+ 
     public void ReplacePage()
     {
        if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
@@ -267,6 +280,8 @@ public class LedgerManager : StaticInstance<LedgerManager>
        {
          LedgerImage temporaryImage = LedgerImageManager.INSTANCE.temporaryImage;
          LedgerImageManager.INSTANCE.ReplaceImage(index, temporaryImage);
+         AddImagesToLedgerPages(); //reset all pages... 
+         
          //TODO run "replace animation"
        } 
       

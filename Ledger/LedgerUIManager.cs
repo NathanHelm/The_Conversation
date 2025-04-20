@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Reflection;
 using Codice.CM.Common;
@@ -194,7 +195,7 @@ namespace UI
         public void ChangeRenderQueue(ref Renderer renderer, int r, Color c)
         {
             renderer.material.renderQueue = r; 
-           
+             
             if(renderer.material.HasColor("_Color"))
             {
             renderer.material.SetColor("_Color", c);
@@ -212,6 +213,16 @@ namespace UI
                 Debug.Log("image was not obtained");
             }
             renderer.material.renderQueue = r; 
+            if(renderer.material.GetTexture("_MainTex") == null)
+            {
+                c = Color.clear;
+                //a strang edge case below. If paper has no overlay texture (is null) and we are attempting to make the overlay appear first, make the PAGE aka the parent appear above all else in this instance...
+                if(r == 3100) 
+                {
+                    var pageObject = renderer.transform.parent.GetComponent<Renderer>();
+                    ChangeRenderQueue(ref pageObject, 3100,Color.white);
+                }
+            }
            
             if(renderer.material.HasColor("_Color"))
             {
@@ -251,8 +262,9 @@ namespace UI
            }
            if(!isLeft)
            {
-               
+             
              Renderer frontPage = GetChildrenOfRotateIndex(rotateIndex).Item1;
+            
              if(rotateIndex == 1)
              {
                 ChangeRenderQueueImage(ref frontPage, 3100, c);
@@ -298,18 +310,17 @@ namespace UI
             {
                 return;
             }
+            Debug.Log("prev neighbour" + previousNeighbourIndex);
             Renderer neighbour = pageObjects[previousNeighbourIndex].GetComponent<Renderer>();
             Renderer current = pageObjects[i].GetComponent<Renderer>();
             ChangeRenderQueueImage(ref neighbour, 3000, Color.white);
-            ChangeRenderQueueImage(ref current, 3000, Color.white);
-
-
-            
+            ChangeRenderQueueImage(ref current, 3000 + i + 1 , Color.white);
         }
+      
         public void ChangeLayerDown(int i)
         {
            Renderer r = pageObjects[i].GetComponent<Renderer>();
-           ChangeRenderQueue(ref r, 2000, Color.grey);
+           ChangeRenderQueue(ref r, 2900, Color.grey);
         }
        
         public void ChangeBorderLeft()
@@ -321,10 +332,10 @@ namespace UI
         public void NoBorder()
         {
             Renderer r = rotatePageObjects[0].GetComponentInChildren<Renderer>();
-            ChangeRenderQueue(ref r, 3000, Color.white);
+            ChangeRenderQueue(ref r, 2800, Color.white);
 
             Renderer r2 = rotatePageObjects[^1].GetComponentInChildren<Renderer>();
-            ChangeRenderQueue(ref r2, 3000, Color.white);
+            ChangeRenderQueue(ref r2, 2800, Color.white);
         }
         public void ChangeBorderRight()
         {
