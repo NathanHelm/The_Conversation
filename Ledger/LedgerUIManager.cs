@@ -70,6 +70,10 @@ namespace UI
             {
                 ledgerObject = GameObject.FindGameObjectWithTag("Ledger");
             }
+            else
+            {
+                Debug.LogError("ledger gameobject is null");
+            }
             base.m_Start();
             onStartLedgerData.RunAction(this);
         }
