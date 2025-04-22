@@ -5,7 +5,7 @@ using System;
 public class SystemActionCall<T>
 {
     //adds actions between static instance systems  
-    public static Action<T> actionSetup { get; set; }
+    public Action<T> actionSetup { get; set; }
     private Action<T> initialAction;
 
 

@@ -14,7 +14,12 @@ public class LedgerData : StaticInstance<LedgerData>
 
     public bool isLeft {get; set;} = false;
 
-    public float flipPageSpeed {get; set;} = 1.0f;
+    public float flipPageSpeed {get; set;} = 1f;
+
+    public int pageObjectsIndex {get; set;} = 0;
+
+    public Animator leftHand; 
+    public Animator rightHand;
 
     public override void OnEnable()
     {
@@ -28,10 +33,39 @@ public class LedgerData : StaticInstance<LedgerData>
         UI.LedgerUIManager.onFlipPage.AddAction((LedgerUIManager luim) => {  luim.flipPageSpeed = this.flipPageSpeed; });
         LedgerUIManager.onBorderCheck.AddAction((LedgerUIManager ledgerManagerUI) => { ledgerManagerUI.isLeft = this.isLeft; });
         
+        LedgerMovement.INSTANCE.onEnableHand.AddAction((LedgerMovement ledgerAnimationsManager) => {
+            
+            ledgerAnimationsManager.flipPageAnimationSpeed = this.flipPageSpeed; 
+            ledgerAnimationsManager.isLeft = this.isLeft; 
+        
+        } );
+
+        
+        
+       
+        LedgerMovement.INSTANCE.onPointHand.AddAction((LedgerMovement LedgerAnimationsManager) => {
+        
+            HandAnimations.INSTANCE.PlayHandAnimation(HandAnimation.PointAnim, flipPageSpeed * 0.5f);
+        });
 
 
-    //   LedgerUIManager.INSTANCE.onFlipAt90Degrees.AddAction((LedgerUIManager ledgerManagerUI) => { LedgerManager.INSTANCE.ChangeColorAndLayering(5) ;});
+             LedgerMovement.INSTANCE.onMove.AddAction((LedgerMovement ledgerAnimationsManager) => {
+            
+            ledgerAnimationsManager.isLeft = this.isLeft;
+            ledgerAnimationsManager.pageObjectIndex = this.pageObjectsIndex;
+            if(flipPageSpeed >= 1)
+            {
+            HandAnimations.INSTANCE.PlayHandAnimation(HandAnimation.FlipAnim, flipPageSpeed);
+            }
+            else
+            {
+             HandAnimations.INSTANCE.PlayHandAnimation(HandAnimation.FlipAnim, flipPageSpeed * 10);
+            }
+        
+        });
+        
 
+        
         base.OnEnable();
     }
 

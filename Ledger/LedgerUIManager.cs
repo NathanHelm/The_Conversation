@@ -179,11 +179,13 @@ namespace UI
         {
            // ChangeLayerLeft(index, pageObjects.Count - 1);
             StartCoroutine(FlipPageAnimation(index, 180, 0));
+            LedgerMovement.INSTANCE.MoveHand();
         }
         public void FlipPageRight(int index)
         {
            // ChangeLayerRight(index, pageObjects.Count - 1);
             StartCoroutine(FlipPageAnimation(index, 0, 180));
+            LedgerMovement.INSTANCE.MoveHand();
         }
         
         public (Renderer, Renderer) GetChildrenOfRotateIndex(int rotateIndex)
@@ -359,12 +361,12 @@ namespace UI
         {
             int nindex = index;
             onFlipPage.RunAction(this);
-            isPageMoving = true;
             float time = 0.0f;
             bool runOnce = false;
             Debug.Log("FLIPPING ANIMATION IS GOING");
             while(time < 1.0f)
             {
+                isPageMoving = true;
                 if((Mathf.Floor(time * 10f) / 10f) == 0.5 && runOnce == false)
                 {
                     onFlipAt90Degrees.RunAction((nindex,this)); 

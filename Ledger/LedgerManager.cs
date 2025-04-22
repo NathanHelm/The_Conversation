@@ -25,7 +25,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
     
     int pageL; 
 
-    int furthestRight; //
+    int furthestRight; //index of furthest-most ledger image
 
     public bool edgechecker {get; private set;} = true;
 
@@ -77,8 +77,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
         pageL = UI.LedgerUIManager.INSTANCE.GetPageLength();
         LedgerImageManager.INSTANCE.MaxLedgerImageLength = pageL;
 
-        animationSpeed = speed / pageL;
-
+        animationSpeed = (speed / pageL) ;
 
         
         onActiveLedger.RunAction(this); //for one, upadte ledgerimages list...
@@ -210,6 +209,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
                 return;
             }
             ++index;
+            LedgerData.INSTANCE.pageObjectsIndex = index;
             
             int indexplusone = index + 1;
            
@@ -244,10 +244,8 @@ public class LedgerManager : StaticInstance<LedgerManager>
             {
                 edgechecker = true;
             }
-          
-            
-            int indexplusone = index + 1;
-           
+
+            int indexplusone = index + 1;  
              
             if(indexplusone % 2 == 0 )
             {
@@ -257,11 +255,13 @@ public class LedgerManager : StaticInstance<LedgerManager>
                 StayIndex(rotateIndex + 1); 
                // UI.LedgerUIManager.INSTANCE.ChangeBorderLeft();
                 --index;
+                LedgerData.INSTANCE.pageObjectsIndex = index;
                 //add change color and layer
 
                 return;
             }
             --index;
+            LedgerData.INSTANCE.pageObjectsIndex = index;
            
            ChangeColorAndLayering(index);
     }
@@ -308,14 +308,16 @@ public class LedgerManager : StaticInstance<LedgerManager>
 
     public IEnumerator MoveRightUntilIndex(int startIndex,int toIndex, float speed)
     {
+        var prevflippageS = LedgerData.INSTANCE.flipPageSpeed;
         LedgerData.INSTANCE.flipPageSpeed = animationSpeed;
+
         while(startIndex < toIndex)
         {
             yield return new WaitForSeconds(speed);
             MovePageRight();
             ++startIndex;
         }
-        LedgerData.INSTANCE.flipPageSpeed = 1f;
+        LedgerData.INSTANCE.flipPageSpeed = prevflippageS;
     }
 
 
