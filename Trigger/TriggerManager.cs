@@ -13,6 +13,8 @@ public class TriggerManager : StaticInstance<TriggerManager>
     public DialogueData dialogueData { get; set; }
     public Trigger[] triggers; //trigger data sets this variable.
 
+    
+
     public override void OnEnable()
     {
         MManager.onStartManagersAction.AddAction((MManager m) => { m.triggerManager = this; });

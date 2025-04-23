@@ -1,10 +1,10 @@
 using Data;
 
-public class PointHandState : HandState{
+public class  EnableHandState : HandState{
+
     public override void OnEnter(LedgerData data)
     {
        LedgerMovement.INSTANCE.EnableHand();
-       LedgerMovement.INSTANCE.HandPointAtPage();
     }
-     
+
 }

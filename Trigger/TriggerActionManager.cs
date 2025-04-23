@@ -47,7 +47,7 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>
 
 			
 		});
-        characterIDToTriggerAction.Add(22, () => {
+        characterIDToTriggerAction.Add(20, () => {
 
             //note that 'trigger default' runs characterIDToTriggerAction[22] to start conversation
             Debug.Log("this character has no action-- running default conversation state. Attach some character ID functionality @ triggeraction manager");
@@ -57,7 +57,7 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>
 
 
         });
-		characterIDToTriggerAction.Add(210, ()=>{
+		characterIDToTriggerAction.Add(21, ()=>{
 
 			GameEventManager.INSTANCE.OnEvent(typeof(ImmediateConversationState));
 
@@ -115,7 +115,7 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>
 				if (triggerOnTrigger.charactersOnTrigger[0] is CharacterMono)
 				{
 					//enable default conversation
-					return characterIDToTriggerAction[22]; //writes message saying 'running default event...'
+					return characterIDToTriggerAction[20]; //writes message saying 'running default event...'
 				}
 			}
 

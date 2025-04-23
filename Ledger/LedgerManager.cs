@@ -71,8 +71,11 @@ public class LedgerManager : StaticInstance<LedgerManager>
         if(isLedgerCreated)
         {
             CreateLedger(); //make a ten page ledger
-            isLedgerCreated = false;
+            LedgerData.INSTANCE.isLedgerCreated = isLedgerCreated = false;
         }
+       
+        EnableLedger();
+
 
         pageL = UI.LedgerUIManager.INSTANCE.GetPageLength();
         LedgerImageManager.INSTANCE.MaxLedgerImageLength = pageL;
@@ -222,6 +225,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
                 //and change color
                 return;
             }
+            LedgerMovement.INSTANCE.HandPointAtPage();
             ChangeColorAndLayering(index);
 
     }
@@ -263,6 +267,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
             --index;
             LedgerData.INSTANCE.pageObjectsIndex = index;
            
+           LedgerMovement.INSTANCE.HandPointAtPage();
            ChangeColorAndLayering(index);
     }
 
@@ -324,6 +329,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
     public void EnableLedger()
     {
         UI.LedgerUIManager.INSTANCE.OpenBook();
+
     }
     public void DisableLedger()
     {

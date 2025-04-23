@@ -135,7 +135,6 @@ namespace UI
         {
             GameObject pages = GetLedger().transform.GetComponentInChildren<Transform>().gameObject;
             
-            
         }
 
         private GameObject CreatePage()
@@ -179,13 +178,13 @@ namespace UI
         {
            // ChangeLayerLeft(index, pageObjects.Count - 1);
             StartCoroutine(FlipPageAnimation(index, 180, 0));
-            LedgerMovement.INSTANCE.MoveHand();
+            LedgerMovement.INSTANCE.MoveHandAwaitPoint();
         }
         public void FlipPageRight(int index)
         {
            // ChangeLayerRight(index, pageObjects.Count - 1);
             StartCoroutine(FlipPageAnimation(index, 0, 180));
-            LedgerMovement.INSTANCE.MoveHand();
+            LedgerMovement.INSTANCE.MoveHandAwaitPoint();
         }
         
         public (Renderer, Renderer) GetChildrenOfRotateIndex(int rotateIndex)

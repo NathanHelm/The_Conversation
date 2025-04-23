@@ -61,15 +61,15 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>{
         }
         return false;
     }
-    public int[] GetQuestionsIDFromPage(int index)
+    public int GetQuestionIDFromPage(int index)
     {
-       return ledgerImages[index].customQuestions;
+       return ledgerImages[index].questionID;
     }
   //  public void 
 
-     public void AddRayInfoToLedgerImage(int bodyId, string dialogueDescription, int[] customQuestions, Texture ledgerImg, int[] memoryID) //converts ray information to ledger image object
+     public void AddRayInfoToLedgerImage(string imageDescription, int questionID, int clueQuestionID, Texture ledgerImg, Texture[] ledgerOverlays, int[] memoryID, int clueBodyID) //converts ray information to ledger image object
     {
-        LedgerImage ledgerImage = new(dialogueDescription, customQuestions, bodyId, ledgerImg, memoryID);
+        LedgerImage ledgerImage = new(imageDescription, questionID, clueQuestionID, ledgerImg, ledgerOverlays , memoryID, clueBodyID);
         
         if(ledgerImages.Count > MaxLedgerImageLength)
         {

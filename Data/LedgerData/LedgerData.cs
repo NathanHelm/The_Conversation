@@ -43,8 +43,10 @@ public class LedgerData : StaticInstance<LedgerData>
         
         
        
-        LedgerMovement.INSTANCE.onPointHand.AddAction((LedgerMovement LedgerAnimationsManager) => {
+        LedgerMovement.INSTANCE.onPointHand.AddAction((LedgerMovement ledgerAnimationsManager) => {
         
+            ledgerAnimationsManager.isLeft = this.isLeft;
+            ledgerAnimationsManager.pageObjectIndex = this.pageObjectsIndex;
             HandAnimations.INSTANCE.PlayHandAnimation(HandAnimation.PointAnim, flipPageSpeed * 0.5f);
         });
 

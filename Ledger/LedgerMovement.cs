@@ -96,17 +96,17 @@ public class LedgerMovement : StaticInstance<LedgerMovement> {
     {
         //we are using the right hand, moving from the rightpage to the lefpage
        Vector3 currenRightHandPosition = farthestRight;
-       MoveToNewPosition(rightHandObj.transform, currenRightHandPosition, farthestLeft, flipPageAnimationSpeed);
+       MoveToNewPosition(rightHandObj.transform, currenRightHandPosition, farthestLeft, flipPageAnimationSpeed, 800f);
     }
     public void MoveHandToRightPage() //from left to right
     {
         Vector3 currentRightHandPosition = farthestLeft;
-        MoveToNewPosition(rightHandObj.transform, currentRightHandPosition, farthestRight, flipPageAnimationSpeed);
+        MoveToNewPosition(rightHandObj.transform, currentRightHandPosition, farthestRight, flipPageAnimationSpeed, 800f);
     }
 
-    public void MoveHandAndPoint()
+    public void MoveHandAwaitPoint()
     {
-
+        StartCoroutine(MoveHandAndPointAnimation());
     }
    
     public void MoveHand()
@@ -124,35 +124,39 @@ public class LedgerMovement : StaticInstance<LedgerMovement> {
     
     public void HandPointAtPage()
     {
-        onPointHand.RunAction(this);
-        Vector2 moveToPagePosition = Vector2.zero;
-
-        Vector3 currentRightHandPosition = rightHandObj.transform.position;
-
-        if(pageObjectIndex == 0)
+        if(single != null)
         {
             return;
         }
+        onPointHand.RunAction(this);
+       
+        Vector2 moveToPagePosition = rightPageObjectPosition;
+
+        Vector3 currentRightHandPosition = rightHandObj.transform.localPosition;
+
+        
         if(pageObjectIndex % 2 == 0)
-        {
-            moveToPagePosition = rightPageObjectPosition;
-        }
-        else
         {
             moveToPagePosition = leftPageObjectPosition;
         }
-        MoveToNewPosition(rightHandObj.transform, currentRightHandPosition, moveToPagePosition, flipPageAnimationSpeed * 0.5f);
+        else
+        {
+            moveToPagePosition = rightPageObjectPosition;
+        }
+
+        MoveToNewPosition(rightHandObj.transform, currentRightHandPosition, moveToPagePosition, flipPageAnimationSpeed * 0.5f, 200f);
 
     }
-    public void MoveToNewPosition(Transform trans, Vector2 oldPosition,Vector2 newPos, float speed)
+    public void MoveToNewPosition(Transform trans, Vector2 oldPosition,Vector2 newPos, float speed, float radius)
     {
         if(single != null) //allow for an older coroutine to stop running if a new one is running. 
         {
             StopCoroutine(single);
         }
-        StartCoroutine(single = MoveToNewPositionAnimation(trans, oldPosition, newPos, speed));
+        StartCoroutine(single = MoveToNewPositionAnimation(trans, oldPosition, newPos, speed, radius));
     }
-    public IEnumerator MoveToNewPositionAnimation(Transform movingTrans, Vector2 oldPosition, Vector2 newPos, float speed)
+    
+    public IEnumerator MoveToNewPositionAnimation(Transform movingTrans, Vector2 oldPosition, Vector2 newPos, float speed, float radius)
     {
         float time = 0.0f;
         bool runOnce = false;
@@ -166,7 +170,7 @@ public class LedgerMovement : StaticInstance<LedgerMovement> {
             }
             Vector3 position =  Vector3.Lerp(oldPosition,newPos,time);
 
-            Vector3 rainbowCurve = RainbowCurve(time);
+            Vector3 rainbowCurve = RainbowCurve(time, radius);
 
             float rCZ = rainbowCurve.z;
             movingTrans.localPosition = position + new Vector3(0, 0, rCZ);
@@ -177,10 +181,9 @@ public class LedgerMovement : StaticInstance<LedgerMovement> {
         single = null;
         yield return null;
     }
-    public Vector3 RainbowCurve(float t) //ouh i like this
+    public Vector3 RainbowCurve(float t, float radius) //ouh i like this
     {
-        float radius = 800f;
-        
+
         float theta = Mathf.Lerp(Mathf.PI * 2, Mathf.PI, t);
 
         float x = Mathf.Cos(theta);
@@ -189,7 +192,7 @@ public class LedgerMovement : StaticInstance<LedgerMovement> {
         return new Vector3(x, 0, z) * radius;
     }
 
-    public IEnumerator MoveHandAndPoint(int index)
+    public IEnumerator MoveHandAndPointAnimation()
     {
         //TODO change it up and make this a statemachine
         //1) flip page
@@ -197,7 +200,9 @@ public class LedgerMovement : StaticInstance<LedgerMovement> {
 
         yield return new WaitUntil(() => single == null);
         Debug.Log("pointing hand!");
-        GameEventManager.INSTANCE.OnEvent(typeof(PointHandState));
+
+       //TODO 
+       GameEventManager.INSTANCE.OnEvent(typeof(PointHandState));
     }
 
 }

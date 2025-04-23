@@ -7,10 +7,13 @@ public class Tester_Script : MonoBehaviour
     [SerializeField]
     Texture2D[] texture;
     [SerializeField]
+    Texture2D[] overlayTex;
+    [SerializeField]
     bool isReplace = false;
 
     private void Start()
     {
+        
         UI.LedgerUIManager.INSTANCE.m_Start();
         LedgerManager.INSTANCE.m_Start();
         LedgerImageManager.INSTANCE.m_Start();
@@ -18,6 +21,7 @@ public class Tester_Script : MonoBehaviour
        
         LedgerMovement.INSTANCE.m_Start();
         HandAnimations.INSTANCE.m_Start();
+        StateManager.INSTANCE.m_Start();
         LedgerMovement.INSTANCE.EnableHand();
         
 
@@ -27,7 +31,7 @@ public class Tester_Script : MonoBehaviour
         }
         for(int i = 0; i < texture.Length; i++)
         {
-            LedgerImageManager.INSTANCE.AddRayInfoToLedgerImage(i + 1, "description of image " + i + ". ", new int[] {1, 2, 3}, texture[i], new int[] {1} );
+            LedgerImageManager.INSTANCE.AddRayInfoToLedgerImage("description " + i + ".", 0, ClueMono.clueQuestionID, texture[i], overlayTex, null, 0);
         }
         
        
@@ -37,7 +41,7 @@ public class Tester_Script : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Tab))
         {
-            LedgerManager.INSTANCE.OpenLedger();
+       //     LedgerManager.INSTANCE.OpenLedger();
         }
       
         //LedgerManager.INSTANCE.UseLedgerState();
@@ -47,14 +51,16 @@ public class Tester_Script : MonoBehaviour
         {
             LedgerManager.INSTANCE.WriteToPageInLedger();
         }
-        
+
+        /*
         if(isReplace)
         {
-            LedgerImageManager.INSTANCE.temporaryImage = new LedgerImage(null, null, 0, texture[1], null) ;
+            LedgerImageManager.INSTANCE.temporaryImage = new LedgerImage(null, 0, ClueMono.clueQuestionID, texture[1], overlayTex, null, 0) ;
             LedgerManager.INSTANCE.ReplacePage();
         }
 
         LedgerManager.INSTANCE.MovePages();
+        */
        // LedgerManager.INSTANCE.ReplacePage();
      
     }

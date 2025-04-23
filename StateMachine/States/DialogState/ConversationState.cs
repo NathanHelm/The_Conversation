@@ -23,6 +23,10 @@ public class ConversationState : DialogueState
         {
             DialogueManager.INSTANCE.RunDialog();
         }
+        if(Input.GetKeyDown(KeyCode.Tab))
+        {
+
+        }
     }
 }
 

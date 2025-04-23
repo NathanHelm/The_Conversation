@@ -15,6 +15,7 @@ public class  StateManager: StaticInstance<StateManager>
     public DialogueStateMono dialogueState;
     public TriggerStateMono triggerState;
     public LedgerStateMono ledgerState;
+    public HandStateMono handState;
     public CutsceneMono cutsceneState;
 
     /*
@@ -46,12 +47,20 @@ public class  StateManager: StaticInstance<StateManager>
     public IdleLedgerState idleLedgerState = new IdleLedgerState();
     public DisableLedgerState disableLedgerState = new DisableLedgerState();
 
+    public MoveHandFlipState moveHandFlipState = new();
+    public PointHandState pointHandState = new();
+    public DisableHandState disableHandState = new();
+
+    public IdleHandState idleHandState = new();
+
     public readonly object[] stopStates = new object[] {
         new TransitionTo3d(),
         new NoConversationState(),
         new NoTriggerState(),
         new PlayerIdleState(),
-        new IdleLedgerState()
+        new IdleLedgerState(),
+        new IdleHandState(),
+    
         // CUTSCENE STAYS LAST. If No Cutscene is not last stop state, cutscene will not stop states after it... 
        
     };
@@ -70,6 +79,7 @@ public class  StateManager: StaticInstance<StateManager>
         triggerState = gameObject.AddComponent<TriggerStateMono>();
         cutsceneState = gameObject.AddComponent<CutsceneMono>();
         ledgerState = gameObject.AddComponent<LedgerStateMono>();
+        handState = gameObject.AddComponent<HandStateMono>();
         
 
 
@@ -117,6 +127,12 @@ public class  StateManager: StaticInstance<StateManager>
             GameEventManager.INSTANCE.AddEvent(typeof(IdleLedgerState), () => { ledgerState.SwitchState(idleLedgerState); });
             GameEventManager.INSTANCE.AddEvent(typeof(DisableLedgerState), () => { ledgerState.SwitchState(disableLedgerState); });
             ledgerState.SwitchState(disableLedgerState);
+            //yes...hand state and ledgerstate carry the same data
+            GameEventManager.INSTANCE.AddEvent(typeof(IdleHandState), ()=> {handState.SwitchState(idleHandState);});
+            GameEventManager.INSTANCE.AddEvent(typeof(DisableHandState), ()=> {handState.SwitchState(disableHandState);});
+            GameEventManager.INSTANCE.AddEvent(typeof(PointHandState), ()=> {handState.SwitchState(pointHandState);});
+            GameEventManager.INSTANCE.AddEvent(typeof(MoveHandFlipState), ()=> {handState.SwitchState(moveHandFlipState);});
+            handState.SwitchState(disableHandState);
         }
       
     }
@@ -153,6 +169,11 @@ public class  StateManager: StaticInstance<StateManager>
             {
                 keyValuePairs.Add(stateParent[5], newStates[i].GetType());
             }
+            else if (newStates[i] is HandState)
+            {
+                keyValuePairs.Add(stateParent[6], newStates[i].GetType());
+            }
+
             else
             {
                 throw new Exception("state " + newStates[i].ToString() + " has no state");

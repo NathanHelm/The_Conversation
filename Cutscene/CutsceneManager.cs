@@ -20,6 +20,14 @@ public class CutsceneManager : StaticInstance<CutsceneManager>
 
         base.OnEnable();
     }
+    public void CutsceneOnState()
+    {
+        StopStates();
+    }
+    public void EndCutsceneOnState(){
+
+       RunSnapShotStates();
+    }
 
 
     private IEnumerator ActionAndTime((Action, float)[] actionAndTime)
@@ -61,6 +69,7 @@ public class CutsceneManager : StaticInstance<CutsceneManager>
         //cutscene with continue booling is true.
         StartCoroutine(cutsceneEnumerator = ActionAndCondition(CutsceneData.INSTANCE.cutsceneActionAndConditions));
     }
+    
 
     public void SetCutSceneActionAndTime((Action, float)[] cutSceneActionAndTime)
     {

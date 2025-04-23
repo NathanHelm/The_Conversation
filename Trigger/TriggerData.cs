@@ -10,6 +10,8 @@ namespace Data
         public Trigger triggerOnTrigger { get; set; }
         public DialogueData dialogueData;
 
+        public bool isPlayerOnCharacter {get; set;} = false; 
+
         public override void OnEnable()
         {
             triggers = FindObjectsOfType<Trigger>();

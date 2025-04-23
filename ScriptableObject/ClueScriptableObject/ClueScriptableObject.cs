@@ -5,11 +5,13 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ClueSO", menuName = "ScriptableObjects/ClueSO", order = 4)]
 public class ClueScriptableObject : ScriptableObject
 {
-    //conversation already included
-    public int[] clueQuestions; //questions 'unlocked' after clicking on image. 
+   	public string imageDescription;
+	public int questionID; //certain images unlock a question that vet can ask to others.
+    public int[] memoryId;
+    public Texture ledgerImage;
 
-    public int[] memories; //clue memories that are evoked
-    public string imgDescription;
-    public int bodyId;
-    public DialogueConversation[] dialogueConversations;
+    public Texture[] ledgerOverlays;
+
+    public DialogueConversation dialogConversation;
+    
 }

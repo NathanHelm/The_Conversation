@@ -5,7 +5,7 @@ public class StopCutsceneState : CutsceneState
 {
     public override void OnEnter(CutsceneData data)
     {
-        Debug.Log("stop cutscene");
+      CutsceneManager.INSTANCE.EndCutsceneOnState();
     }
 }
 

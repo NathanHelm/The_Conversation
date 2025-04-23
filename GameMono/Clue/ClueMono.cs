@@ -7,25 +7,33 @@ public class ClueMono : BodyMono
     [SerializeField]
     private ClueScriptableObject clueScriptableObject;
 
-    public string imgDescription { get; set; }
-    public int[] clueQuestions { get; set; } 
-    public int[] memories {get; set;}
+    public string imageDescription;
+    public int questionID; //unlocked question that is said the characters to reveal the plot... 
+	public int[] memoryId;
+    public Texture ledgerImage;
+    public Texture[] ledgerOverlays;
 
-	public DialogueConversation[] vetClueConversation { get; set; }
+    public static int clueQuestionID;
+
+    public DialogueConversation dialogueConversation;
+
 
     public override void OnEnable()
     {
         //note that dialogueconversation index = 0 will only run
         if (clueScriptableObject != null)
         {
-            vetClueConversation = clueScriptableObject.dialogueConversations;
-            imgDescription = clueScriptableObject.imgDescription;
-            clueQuestions = clueScriptableObject.clueQuestions;
-            if(memories == null)
+            
+            imageDescription = clueScriptableObject.imageDescription;
+            ledgerImage = clueScriptableObject.ledgerImage;
+            ledgerOverlays = clueScriptableObject.ledgerOverlays;
+            questionID = clueScriptableObject.questionID;
+            dialogueConversation = clueScriptableObject.dialogConversation;
+            if(memoryId == null)
             {
                Debug.LogError("there are no memories attached to clue " + bodyID);
             }
-            memories = clueScriptableObject.memories;
+            memoryId = clueScriptableObject.memoryId;
 
             gameObject.layer = LayerMask.NameToLayer("cluecollider");
             base.OnEnable();

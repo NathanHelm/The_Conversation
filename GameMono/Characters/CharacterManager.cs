@@ -52,8 +52,9 @@ public class CharacterManager : StaticInstance<CharacterManager>, ISaveLoad
         }
         for(int i = 0; i < clueMono.Length; i++) //we also add clue mono from game env
         {
-            
-            AddDialogueObjToDict(clueMono[i].vetClueConversation, clueMono[i].bodyID);
+            //note that there is only one conversation to be had when vet inspects clue... therefore, we don't need an array.
+          DialogueConversation[] singledialogConversation = new DialogueConversation[] {clueMono[i].dialogueConversation};
+           AddDialogueObjToDict(singledialogConversation, clueMono[i].bodyID);
         }
         Debug.Log("LOG: Got all character from the scene, their id and conversation [see dialogue SO] are now in the character manager dictionary.");
         Debug.Log("LOG: obtained all memories from characters in scene. --data can be accessed from memory manager. ");
