@@ -186,7 +186,12 @@ namespace UI
             StartCoroutine(FlipPageAnimation(index, 0, 180));
             LedgerMovement.INSTANCE.MoveHandAwaitPoint();
         }
-        
+        public Renderer GetPageOverlayRenderer(int index)
+        {
+           var temp =  pageObjects[index].GetComponentsInChildren<Renderer>()[1];
+           return temp;
+        }
+
         public (Renderer, Renderer) GetChildrenOfRotateIndex(int rotateIndex)
         {
             
@@ -259,7 +264,7 @@ namespace UI
 
            //new idea ==> 
            Renderer renderer =  pageObjects[index].GetComponent<Renderer>();
-           ChangeRenderQueue(ref renderer, 3000, Color.blue);
+           ChangeRenderQueue(ref renderer, 3050, Color.blue);
             
            if(GetChildrenOfRotateIndex(rotateIndex).Item1 == null || GetChildrenOfRotateIndex(rotateIndex).Item2 == null)
            {
@@ -325,7 +330,7 @@ namespace UI
         public void ChangeLayerDown(int i)
         {
            Renderer r = pageObjects[i].GetComponent<Renderer>();
-           ChangeRenderQueue(ref r, 2900, Color.grey);
+           ChangeRenderQueue(ref r, 3000 + i, Color.grey);
         }
        
         public void ChangeBorderLeft()

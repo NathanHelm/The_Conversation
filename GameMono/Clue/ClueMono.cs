@@ -13,7 +13,9 @@ public class ClueMono : BodyMono
     public Texture ledgerImage;
     public Texture[] ledgerOverlays;
 
-    public static int clueQuestionID;
+    public static int clueQuestionID = 0; //as things stand this should really stay as zero
+
+    public int clueBodyID;
 
     public DialogueConversation dialogueConversation;
 
@@ -29,6 +31,7 @@ public class ClueMono : BodyMono
             ledgerOverlays = clueScriptableObject.ledgerOverlays;
             questionID = clueScriptableObject.questionID;
             dialogueConversation = clueScriptableObject.dialogConversation;
+            clueBodyID = clueScriptableObject.clueBodyID;
             if(memoryId == null)
             {
                Debug.LogError("there are no memories attached to clue " + bodyID);

@@ -14,6 +14,15 @@ public class HandScriptableObject : ScriptableObject
     public Vector2 leftPageObjectPosition;
     public Vector2 rightPageObjectPosition;
 
+    public Vector2 pageWriteEndOffset;
+
+    public Vector2 pageWriteStartOffset;
+
+    public Vector3 leftHandBasePosition;
+
+
+
+
 
 
 

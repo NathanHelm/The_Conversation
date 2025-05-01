@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 public class DrawImageManager : StaticInstance<DrawImageManager>{
 
@@ -5,4 +6,6 @@ public class DrawImageManager : StaticInstance<DrawImageManager>{
    {
         Debug.Log("drawing function!");
    }
+
+
 }

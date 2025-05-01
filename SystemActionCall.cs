@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Linq;
 
 public class SystemActionCall<T>
 {
@@ -19,14 +20,19 @@ public class SystemActionCall<T>
     }
     public void RemoveAction(Action<T> action)
     {
-        try
+        if(actionSetup != null)
         {
-            initialAction -= action;
+        if(actionSetup.GetInvocationList().Contains(action))
+        {
             actionSetup -= action;
         }
-        catch(Exception e)
+        }
+        if(initialAction != null)
         {
-           Debug.LogError(e); 
+        if(initialAction.GetInvocationList().Contains(action))
+        {
+            initialAction -= action;
+        }
         }
     }
     public void RemoveAllActions()

@@ -6,4 +6,5 @@ public class LedgerScriptableObject : ScriptableObject
 {
     public Material firstPageMat, lastPageMat, defaultMat;
     public GameObject pagePrefab, doubleSidedPagePrefab;
+
 }

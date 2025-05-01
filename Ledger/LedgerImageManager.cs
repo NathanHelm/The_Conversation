@@ -42,6 +42,10 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>{
     {
         ledgerImages[index] = newLedgerImage;
     }
+    public void SetTemporaryImageToNull()
+    {
+        temporaryImage = null;
+    }
     public bool IsTemporyImageNull()
     {
        if(temporaryImage == null)

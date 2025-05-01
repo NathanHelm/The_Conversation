@@ -53,6 +53,7 @@ public class GameEventManager : MonoBehaviour
 	{
 		if (!onStateNameToAction.ContainsKey(stateName.ToString()))
 		{
+            Debug.LogError("state " + stateName.ToString() + " not found. \nAdd state to statemanager.");
 			return;
 		}
 		onStateNameToAction[stateName.ToString()]();
@@ -61,6 +62,7 @@ public class GameEventManager : MonoBehaviour
     {
         if (!onStateNameToAction.ContainsKey(stateName.ToString()))
         {
+            Debug.LogError("state " + stateName.ToString() + "not found. \nAdd state to statemanager.");
             return;
         }
         onStateNameToAction[stateName]();

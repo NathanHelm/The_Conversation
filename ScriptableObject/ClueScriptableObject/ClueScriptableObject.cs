@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "ClueSO", menuName = "ScriptableObjects/ClueSO", order = 4)]
+
 public class ClueScriptableObject : ScriptableObject
 {
    	public string imageDescription;
@@ -12,6 +13,11 @@ public class ClueScriptableObject : ScriptableObject
 
     public Texture[] ledgerOverlays;
 
+    public int clueBodyID;
+
+    [Header("there is no need to add a id-- you will be routed to cluemono static instance")]
     public DialogueConversation dialogConversation;
+
+
     
 }

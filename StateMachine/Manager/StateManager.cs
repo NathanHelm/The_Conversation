@@ -46,10 +46,19 @@ public class  StateManager: StaticInstance<StateManager>
     public OpenLedgerState openLedgerState = new OpenLedgerState();
     public IdleLedgerState idleLedgerState = new IdleLedgerState();
     public DisableLedgerState disableLedgerState = new DisableLedgerState();
+    public ReplaceLedgerState replaceLedgerState = new();
+
+    public WriteToPageLedgerState writeToPageLedgerState = new();
 
     public MoveHandFlipState moveHandFlipState = new();
     public PointHandState pointHandState = new();
+
+    public WriteHandState writeHandState = new();
+
+    public EnableHandState enableHandState = new();
     public DisableHandState disableHandState = new();
+
+    public ClickHandState clickHandState = new();
 
     public IdleHandState idleHandState = new();
 
@@ -126,12 +135,21 @@ public class  StateManager: StaticInstance<StateManager>
             GameEventManager.INSTANCE.AddEvent(typeof(OpenLedgerState), () => { ledgerState.SwitchState(openLedgerState); });
             GameEventManager.INSTANCE.AddEvent(typeof(IdleLedgerState), () => { ledgerState.SwitchState(idleLedgerState); });
             GameEventManager.INSTANCE.AddEvent(typeof(DisableLedgerState), () => { ledgerState.SwitchState(disableLedgerState); });
-            ledgerState.SwitchState(disableLedgerState);
+            GameEventManager.INSTANCE.AddEvent(typeof(WriteToPageLedgerState), () => { ledgerState.SwitchState(writeToPageLedgerState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(ReplaceLedgerState), () => { ledgerState.SwitchState(replaceLedgerState); });
+       
+           
             //yes...hand state and ledgerstate carry the same data
             GameEventManager.INSTANCE.AddEvent(typeof(IdleHandState), ()=> {handState.SwitchState(idleHandState);});
+            GameEventManager.INSTANCE.AddEvent(typeof(EnableHandState), ()=> {handState.SwitchState(enableHandState);});
             GameEventManager.INSTANCE.AddEvent(typeof(DisableHandState), ()=> {handState.SwitchState(disableHandState);});
             GameEventManager.INSTANCE.AddEvent(typeof(PointHandState), ()=> {handState.SwitchState(pointHandState);});
             GameEventManager.INSTANCE.AddEvent(typeof(MoveHandFlipState), ()=> {handState.SwitchState(moveHandFlipState);});
+            GameEventManager.INSTANCE.AddEvent(typeof(ClickHandState), ()=> {handState.SwitchState(clickHandState);});
+            GameEventManager.INSTANCE.AddEvent(typeof(WriteHandState), ()=> {handState.SwitchState(writeHandState);});
+          
+            
+            ledgerState.SwitchState(disableLedgerState);
             handState.SwitchState(disableHandState);
         }
       

@@ -17,8 +17,8 @@ public class OpenLedgerState : LedgerState
         if(Input.GetKeyDown(KeyCode.Tab))
         {
         GameEventManager.INSTANCE.OnEvent(typeof(DisableLedgerState));
-        GameEventManager.INSTANCE.OnEvent(typeof(PlayCutsceneState));
         GameEventManager.INSTANCE.OnEvent(typeof(DisableHandState));
+        GameEventManager.INSTANCE.OnEvent(typeof(PlayCutsceneState));
         }
         
         

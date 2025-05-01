@@ -13,7 +13,10 @@ public class LedgerManager : StaticInstance<LedgerManager>
 {
     public static SystemActionCall<LedgerManager> onStartLedgerData = new SystemActionCall<LedgerManager>();
     public static SystemActionCall<LedgerManager> onActiveLedger = new SystemActionCall<LedgerManager>();
-
+    
+    public static SystemActionCall<LedgerManager> onMovePageLeft = new SystemActionCall<LedgerManager>();
+    public static SystemActionCall<LedgerManager> onMovePageRight = new SystemActionCall<LedgerManager>();
+    
     public List<LedgerImage> ledgerImages = new List<LedgerImage>();
     
     public int index{get; set;} = 0;
@@ -21,7 +24,9 @@ public class LedgerManager : StaticInstance<LedgerManager>
 
     public readonly int ledgerLength = 10;
 
-    public bool isLedgerCreated = true;
+    public bool isLedgerCreated {get;set;} = false;
+
+    public bool isLedgerActive {get;set;} = false;
     
     int pageL; 
 
@@ -68,14 +73,19 @@ public class LedgerManager : StaticInstance<LedgerManager>
     private void RunLedger()
     {
        
-        if(isLedgerCreated)
+        if(!isLedgerCreated)
         {
             CreateLedger(); //make a ten page ledger
-            LedgerData.INSTANCE.isLedgerCreated = isLedgerCreated = false;
+            LedgerData.INSTANCE.isLedgerCreated = isLedgerCreated = true;
         }
-       
+        if(!isLedgerActive)
+        {
+        LedgerMovement.INSTANCE.MoveHandLeft();
         EnableLedger();
-
+        UI.LedgerUIManager.INSTANCE.FlipPageRight(0);
+        ChangeColorLayeringBorderLeft();
+        isLedgerActive = true;
+        }
 
         pageL = UI.LedgerUIManager.INSTANCE.GetPageLength();
         LedgerImageManager.INSTANCE.MaxLedgerImageLength = pageL;
@@ -86,9 +96,8 @@ public class LedgerManager : StaticInstance<LedgerManager>
         onActiveLedger.RunAction(this); //for one, upadte ledgerimages list...
         //AddImagesToLedgerPages();
 
-
-        UI.LedgerUIManager.INSTANCE.FlipPageRight(0);
-        ChangeColorLayeringBorderLeft();
+       
+      
 
       
  
@@ -114,11 +123,11 @@ public class LedgerManager : StaticInstance<LedgerManager>
     }
     public void MovePagesFurthestRight()
     {
-         StartCoroutine(MoveRightUntilIndex(0, furthestRight, animationSpeed));
+         StartCoroutine(MoveRightUntilIndex(index, furthestRight, animationSpeed));
     }
     public void MovePagesToFurthestLedgerImage()
     {
-         StartCoroutine(MoveRightUntilIndex(0, ledgerImages.Count - 1, animationSpeed));
+         StartCoroutine(MoveRightUntilIndex(index, ledgerImages.Count - 1, animationSpeed));
     }
 
     public void OpenLedger()
@@ -225,7 +234,8 @@ public class LedgerManager : StaticInstance<LedgerManager>
                 //and change color
                 return;
             }
-            LedgerMovement.INSTANCE.HandPointAtPage();
+           // GameEventManager.INSTANCE.OnEvent(typeof(PointHandState));
+            onMovePageRight.RunAction(this);
             ChangeColorAndLayering(index);
 
     }
@@ -267,7 +277,8 @@ public class LedgerManager : StaticInstance<LedgerManager>
             --index;
             LedgerData.INSTANCE.pageObjectsIndex = index;
            
-           LedgerMovement.INSTANCE.HandPointAtPage();
+           onMovePageLeft.RunAction(this);
+          // GameEventManager.INSTANCE.OnEvent(typeof(PointHandState));
            ChangeColorAndLayering(index);
     }
 
@@ -313,16 +324,19 @@ public class LedgerManager : StaticInstance<LedgerManager>
 
     public IEnumerator MoveRightUntilIndex(int startIndex,int toIndex, float speed)
     {
-        var prevflippageS = LedgerData.INSTANCE.flipPageSpeed;
-        LedgerData.INSTANCE.flipPageSpeed = animationSpeed;
+        var prevflippageS = LedgerData.INSTANCE.flipPageTime;
+        LedgerData.INSTANCE.flipPageTime = animationSpeed + 0.5f;
+       
 
         while(startIndex < toIndex)
         {
+           
             yield return new WaitForSeconds(speed);
             MovePageRight();
             ++startIndex;
         }
-        LedgerData.INSTANCE.flipPageSpeed = prevflippageS;
+        LedgerData.INSTANCE.flipPageTime = prevflippageS;
+        yield return null;
     }
 
 
@@ -333,6 +347,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
     }
     public void DisableLedger()
     {
+        isLedgerActive = false;
         UI.LedgerUIManager.INSTANCE.CloseBook();
     }
     
