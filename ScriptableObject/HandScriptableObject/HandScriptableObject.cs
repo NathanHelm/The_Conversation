@@ -20,6 +20,8 @@ public class HandScriptableObject : ScriptableObject
 
     public Vector3 leftHandBasePosition;
 
+    public Vector3 ledgerImageUIPosition;
+
 
 
 

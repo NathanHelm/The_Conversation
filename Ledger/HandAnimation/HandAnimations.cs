@@ -6,7 +6,11 @@ public enum HandAnimation{
     FlipAnim,
     ClickAnim,
     WriteAnim,
-    HoldPage
+    HoldPage,
+
+    LHoldPage,
+
+    LLastFlip
 }
 public class HandAnimations : StaticInstance<HandAnimations>{
     
@@ -15,12 +19,20 @@ public class HandAnimations : StaticInstance<HandAnimations>{
 
     private GameObject leftHand;
 
+    private Renderer leftHandPageShader;  //NOTE that varaible is only set replace image state.
+
     [SerializeField]
     HandScriptableObject handScriptableObject;
 
+    public override void OnEnable()
+    {
+        MManager.onStartManagersAction.AddAction(m => m.handAnimations = this);
+        base.OnEnable();
+    }
+
     public override void m_Start()
     {
-      LedgerMovement.INSTANCE.onAfterCreateHands.AddAction((LedgerMovement lm) => {
+        LedgerMovement.onAfterCreateHands.AddAction((LedgerMovement lm) => {
         rightHandAnim = LedgerData.INSTANCE.rightHandAnim;
         leftHandAnim = LedgerData.INSTANCE.leftHandAnim;
         leftHand = LedgerData.INSTANCE.leftHandObj;
@@ -51,10 +63,22 @@ public class HandAnimations : StaticInstance<HandAnimations>{
             AnimationManager.INSTANCE.PlayAnimation(ref handAnim, "draw");
             AnimationManager.INSTANCE.ChangeAnimationSpeed(ref handAnim,speed);
         }
-        else if(handAnimation == HandAnimation.HoldPage)
+        else if(handAnimation == HandAnimation.LHoldPage)
+        {
+            AnimationManager.INSTANCE.PlayAnimation(ref handAnim, "hold_page");
+            AnimationManager.INSTANCE.ChangeAnimationSpeed(ref handAnim,speed);
+        }
+        
+        else if(handAnimation == HandAnimation.LHoldPage)
         {
             handAnim = leftHandAnim;
             AnimationManager.INSTANCE.PlayAnimation(ref handAnim, "hold_page");
+            AnimationManager.INSTANCE.ChangeAnimationSpeed(ref handAnim,speed);
+        }
+        else if(handAnimation == HandAnimation.LLastFlip)
+        {
+            handAnim = leftHandAnim;
+            AnimationManager.INSTANCE.PlayAnimation(ref handAnim, "last_flip");
             AnimationManager.INSTANCE.ChangeAnimationSpeed(ref handAnim,speed);
         }
     }
@@ -72,26 +96,38 @@ public class HandAnimations : StaticInstance<HandAnimations>{
       Texture[] overlayTextures = ledgerImage.ledgerOverlays;
       Texture image = ledgerImage.ledgerImage;
 
-      SetPageToTexture(ref leftHand, image, overlayTextures);
+      leftHandPageShader = SetPageToTexture(ref leftHand, image, overlayTextures); //obtaining the renderer from the left hand enabled page...
 
       leftHandPage.SetActive(true);
       leftHandThumb.SetActive(true);
     }
-    private void SetPageToTexture(ref GameObject page,Texture image, Texture[] imageOverlays)
+    private Renderer SetPageToTexture(ref GameObject page,Texture image, Texture[] imageOverlays)
     {
-      var frontPage = page.GetComponentInChildren<Renderer>();
-      var overlayImage = frontPage.transform.GetChild(0).GetComponentInChildren<Renderer>();
+      var test = page.GetComponentsInChildren<Renderer>();
+      //this code sucks... so many children I aint even pregnent ha... hah ahaha.
+      var overlayImage = page.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Renderer>();
       overlayImage.material.SetTexture("_MainTex", image);
+      Debug.LogError("TODO: add page data to ledgerimage to depict correct page image and add overlay images in prefab");
+  
+      return overlayImage;
       //TODO frontPage -- add 
-      Debug.LogError("TODO: add image function to depict correct page image and add overlay images in prefab");
     }
     public void DisableLeftHandPage()
     {
+      
+       //TODO add action to onaftereraseimage -- add code below to action. 
       GameObject leftHandPage = leftHand.transform.GetChild(0).gameObject;
       GameObject leftHandThumb = leftHand.transform.GetChild(1).gameObject;
       leftHandPage.SetActive(false);
       leftHandThumb.SetActive(false);
-
+    }
+    public void EraseImageAnimationLeftHandPage()
+    {
+      PageAnimations.INSTANCE.EraseImage(leftHandPageShader);
+    }
+    public void DrawImageAnimationLeftHandPage()
+    {
+     PageAnimations.INSTANCE.DrawImage(leftHandPageShader);
     }
    
 

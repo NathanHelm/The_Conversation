@@ -7,8 +7,6 @@ public class CharacterMono : BodyMono
 	[SerializeField]
 	private CharacterScriptableObject characterScriptableObject;
 
-	[SerializeField]
-	private MemoryScriptableObject memoryScriptableObject;
 
 	public DialogueConversation[] dialogueConversation {get; set;}
 	public MemoryStage[] memoryStages {get; set;}
@@ -24,19 +22,11 @@ public class CharacterMono : BodyMono
 			bodyID = characterScriptableObject.character.ID;
 			persistentConversationId = characterScriptableObject.character.persistentConversationID;
 			dialogueConversation = characterScriptableObject.character.dialogueConversations;
-			
+			memoryStages = characterScriptableObject.character.memoryStages;
 		}
 		else
 		{
 			Debug.Log("Character doesn't have character scriptable object.");
-		}
-		if(memoryScriptableObject != null)
-		{
-			this.memoryStages = memoryScriptableObject.memoryStage;
-		}
-		else
-		{
-			Debug.Log("Character doesn't have memeory scriptable object.");
 		}
 		gameObject.layer = LayerMask.NameToLayer("charactercollider");
 

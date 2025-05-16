@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using Data;
+using Codice.Client.Common;
 public class TriggerActionManager : StaticInstance<TriggerActionManager>
 {
 	public static SystemActionCall<TriggerActionManager> onTriggerActionTriggerActionManager = new SystemActionCall<TriggerActionManager>();
@@ -35,7 +36,7 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>
 		/*
 		 *  BODY STARTS WITH A -- 1
 		 *  CHARACTERS START WITH A -- 2
-		 *  SWITCH Scene START WITH A -- 3
+		 *  CLUES START WITH A -- 3
 		 */
 
 
@@ -57,10 +58,17 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>
 
 
         });
-		characterIDToTriggerAction.Add(21, ()=>{
+		characterIDToTriggerAction.Add(22, ()=>{
 
-			GameEventManager.INSTANCE.OnEvent(typeof(ImmediateConversationState));
+			GameEventManager.INSTANCE.OnEvent(typeof(ConversationState));
 
+
+		});
+		//NOTE: EVERY CHARACTER- or characterID with the id 2 - will run the action below, use with caution!
+		characterIDToTriggerAction.Add(2, ()=> {
+			Debug.Log("hey hey, its me number 2!");
+		
+			
 		});
 
         characterIDToTriggerAction.Add(12, () =>
@@ -68,11 +76,9 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>
 			//Game
 		});
 
-		characterIDToTriggerAction.Add(31, ()=>{
-
-			
-		});
+		
 		/*
+
 		characterIDToTriggerAction.Add(2, ()=>{
 			
 			Debug.Log("IMMEDIATE DIALOG TESTING!");
@@ -100,14 +106,12 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>
 	{
         onTriggerActionTriggerActionManager?.RunAction(this);
 
-		if (!characterIDToTriggerAction.ContainsKey(characterID))
+		int getFirstVal = GetFirstVal(characterID);
+		Debug.Log("LOG first value that's in trigger --> " + getFirstVal);
+
+		if (!characterIDToTriggerAction.ContainsKey(characterID)) //if there is no character id found the warrant a trigger event (see characterIDToTriggerAction dictionary)
 		{
-			int n = (int)Mathf.Pow(10,characterID.ToString().Length -1);
-			int getFirstVal = characterID;
-			if(n < characterID)
-			{
-				getFirstVal = characterID / n;
-			}
+			
 			//if getfirstvalue = 2, character,
 			//if 1, its a body. 
 			if (triggerOnTrigger.charactersOnTrigger.Count > 0 && getFirstVal == 2)
@@ -130,8 +134,22 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>
 			}
 		}
 		 
-			return characterIDToTriggerAction[characterID];
+		if(getFirstVal == 2)
+		{
+			Debug.Log("LOG playing default character trigger at --> 2");
+			characterIDToTriggerAction[2]();
+		}
+		
+		return characterIDToTriggerAction[characterID];
 		 
+	}
+	private int GetFirstVal(int characterID)
+	{
+		return (int)characterID.ToString()[0];
+	}
+	private int GetNVal(int characterID, int N)
+	{
+		return (int)characterID.ToString()[N];
 	}
 
 	 

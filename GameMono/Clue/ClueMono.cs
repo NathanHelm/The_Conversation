@@ -9,13 +9,12 @@ public class ClueMono : BodyMono
 
     public string imageDescription;
     public int questionID; //unlocked question that is said the characters to reveal the plot... 
-	public int[] memoryId;
     public Texture ledgerImage;
     public Texture[] ledgerOverlays;
 
-    public static int clueQuestionID = 0; //as things stand this should really stay as zero
+    public int clueQuestionID = 0;
 
-    public int clueBodyID;
+    public static int clueBodyID {get; set;} = 31; //as things stand this should really stay as 31
 
     public DialogueConversation dialogueConversation;
 
@@ -31,14 +30,9 @@ public class ClueMono : BodyMono
             ledgerOverlays = clueScriptableObject.ledgerOverlays;
             questionID = clueScriptableObject.questionID;
             dialogueConversation = clueScriptableObject.dialogConversation;
-            clueBodyID = clueScriptableObject.clueBodyID;
-            if(memoryId == null)
-            {
-               Debug.LogError("there are no memories attached to clue " + bodyID);
-            }
-            memoryId = clueScriptableObject.memoryId;
-
+            clueQuestionID = clueScriptableObject.clueQuestionID;
             gameObject.layer = LayerMask.NameToLayer("cluecollider");
+            bodyID = clueBodyID;
             base.OnEnable();
         }
     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Data;
 using PlasticGui.WorkspaceWindow;
+using UI;
 using UnityEngine;
 
 public class LedgerImageManager : StaticInstance<LedgerImageManager>{
@@ -15,7 +16,8 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>{
 
     public override void OnEnable()
     {
-        //TODO add to mmanager
+ 
+        MManager.onStartManagersAction.AddAction(m => { m.ledgerImageManager = this; });
         base.OnEnable();
     }
     public override void m_Start()
@@ -65,19 +67,52 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>{
         }
         return false;
     }
+
     public int GetQuestionIDFromPage(int index)
     {
        return ledgerImages[index].questionID;
     }
+    public int GetClueQuestionIDFromPage(int index)
+    {
+        return ledgerImages[index].clueQuestionID;
+    }
+    public int GetClueBodyIDFromPage(int index)
+    {
+        return ledgerImages[index].clueBodyID;
+    }
+    public bool IsIndexInLedgerImageListRange(int index)
+    {
+        if(ledgerImages == null)
+        {
+            return false;
+        }
+        if(ledgerImages.Count - 1 < index || index < 0)
+        {
+            return false;
+        }
+        return true;
+    }
+    //setting the a render's texture with the page image's texture on index
+    public void SetRenderTextureToLedgerImage(ref Renderer renderer, int pageIndex)
+    {
+       if(!IsIndexInLedgerImageListRange(pageIndex))
+       {
+            Debug.LogError("pageIndex" + pageIndex + " not in range");
+       }
+       var currentLedgerimage = ledgerImages[pageIndex].ledgerImage;
+       renderer.material.SetTexture("_MainTex", currentLedgerimage);
+    }
+
   //  public void 
 
-     public void AddRayInfoToLedgerImage(string imageDescription, int questionID, int clueQuestionID, Texture ledgerImg, Texture[] ledgerOverlays, int[] memoryID, int clueBodyID) //converts ray information to ledger image object
+     public void AddRayInfoToLedgerImage(string imageDescription, int questionID, int clueQuestionID, Texture ledgerImg, Texture[] ledgerOverlays, int clueBodyID) //converts ray information to ledger image object
     {
-        LedgerImage ledgerImage = new(imageDescription, questionID, clueQuestionID, ledgerImg, ledgerOverlays , memoryID, clueBodyID);
+        LedgerImage ledgerImage = new(imageDescription, questionID, clueQuestionID, ledgerImg, ledgerOverlays, clueBodyID);
         
-        if(ledgerImages.Count > MaxLedgerImageLength)
+        if(ledgerImages.Count >= MaxLedgerImageLength)
         {
             temporaryImage = ledgerImage;
+           // GameEventManager.INSTANCE.OnEvent(typeof());
             return;
         }
 

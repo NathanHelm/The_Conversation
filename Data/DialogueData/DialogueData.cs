@@ -12,12 +12,10 @@ namespace Data
 		public int currentCharacterID, currentPersistentConversationID;
 		[SerializeField]
 		public int currentQuestionID { get; set; }
-		 
-		[SerializeField]
-		public DialogueScriptableObject player;
-		[SerializeField]
-		public DialogueScriptableObject currentNPC = null;
-		public DialogueConversation currentConversation;
+
+		public Action<DialogueManager> runEndDialogConversation = lm => { GameEventManager.INSTANCE.OnEvent(typeof(EndConversationReplayState)); };
+		public Action<DialogueManager> runEndClueInspection = lm => { GameEventManager.INSTANCE.OnEvent(typeof(OpenLedgerState));
+		 GameEventManager.INSTANCE.OnEvent(typeof(EndConversationState));  };
 
 		//public DialogueManager dialogueManager { get; set; }
 		//public QuestionResponseManager questionResponseManager { get; set; }

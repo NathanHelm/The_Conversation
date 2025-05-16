@@ -73,6 +73,17 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
             }
             }
         });
+        conversationKeyToDialogActions.Add(33, new Dictionary<int, Dictionary<int, Action>>()
+        {
+            {
+                2, 
+                new Dictionary<int, Action>(){
+                    {
+                        3, ()=> {Debug.Log("AHA! -- you unlocked a memory conDRAGulations");}
+                    }
+                }
+            }
+        });
         conversationKeyToDialogActions.Add(210, new Dictionary<int, Dictionary<int, Action>>()
         {
             {
@@ -94,7 +105,7 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
                            // GameEventManager.INSTANCE.OnEvent(typeof(NoConversationState));
                             GameEventManager.INSTANCE.OnEvent(typeof(TransitionTo2d));
                             GameEventManager.INSTANCE.OnEvent(typeof(PlayerLook3dState));
-                            GameEventManager.INSTANCE.OnEvent(typeof(EndConversationState));
+                            GameEventManager.INSTANCE.OnEvent(typeof(EndConversationReplayState));
 
 
                         }, ()=>{
@@ -104,7 +115,7 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
                            //GameEventManager.INSTANCE.OnEvent()
                             GameEventManager.INSTANCE.OnEvent(typeof(TransitionTo2d));
                             GameEventManager.INSTANCE.OnEvent(typeof(PlayerLook3dState));
-                            GameEventManager.INSTANCE.OnEvent(typeof(EndConversationState));
+                            GameEventManager.INSTANCE.OnEvent(typeof(EndConversationReplayState));
                         });
 
                         GameEventManager.INSTANCE.OnEvent(typeof(ButtonOptionDialogState));

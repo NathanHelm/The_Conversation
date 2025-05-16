@@ -6,7 +6,7 @@ using Persistence;
 using UnityEngine;
 
 
-public enum FileNames { myfile, mydialogfile, DialogueConversationFile }; //enter all filenames here
+public enum FileNames { myfile, mydialogfile, DialogueConversationFile, InterviewFile }; //enter all filenames here
 
 
 public class SavePersistenceManager : StaticInstance<SavePersistenceManager>
@@ -19,16 +19,17 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>
     private Dictionary<FileNames, object> fileHandlerNameTofileHandler = new Dictionary<FileNames, object>();
     public ISaveLoad[] SaveLoads {get; set;} //obtain all Isaveload
 
+    
     public override void OnEnable()
     {
-        MManager.INSTANCE.actionCall.AddAction((MManager m)=>{m.savePersistenceManager = this;});
+        MManager.onStartManagersAction.AddAction((MManager m)=>{m.savePersistenceManager = this;});
        base.OnEnable();
     }
     public override void m_Start()
     {
         PopulateCurrentFiles();
         MakePersistenceDictionary(); //making persistent dictionary from json filehandlers
-        Load(); //yes load on start...
+       
     }
     
     public string GetPath()
@@ -57,6 +58,8 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>
         fileHandlerNameTofileHandler.Add(FileNames.DialogueConversationFile, fileHandler2);
         //========================================================================================================================
         
+        FileHandler<JsonInterviewObject> fileHandler3 = new FileHandler<JsonInterviewObject>(Path.Combine(GetPath(), FileNames.InterviewFile + ".json"));
+        fileHandlerNameTofileHandler.Add(FileNames.InterviewFile, fileHandler3);
         //dont touch this.
          foreach(FileNames fileHandlerKey in fileHandlerNameTofileHandler.Keys){
 
@@ -110,7 +113,11 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>
             {
                 PopulatePersistenceDictionary<JsonQuestionObject>(fileHandlerKey);
             }
-            else if(jsonObject is FileHandler<JsonObject>)
+            else if(jsonObject is FileHandler<JsonInterviewObject>)
+            {
+                PopulatePersistenceDictionary<JsonInterviewObject>(fileHandlerKey);
+            }
+            else if(jsonObject is FileHandler<JsonObject>) //run last
             {
                 PopulatePersistenceDictionary<JsonObject>(fileHandlerKey);
             }
@@ -157,7 +164,16 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>
 
              fileHandler.PutToFile();
     }
-   
+    public void ReplaceFileName<T>(FileNames key, T ReplaceObj) where T : JsonObject
+    { 
+        //note that you can't have an array of T because we are not adding multiple components of the same data only on json data.
+        //also, the ID doesn't matter as we are only storing a single json object to the file...
+        FileHandler<T> fileHandler = (FileHandler<T>)fileHandlerNameTofileHandler[key];
+        SaveDataToFileHandler(ReplaceObj, ref fileHandler);
+        fileHandler.ReplaceFile();
+       
+        
+    }
    
     public void Save()
     {
@@ -173,6 +189,8 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>
            foreach((FileNames ,JsonObject[]) saveObj in saveObjects)
            {
             FileNames currentFile = saveObj.Item1;  
+
+            //NOTE: json that adds data to an existing file is 'SaveTofileName.' However, json that is replaces data from an existing file is of function type 'ReplaceFileName.'
             if(saveObj.Item2 is JsonDialogueConversationObject[])
             {
               SaveToFileName(currentFile, (JsonDialogueConversationObject[])saveObj.Item2);
@@ -180,6 +198,11 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>
             else if(saveObj.Item2 is JsonQuestionObject[])
             {
                SaveToFileName(currentFile, (JsonQuestionObject[])saveObj.Item2);
+            }
+            else if(saveObj.Item2 is JsonInterviewObject[]){
+                //note you can only have json interview object...
+                JsonInterviewObject jsonInterviewObject = (JsonInterviewObject)saveObj.Item2[0];
+                ReplaceFileName(currentFile, jsonInterviewObject);
             }
             else if(saveObj.Item2 is JsonObject[])
             {
@@ -205,7 +228,6 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>
             saveLoad.Load();
         }
     }
-
     public void SaveDataToFileHandler<T>(T jsonObject, ref FileHandler<T> fileHandler) where T : JsonObject
     {
         fileHandler.AddData(jsonObject);
@@ -217,5 +239,6 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>
         List<T> temp = fileHandler.GetGameObjectFromStack();
         return temp;
     }
+
 
 }

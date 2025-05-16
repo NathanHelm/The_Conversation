@@ -11,6 +11,8 @@ public class DialogueObject
     public string line; //DO NOT TOUCH
     [SerializeField]
     public Sprite image;
+    [SerializeField]
+    public Texture imageTex;
 
 }
 

@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
 using Data;
 using System;
 using System.Collections.Generic;
-using Codice.CM.SEIDInfo;
+using UnityEditor.Build.Reporting;
 
 public class  StateManager: StaticInstance<StateManager>
 {
@@ -17,6 +16,7 @@ public class  StateManager: StaticInstance<StateManager>
     public LedgerStateMono ledgerState;
     public HandStateMono handState;
     public CutsceneMono cutsceneState;
+    public SceneStateMono sceneStateMono;
 
     /*
      all other state are here
@@ -29,15 +29,19 @@ public class  StateManager: StaticInstance<StateManager>
     public PlayerIdleState playerIdleState = new PlayerIdleState();
 
     public ConversationState conversationState = new ConversationState();
-    public EndConversationState endConversationState = new EndConversationState();
+    public EndConversationReplayState endConversationReplayState = new EndConversationReplayState();
     public NoConversationState noConversationState = new NoConversationState();
     public ImmediateConversationState immediateConversationState = new();
-
     public ButtonOptionDialogState buttonOptionDialogState = new();
+    public ClueConversationState clueConversationState = new();
+    public EndConversationState endConversationState = new();
+
+
 
     public PlayCutsceneState playCutsceneState = new();
     public StopCutsceneState stopCutsceneState = new();
     public NoCutsceneState noCutsceneState = new();
+
 
     public TriggerConversationState triggerConversationState = new TriggerConversationState();
     public DefaultTriggerState defaultTriggerState = new DefaultTriggerState();
@@ -47,8 +51,10 @@ public class  StateManager: StaticInstance<StateManager>
     public IdleLedgerState idleLedgerState = new IdleLedgerState();
     public DisableLedgerState disableLedgerState = new DisableLedgerState();
     public ReplaceLedgerState replaceLedgerState = new();
-
     public WriteToPageLedgerState writeToPageLedgerState = new();
+    public InspectClueLedgerState inspectClueLedgerState = new();
+
+
 
     public MoveHandFlipState moveHandFlipState = new();
     public PointHandState pointHandState = new();
@@ -62,17 +68,31 @@ public class  StateManager: StaticInstance<StateManager>
 
     public IdleHandState idleHandState = new();
 
+    public HoldPageState holdPageState = new();
+
+    //scene states below========================================================================================
+
+    public VetHouseSceneState vetHouseSceneState = new();
+    public InterviewSceneState interviewSceneState = new();
+    public IdleSceneState idleSceneState = new();
+
+    //=============================================================================================================
+
     public readonly object[] stopStates = new object[] {
         new TransitionTo3d(),
+        new NoCutsceneState(),
         new NoConversationState(),
         new NoTriggerState(),
         new PlayerIdleState(),
         new IdleLedgerState(),
         new IdleHandState(),
+        
     
         // CUTSCENE STAYS LAST. If No Cutscene is not last stop state, cutscene will not stop states after it... 
        
     };
+    private readonly string[] stateParent = new string[] { "PlayerState", "CutsceneState", "DialogueState", "TriggerState", "DimensionState", "LedgerState", "HandState" };
+
     public override void OnEnable()
     {
         MManager.onStartManagersAction.AddAction((MManager e) =>{e.stateManager = this;});
@@ -89,6 +109,7 @@ public class  StateManager: StaticInstance<StateManager>
         cutsceneState = gameObject.AddComponent<CutsceneMono>();
         ledgerState = gameObject.AddComponent<LedgerStateMono>();
         handState = gameObject.AddComponent<HandStateMono>();
+        sceneStateMono = gameObject.AddComponent<SceneStateMono>();
         
 
 
@@ -110,10 +131,13 @@ public class  StateManager: StaticInstance<StateManager>
         {
             GameEventManager.INSTANCE.AddEvent(typeof(ConversationState), () => { dialogueState.SwitchState(conversationState); });
             GameEventManager.INSTANCE.AddEvent(typeof(NoConversationState), () => { dialogueState.SwitchState(noConversationState); });
-            GameEventManager.INSTANCE.AddEvent(typeof(EndConversationState), () => { dialogueState.SwitchState(endConversationState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(EndConversationReplayState), () => { dialogueState.SwitchState(endConversationReplayState); });
             GameEventManager.INSTANCE.AddEvent(typeof(ImmediateConversationState), ()=>{dialogueState.SwitchState(immediateConversationState);});
             GameEventManager.INSTANCE.AddEvent(typeof(ButtonOptionDialogState), ()=>{dialogueState.SwitchState(buttonOptionDialogState);});
-            dialogueState.SwitchState(endConversationState);
+            GameEventManager.INSTANCE.AddEvent(typeof(ClueConversationState), ()=> {dialogueState.SwitchState(clueConversationState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(EndConversationState), () => { dialogueState.SwitchState(endConversationState); });
+
+            dialogueState.SwitchState(endConversationReplayState);
         }
         if (TriggerData.INSTANCE != null)
         {
@@ -137,7 +161,7 @@ public class  StateManager: StaticInstance<StateManager>
             GameEventManager.INSTANCE.AddEvent(typeof(DisableLedgerState), () => { ledgerState.SwitchState(disableLedgerState); });
             GameEventManager.INSTANCE.AddEvent(typeof(WriteToPageLedgerState), () => { ledgerState.SwitchState(writeToPageLedgerState); });
             GameEventManager.INSTANCE.AddEvent(typeof(ReplaceLedgerState), () => { ledgerState.SwitchState(replaceLedgerState); });
-       
+            GameEventManager.INSTANCE.AddEvent(typeof(InspectClueLedgerState), ()=> {ledgerState.SwitchState(inspectClueLedgerState);});
            
             //yes...hand state and ledgerstate carry the same data
             GameEventManager.INSTANCE.AddEvent(typeof(IdleHandState), ()=> {handState.SwitchState(idleHandState);});
@@ -147,11 +171,24 @@ public class  StateManager: StaticInstance<StateManager>
             GameEventManager.INSTANCE.AddEvent(typeof(MoveHandFlipState), ()=> {handState.SwitchState(moveHandFlipState);});
             GameEventManager.INSTANCE.AddEvent(typeof(ClickHandState), ()=> {handState.SwitchState(clickHandState);});
             GameEventManager.INSTANCE.AddEvent(typeof(WriteHandState), ()=> {handState.SwitchState(writeHandState);});
-          
+            GameEventManager.INSTANCE.AddEvent(typeof(HoldPageState), ()=> {handState.SwitchState(holdPageState);});
+        
             
             ledgerState.SwitchState(disableLedgerState);
             handState.SwitchState(disableHandState);
         }
+        //this comes last--
+        if(SceneData.INSTANCE != null)
+        {
+            GameEventManager.INSTANCE.AddEvent(typeof(VetHouseSceneState), ()=> { sceneStateMono.SwitchScene(vetHouseSceneState, SceneNames.VetHouseScene);});
+            GameEventManager.INSTANCE.AddEvent(typeof(InterviewSceneState),()=>{ sceneStateMono.SwitchScene(interviewSceneState, SceneNames.InterviewScene);} );
+            GameEventManager.INSTANCE.AddEvent(typeof(IdleSceneState), ()=> {sceneStateMono.SwitchState(idleSceneState);});
+            
+         
+
+            sceneStateMono.SwitchState(idleSceneState);
+        }
+        
       
     }
     /*TODO explain this function below*/
@@ -159,8 +196,7 @@ public class  StateManager: StaticInstance<StateManager>
     {
         Dictionary<string, Type> keyValuePairs = new Dictionary<string, Type>();
         
-        string[] stateParent = new string[] { "PlayerState", "CutsceneState", "DialogueState", "TriggerState", "DimensionState", "LedgerState" };
-
+     
         for (int i = 0; i < newStates.Length; i++)
         {
             if (newStates[i] is PlayerState)
@@ -202,7 +238,7 @@ public class  StateManager: StaticInstance<StateManager>
     }
     public object[] SnapShotCurrentStates()
     {
-        return new object[] { dimensionState.currentState, playerDataState.currentState, dialogueState.currentState, triggerState.currentState, cutsceneState.currentState, ledgerState.currentState} ;
+        return new object[] { dimensionState.currentState, playerDataState.currentState, dialogueState.currentState, triggerState.currentState, cutsceneState.currentState, ledgerState.currentState, handState.currentState} ;
     }
     
 }

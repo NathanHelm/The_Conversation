@@ -9,11 +9,8 @@ public class PointHandState : HandState{
        LedgerMovement.INSTANCE.HandPointAtPage();  
     }
     public override void OnUpdate(LedgerData data)
-    {
-      if(Input.GetKeyDown(KeyCode.Return))
-       {
-         GameEventManager.INSTANCE.OnEvent(typeof(ClickHandState));
-       }
+    { 
+       
     }
     public override void OnExit(LedgerData data)
     {

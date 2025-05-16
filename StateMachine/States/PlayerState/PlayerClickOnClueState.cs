@@ -8,25 +8,27 @@ public class PlayerClickOnClueState : PlayerState
     public override void OnEnter(PlayerData data)
     {
         Debug.Log("on player click on clue state");
+        
+        var direction = PlayerData.INSTANCE.trans3d.rotation * Vector3.forward;
+       
+        PlayerData.INSTANCE.playerRaycast.OmitRaycast(direction);
 
-        Vector2 mousePos = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        CutsceneManager.INSTANCE.SetOPreviousState(new (string, Type)[] { new("DimensionState", typeof(TransitionTo3d)), new("PlayerState", typeof(PlayerLook3dState)), new ("DialogueState",typeof(NoConversationState))});
+          
+        CutsceneManager.INSTANCE.RemovePreviousStateMono("CutsceneState");
+        CutsceneManager.INSTANCE.RemoveStopStateMono("CutsceneState");
 
-        Debug.Log("mouse position" + mousePos);
+        CutsceneManager.INSTANCE.RemoveStopStateMono("LedgerState");
+        CutsceneManager.INSTANCE.RemovePreviousStateMono("LedgerState");
 
-        PlayerData.INSTANCE.playerRaycast.OmitRaycast(mousePos);
+        CutsceneManager.INSTANCE.RemoveStopStateMono("HandState");
+        CutsceneManager.INSTANCE.RemovePreviousStateMono("HandState");
 
-        CutsceneManager.INSTANCE.SetCutSceneActionAndTime(new (Action, float)[]
-        {
-            new (()=>{ },0f),
-        new (()=> { }, .5f),
-        new (()=> {}, .5f)
 
-        }
-        );
+          
 
-        CutsceneManager.INSTANCE.SetSnapShot(new (string, Type)[] { new("DimensionState", typeof(TransitionTo3d)), new("PlayerState", typeof(PlayerLook3dState)), new ("DialogueState",typeof(NoConversationState)), });
-        GameEventManager.INSTANCE.OnEvent(typeof(PlayCutsceneState));
 
+        GameEventManager.INSTANCE.OnEvent(typeof(WriteToPageLedgerState));
         //0) player clicks on clue!
 
         

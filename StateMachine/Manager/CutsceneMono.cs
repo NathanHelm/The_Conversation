@@ -7,5 +7,11 @@ public class CutsceneMono :  StateMono<CutsceneData>
     {
         Value = CutsceneData.INSTANCE;
     }
+    
+    public void SwitchScene(CutsceneState nextState)
+    {
+       // currentState.OnEnter(Value);
+       // SceneManager.INSTANCE. Scene currentState.OnExit(Value);
+    }
 }
 

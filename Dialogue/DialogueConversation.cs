@@ -7,6 +7,9 @@ public class DialogueConversation
     public DialogueObject[] dialogueObjects;
     [SerializeField]
     public int ID;
+
+    [SerializeField]
+    public Texture defaultImageTex;
    
  
     

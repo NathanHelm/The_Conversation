@@ -12,24 +12,28 @@ public class WriteToPageLedgerState : LedgerState
         //NOTE--> ledger image data has already BEEN added with omit raycast call. 
         Debug.Log("write to ledger");
 
-
-        LedgerManager.INSTANCE.WriteToPageInLedger();
-       
-
-        LedgerMovement.INSTANCE.onAfterFlipAwait.RemoveAction(
+         LedgerMovement.onAfterFlipAwait.RemoveAction(
         LedgerData.INSTANCE.pointActionLedgerMovement
         );
+        
         LedgerManager.onMovePageLeft.RemoveAction(
         LedgerData.INSTANCE.pointActionLedgerManager
         );
         LedgerManager.onMovePageRight.RemoveAction(
         LedgerData.INSTANCE.pointActionLedgerManager
         );
+        
 
-
-         LedgerMovement.INSTANCE.onAfterFlipAwait.AddAction(
+        /* TODO add if needed
+         LedgerMovement.onAfterFlipAwait.AddAction(
             LedgerData.INSTANCE.writeActionLedgerMovement
         );
+        */
+
+        LedgerManager.INSTANCE.WriteToPageInLedger();
+       
+
+       
         /*
         LedgerManager.onMovePageLeft.AddAction(
             LedgerData.INSTANCE.writeActionLedgerManager
@@ -69,7 +73,7 @@ public class WriteToPageLedgerState : LedgerState
     public override void OnExit(LedgerData data)
     {
         //return back to hand point state, remove current write state 
-        LedgerMovement.INSTANCE.onAfterFlipAwait.RemoveAction(
+        LedgerMovement.onAfterFlipAwait.RemoveAction(
             LedgerData.INSTANCE.writeActionLedgerMovement
         );
         /*
@@ -82,7 +86,7 @@ public class WriteToPageLedgerState : LedgerState
         */
 
 
-        LedgerMovement.INSTANCE.onAfterFlipAwait.AddAction(
+        LedgerMovement.onAfterFlipAwait.AddAction(
         LedgerData.INSTANCE.pointActionLedgerMovement
         );
         LedgerManager.onMovePageLeft.AddAction(

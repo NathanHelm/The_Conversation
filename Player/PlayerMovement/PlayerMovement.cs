@@ -105,7 +105,10 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                StopAllCoroutines();
+                if(coroutine != null)
+                {
+                StopCoroutine(coroutine);
+                }
                 coroutine = null;
             }
 
@@ -122,7 +125,10 @@ public class PlayerMovement : MonoBehaviour
         playerMovementAnim.SetFloat("Last Horizontal", direction.x);
         playerMovementAnim.SetFloat("Last Vertical", direction.y);
         }
-        StopAllCoroutines();
+        if(coroutine != null)
+        {
+        StopCoroutine(coroutine);
+        }
         coroutine = null;
     }
     public void SetPlayer3dRotation()

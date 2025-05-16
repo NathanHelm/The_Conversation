@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Data;
+using UI;
 using UnityEngine;
 public enum LedgerAnimation{
     DrawImage
@@ -9,13 +10,20 @@ public enum LedgerAnimation{
 public class PageAnimations : StaticInstance<PageAnimations>{
 
     public static SystemActionCall<PageAnimations> onDrawImageOnCurrentPage = new SystemActionCall<PageAnimations>();
+    public static SystemActionCall<PageAnimations> onAfterEraseImage = new SystemActionCall<PageAnimations>();
+   
     [SerializeField]
     private PageScriptableObject pageScriptableObject;
 
     private Texture[] noiseTextures;
 
     public Renderer currentPageOverlayImage {get; set;}
-    
+
+    public override void OnEnable()
+    {
+        MManager.onStartManagersAction.AddAction(m => m.pageAnimations = this);
+        base.OnEnable();
+    }
 
     public override void m_Start(){
         noiseTextures = pageScriptableObject.noiseTextures;
@@ -30,14 +38,23 @@ public class PageAnimations : StaticInstance<PageAnimations>{
         DrawImage(currentPageOverlayImage);
         
     }
+    public void DrawLedgerImageUI(){
+        
+        DrawImage(UIData.INSTANCE.ledgerUIImage);
+    }
+    public void EraseLedgerImageUI()
+    {
+        EraseImage(UIData.INSTANCE.ledgerUIImage);
+    }
+
     public void DrawImage(Renderer renderer)
     {
         StartCoroutine(DrawImageAnimations(LedgerData.INSTANCE.flipPageTime * 1.9f, renderer));
     }
 
-    public void EraseImage(ref Renderer renderer)
+    public void EraseImage(Renderer renderer)
     {
-       //TODO StartCoroutine(Erase)
+       StartCoroutine(EraseImageAnimations(LedgerData.INSTANCE.flipPageTime * 0.5f, renderer));
     }
     
     
@@ -73,6 +90,8 @@ public class PageAnimations : StaticInstance<PageAnimations>{
 
       yield return new WaitForFixedUpdate();
       }
+      drawShaderMaterial.SetFloat("_Val", 0);
+      onAfterEraseImage.RunAction(this);
       yield return null;
     }
     private Texture GetRandomNoiseTexture()

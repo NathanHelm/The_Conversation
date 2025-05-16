@@ -9,17 +9,29 @@ public class ImmediateConversationState : DialogueState
     public override void OnEnter(DialogueData data)
     {
         GameEventManager.INSTANCE.OnEvent(typeof(TransitionTo3d));
+
         if (DialogueManager.INSTANCE != null)
         {
+           DialogueManager.onEndDialogue.AddAction(DialogueData.INSTANCE.runEndDialogConversation); //switchstate
+
            DialogueManager.INSTANCE.StartConversation(DialogueData.INSTANCE);
            DialogueManager.INSTANCE.RunDialogueNoInput();
         }
     }
     public override void OnUpdate(DialogueData data)
     {
+        
         if (DialogueManager.INSTANCE != null)
         {
+          
             DialogueManager.INSTANCE.RunDialog();
+        }
+    }
+    public override void OnExit(DialogueData data)
+    {
+        if(DialogueManager.INSTANCE != null)
+        {
+            DialogueManager.onEndDialogue.RemoveAction(DialogueData.INSTANCE.runEndDialogConversation); //switchstate
         }
     }
 }

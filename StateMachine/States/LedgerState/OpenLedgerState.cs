@@ -13,13 +13,15 @@ public class OpenLedgerState : LedgerState
     public override void OnUpdate(LedgerData data)
     {
         LedgerManager.INSTANCE.MovePages();
+        LedgerManager.INSTANCE.SelectPage();
         
         if(Input.GetKeyDown(KeyCode.Tab))
         {
+        GameEventManager.INSTANCE.OnEvent(typeof(StopCutsceneState));
         GameEventManager.INSTANCE.OnEvent(typeof(DisableLedgerState));
-        GameEventManager.INSTANCE.OnEvent(typeof(DisableHandState));
-        GameEventManager.INSTANCE.OnEvent(typeof(PlayCutsceneState));
+        GameEventManager.INSTANCE.OnEvent(typeof(DisableHandState));;                                       
         }
+      
         
         
     }

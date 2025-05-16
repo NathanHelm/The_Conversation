@@ -13,12 +13,10 @@ public class DisableLedgerState : LedgerState
     }
     public override void OnUpdate(Data.LedgerData data)
     {
-      if(Input.GetKeyDown(KeyCode.Tab))
+      if(InputBuffer.INSTANCE.IsPressCharacter(KeyCode.Tab))
       {
-//          GameEventManager.INSTANCE.OnEvent(typeof(StopCutsceneState));
-          GameEventManager.INSTANCE.OnEvent(typeof(OpenLedgerState));
-        
-         
+        CutsceneManager.INSTANCE?.LedgerDialog();
+        GameEventManager.INSTANCE.OnEvent(typeof(OpenLedgerState));           
       }
     }
     public override void OnExit(LedgerData data)

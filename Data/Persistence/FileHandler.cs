@@ -105,6 +105,14 @@ public class FileHandler<T> where T : JsonObject
         CreateFile(Path, json); //add to json file...
         addToJsonList.Clear();
     }
+    public void ReplaceFile()
+    {
+         Wrapper<T> wrapper = new Wrapper<T>();
+        wrapper.Items = addToJsonList.ToArray();
+        string json = JsonUtility.ToJson(wrapper, true);
+        CreateFile(Path, json); //add to json file...
+
+    }
     private void CreateFile(string path, string json){
          File.WriteAllText(path, json); //adding json to a CREATED file. 
     }

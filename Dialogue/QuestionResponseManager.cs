@@ -49,13 +49,13 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 			 here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
 			 */
 		});
-		npcToQuestionDialogueNpc.Add(2, new Dictionary<int, DialogueConversation>());
+		npcToQuestionDialogueNpc.Add(22, new Dictionary<int, DialogueConversation>());
 
-		npcToQuestionDialogueNpc[2] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[] {
+		npcToQuestionDialogueNpc[22] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[] {
 
 		//key pair value code goes here.
 		//question id							
-			new (new int[] { 2, 4, 5}, CharacterManager.INSTANCE.GetConversationOnCharacterID(2,2)), //based on character & conversation id, return conversation
+			new (new int[] { 2, 4, 5}, CharacterManager.INSTANCE.GetConversationOnCharacterID(22,2)), //based on character & conversation id, return conversation
 			
 			/*
 			 here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
@@ -71,8 +71,13 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 			new (new int[] { 2, 4, 5}, CharacterManager.INSTANCE.GetConversationOnCharacterID(210,2)), //based on character & conversation id, return conversation
 			
 			/*
-			 here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
+			 LOOK: here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
 			 */
+		});
+		 //31 is the character id for ALL clues
+		npcToQuestionDialogueNpc.Add(31, new Dictionary<int, DialogueConversation>());
+		npcToQuestionDialogueNpc[31] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[]{
+			new (new int[] { 1 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(31, 1))
 		});
 
 		

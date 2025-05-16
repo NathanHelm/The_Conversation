@@ -119,7 +119,7 @@ public void BetweenButtons()
        isYes = false;
     }
 
-    if(Input.GetKeyDown(KeyCode.Return))
+    if(InputBuffer.INSTANCE.IsPressCharacter(KeyCode.Return))
     {
       Select();
       return;

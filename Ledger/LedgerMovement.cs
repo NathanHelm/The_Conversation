@@ -6,19 +6,19 @@ using Unity.Mathematics;
 using UnityEngine;
 public class LedgerMovement : StaticInstance<LedgerMovement> {
 
-    public SystemActionCall<LedgerMovement> onEnableHand = new SystemActionCall<LedgerMovement>();
-    public SystemActionCall<LedgerMovement> onHalwayToNewPosition = new SystemActionCall<LedgerMovement>();
+    public static SystemActionCall<LedgerMovement> onEnableHand = new SystemActionCall<LedgerMovement>();
+    public static SystemActionCall<LedgerMovement> onHalwayToNewPosition = new SystemActionCall<LedgerMovement>();
     
-    public SystemActionCall<LedgerMovement> onAfterCreateHands = new SystemActionCall<LedgerMovement>();
+    public static SystemActionCall<LedgerMovement> onAfterCreateHands = new SystemActionCall<LedgerMovement>();
     
    // === add animations to these ==========================================================================================================
-    public SystemActionCall<LedgerMovement> onMove = new SystemActionCall<LedgerMovement>();
-    public SystemActionCall<LedgerMovement> onPointHand = new SystemActionCall<LedgerMovement>();
+    public static SystemActionCall<LedgerMovement> onMove = new SystemActionCall<LedgerMovement>();
+    public static SystemActionCall<LedgerMovement> onPointHand = new SystemActionCall<LedgerMovement>();
      
-     public SystemActionCall<LedgerMovement> onWritingHand = new SystemActionCall<LedgerMovement>();
-     public SystemActionCall<LedgerMovement> onAfterWritingHand = new SystemActionCall<LedgerMovement>();
+     public static SystemActionCall<LedgerMovement> onWritingHand = new SystemActionCall<LedgerMovement>();
+     public static SystemActionCall<LedgerMovement> onAfterWritingHand = new SystemActionCall<LedgerMovement>();
 
-     public SystemActionCall<LedgerMovement> onAfterFlipAwait = new SystemActionCall<LedgerMovement>();
+     public static SystemActionCall<LedgerMovement> onAfterFlipAwait = new SystemActionCall<LedgerMovement>();
     // ==================================================================================================================================
 
     [SerializeField]
@@ -45,6 +45,8 @@ public class LedgerMovement : StaticInstance<LedgerMovement> {
     public Vector2 leftPageObjectPosition {get; set;}
     public Vector2 rightPageObjectPosition {get; set;}
 
+    public Vector3 ledgerImageUIPosition {get; set;}
+
 
 
     private GameObject leftHandPrefab,rightHandPrefab;
@@ -54,7 +56,13 @@ public class LedgerMovement : StaticInstance<LedgerMovement> {
     private GameObject handsObject;
 
     public Stack<IEnumerator> moveToPosStack = new(), writeStack = new();
-    public IEnumerator recentCoroutine; 
+    public IEnumerator recentCoroutine;
+
+    public override void OnEnable()
+    {
+        MManager.onStartManagersAction.AddAction(m => m.ledgerMovement = this);
+        base.OnEnable();
+    }
 
     public override void m_Start()
     {
@@ -71,6 +79,10 @@ public class LedgerMovement : StaticInstance<LedgerMovement> {
         pageWriteEndOffset = handScriptableObject.pageWriteEndOffset;
 
         leftHandBasePostion = handScriptableObject.leftHandBasePosition;
+
+        ledgerImageUIPosition = handScriptableObject.ledgerImageUIPosition;
+
+        base.m_Start();
     }
     public void StopMoveRecentState()
     {
@@ -163,6 +175,11 @@ public class LedgerMovement : StaticInstance<LedgerMovement> {
             MoveHandToRightPage();
         }
     }
+    public void MoveHandToUILedgerImage()
+    {
+        Vector3 currentRightHandPosition = rightHandObj.transform.localPosition;
+        MoveToNewPosition(rightHandObj.transform, currentRightHandPosition, ledgerImageUIPosition, flipPageAnimationTime, 200f);
+    }
     
     public void HandPointAtPage()
     {
@@ -188,7 +205,7 @@ public class LedgerMovement : StaticInstance<LedgerMovement> {
     
     public void HandWriting()
     {
-        
+      
         onWritingHand.RunAction(this);
        
         Vector2 moveToPagePosition = leftPageObjectPosition + pageWriteEndOffset;
@@ -196,7 +213,7 @@ public class LedgerMovement : StaticInstance<LedgerMovement> {
         Vector3 currentRightHandPosition = leftPageObjectPosition + pageWriteStartOffset;
 
         
-        if(pageObjectIndex % 2 == 0 && pageObjectIndex != 0)
+        if(pageObjectIndex % 2 == 0)
         {
 
             moveToPagePosition = rightPageObjectPosition +  pageWriteEndOffset;
@@ -249,7 +266,7 @@ public class LedgerMovement : StaticInstance<LedgerMovement> {
             yield return new WaitForFixedUpdate();    
         }
         movingTrans.localPosition = newPos;
-        if(isFlip)
+        if(isFlip && moveToPosStack.Count > 0)
         {
         moveToPosStack.Pop();
         }
@@ -320,7 +337,6 @@ public class LedgerMovement : StaticInstance<LedgerMovement> {
         //1) flip page
         MoveHand();
         yield return new WaitUntil(() => moveToPosStack.Count == 0);
-        Debug.Log("pointing hand!");
 
        //TODO 
        onAfterFlipAwait.RunAction(this);

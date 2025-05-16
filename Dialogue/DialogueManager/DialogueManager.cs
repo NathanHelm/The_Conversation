@@ -10,6 +10,7 @@ public class DialogueManager : StaticInstance<DialogueManager>
     public static SystemActionCall<DialogueManager> actionOnStartConversation = new SystemActionCall<DialogueManager>();
     public static SystemActionCall<DialogueManager> actionOnAfterRunDialog = new SystemActionCall<DialogueManager>();
 
+    public static SystemActionCall<DialogueManager> onEndDialogue = new SystemActionCall<DialogueManager>();
 
 
     private int dialogueIndex = 0;
@@ -19,6 +20,8 @@ public class DialogueManager : StaticInstance<DialogueManager>
 
     public DialogueObject[] dialogueObjects { get; set; } //dialog string, img, ... ect
     public Dictionary<int, Action> dialogueLineToAction { get; set; } //dialog action
+
+    private IEnumerator dialogScroll = null;
 
 
     public override void OnEnable()
@@ -43,7 +46,7 @@ public class DialogueManager : StaticInstance<DialogueManager>
     public void RunDialog()
     {
 
-        if (Input.GetKeyDown(KeyCode.Return) && !isDialogueScrolling)
+        if (InputBuffer.INSTANCE.IsPressCharacter(KeyCode.Return) && !isDialogueScrolling)
         {
             GameEventManager.INSTANCE.OnEvent(typeof(PlayerIdleState)); //player is idle
             ShowDialogUIAndDialogScroll();
@@ -52,7 +55,8 @@ public class DialogueManager : StaticInstance<DialogueManager>
     }
     public void RunDialogueNoInput()
     {
-        GameEventManager.INSTANCE.OnEvent(typeof(PlayerIdleState)); //player is idle
+        //TODO we should use this code for the interview state.
+        GameEventManager.INSTANCE?.OnEvent(typeof(PlayerIdleState)); //player is idle
         UIManager.INSTANCE.EnableDialogUI();
         ShowDialogUIAndDialogScroll();
     }
@@ -66,11 +70,10 @@ public class DialogueManager : StaticInstance<DialogueManager>
         
         if (dialogueIndex > dialogueObjects.Length - 1)
         {
-
-            GameEventManager.INSTANCE.OnEvent(typeof(EndConversationState)); //switchstate
+            onEndDialogue.RunAction(this);
             return;
         }
-        StartCoroutine(DialogueScroll(dialogueObjects[dialogueIndex]));
+        StartCoroutine(dialogScroll = DialogueScroll(dialogueObjects[dialogueIndex]));
 
     }
 
@@ -120,24 +123,28 @@ public class DialogueManager : StaticInstance<DialogueManager>
     //endconversationstate
     public void RunDialogAgain()
     {
-      
-
-        if (Input.GetKeyDown(KeyCode.Return) && dialogueIndex == 0) //plays the dialog again
-        {
-            ShowDialogUIAndDialogScroll();
-            GameEventManager.INSTANCE.OnEvent(typeof(ConversationState));
-        }
+        ShowDialogUIAndDialogScroll();
+        GameEventManager.INSTANCE.OnEvent(typeof(ConversationState));
     }
     //noconversationstate
     public void NoDialogue()
     {
-        StopAllCoroutines();
+        if(dialogScroll != null)
+        {
+        StopCoroutine(dialogScroll);
+        }
     
         UIManager.INSTANCE.DisableDialogUI();
         dialogueIndex = 0;
     }
     public void PlayerMove()
     {
+        if(PlayerData.INSTANCE == null)
+        {
+            Debug.LogError("There is no player instance");
+            return;
+        }
+
         GameEventManager.INSTANCE.OnEvent(typeof(PlayerLook3dState));
     }
 

@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using UI;
 using System.Buffers;
+using Unity.Mathematics;
 
 public class MManager : StaticInstance<MManager>
 {
@@ -20,8 +21,21 @@ public class MManager : StaticInstance<MManager>
 
     public ButtonDialogueManager buttonDialogueManager {get; set;}
     public MovementManager movementManager { get; set; }
+
+//================================================================================================================================================================
     public LedgerManager ledgerManager { get; set; }
     public LedgerUIManager ledgerUIManager { get; set; }
+    public LedgerImageManager ledgerImageManager {get; set;}
+    public LedgerMovement ledgerMovement {get; set;}
+
+    public HandAnimations handAnimations {get; set;}
+
+    public PageAnimations pageAnimations {get; set;}
+
+    public DrawingManager drawingManager {get; set;}
+
+//================================================================================================================================================================
+    public AnimationManager animationManager {get; set;}
     public CutsceneManager cutsceneManager { get; set; }
     public MemoryManager memoryManager {get; set;}
 
@@ -59,6 +73,18 @@ public class MManager : StaticInstance<MManager>
         ledgerManager?.m_Start();
 
         ledgerUIManager?.m_Start();
+
+        ledgerImageManager?.m_Start();
+
+        animationManager?.m_Start();
+
+        ledgerMovement?.m_Start();
+
+        handAnimations?.m_Start();
+
+        pageAnimations?.m_Start();
+
+        drawingManager?.m_Start();
 
         cutsceneManager?.m_Start();
 

@@ -5,7 +5,8 @@ public class StopCutsceneState : CutsceneState
 {
     public override void OnEnter(CutsceneData data)
     {
-      CutsceneManager.INSTANCE.EndCutsceneOnState();
+      CutsceneManager.INSTANCE.PlayAllPreviousStates();
+      CutsceneManager.INSTANCE.ResetStateMachineState();
     }
 }
 

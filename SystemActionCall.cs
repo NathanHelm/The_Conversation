@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 using System.Linq;
+using System.Diagnostics;
 
 public class SystemActionCall<T>
 {
@@ -25,6 +26,11 @@ public class SystemActionCall<T>
         if(actionSetup.GetInvocationList().Contains(action))
         {
             actionSetup -= action;
+        }
+        else
+        {
+            UnityEngine.Debug.LogError("action cannot be found");
+            UnityEngine.Debug.Log("invocation size" + actionSetup.GetInvocationList());
         }
         }
         if(initialAction != null)

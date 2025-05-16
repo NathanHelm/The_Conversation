@@ -16,7 +16,7 @@ public class PlayerQuestionConversationMemoryState: ConversationState{
     {
         LedgerManager.INSTANCE.MovePages();
 
-        if(Input.GetKeyDown(KeyCode.Return))
+        if(InputBuffer.INSTANCE.IsPressCharacter(KeyCode.Return))
         {
           
           // PlayerData.INSTANCE.currentQuestionID = LedgerManager.INSTANCE.GetQuestionsIDFromPage()[0];

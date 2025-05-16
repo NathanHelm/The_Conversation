@@ -10,17 +10,24 @@ public class ReplaceLedgerState : LedgerState
   */
     public override void OnEnter(LedgerData data)
     {
+      LedgerMovement.onAfterFlipAwait.RemoveAction(
+            LedgerData.INSTANCE.writeActionLedgerMovement
+        );
+      
       LedgerManager.INSTANCE.MovePagesFurthestRight();
+      
       //enabling page and thumb, adding the right textures too.
       //TODO change this
-      HandAnimations.INSTANCE.SetLeftHandToImage(/*LedgerImageManager.INSTANCE.temporaryImage*/ Tester_Script.temporaryImageTest);
-      HandAnimations.INSTANCE.PlayHandAnimation(HandAnimation.HoldPage, 1f);
+      HandAnimations.INSTANCE.SetLeftHandToImage(LedgerImageManager.INSTANCE.temporaryImage);
+      HandAnimations.INSTANCE.PlayHandAnimation(HandAnimation.LHoldPage, 1f);
+      HandAnimations.INSTANCE.DrawImageAnimationLeftHandPage();
+      
     }
     public override void OnUpdate(LedgerData data)
     {
         LedgerManager.INSTANCE.MovePages();
         LedgerManager.INSTANCE.ReplacePage();
-        LedgerImageManager.INSTANCE.SetTemporaryImageToNull();
+       
         if(Input.GetKeyDown(KeyCode.Tab))
         {
         GameEventManager.INSTANCE.OnEvent(typeof(DisableLedgerState));
@@ -30,7 +37,7 @@ public class ReplaceLedgerState : LedgerState
     }
     public override void OnExit(LedgerData data)
     {
-        HandAnimations.INSTANCE.DisableLeftHandPage();
+         
     }
 
 }

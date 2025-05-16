@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using Codice.CM.Common;
+using Data;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Rendering;
@@ -16,9 +17,16 @@ namespace UI
     {
         public static SystemActionCall<LedgerUIManager> onStartLedgerData = new SystemActionCall<LedgerUIManager>();
         public static SystemActionCall<LedgerUIManager> onFlipPage = new SystemActionCall<LedgerUIManager>();
-        public static SystemActionCall<(int,LedgerUIManager)> onAfterFlipPage = new SystemActionCall<(int,LedgerUIManager)>();
-        public SystemActionCall<(int,LedgerUIManager)> onFlipAt90Degrees = new SystemActionCall<(int,LedgerUIManager)>();
+        public static SystemActionCall<(bool,int,LedgerUIManager)> onAfterFlipPage = new SystemActionCall<(bool,int,LedgerUIManager)>();
+        public static SystemActionCall<(bool,int,LedgerUIManager)> onFlipAt90Degrees = new SystemActionCall<(bool,int,LedgerUIManager)>();
+       
+         public static SystemActionCall<(bool,int,LedgerUIManager)> onBeginFlipPage = new SystemActionCall<(bool,int,LedgerUIManager)>();
+
+       
         public static SystemActionCall<LedgerUIManager> onBorderCheck = new SystemActionCall<LedgerUIManager>();
+        
+  
+        
         [SerializeField]
         [Header("the object that will contain the ledger.")]
         private GameObject ledgerObject;
@@ -31,13 +39,12 @@ namespace UI
 
         private List<GameObject> pageObjects = new List<GameObject>(); //besides front and back page, page are double the size
         private List<GameObject> rotatePageObjects = new List<GameObject>();
+
+        private List<GameObject> imageObjects = new List<GameObject>();
         public bool isPageMoving = false;
 
         public bool isLeft {get; set;} = false;
-
-        private int previousNeighbourIndex = -1;
-        private int neighbourIndex = -1;
-
+ 
         public float flipPageSpeed; //in seconds
 
         /*
@@ -54,14 +61,6 @@ namespace UI
 
             MManager.onStartManagersAction.AddAction((MManager m) => { m.ledgerUIManager = this; });
 
-
-            firstPageMat = ledgerScriptableObject.firstPageMat;
-            lastPageMat = ledgerScriptableObject.lastPageMat;
-            defaultMat = ledgerScriptableObject.defaultMat;
-
-            pagePrefab = ledgerScriptableObject.pagePrefab;
-            doubleSidedPagePrefab = ledgerScriptableObject.doubleSidedPagePrefab;
-
             base.OnEnable();
         }
         public override void m_Start()
@@ -74,6 +73,13 @@ namespace UI
             {
                 Debug.LogError("ledger gameobject is null");
             }
+            firstPageMat = ledgerScriptableObject.firstPageMat;
+            lastPageMat = ledgerScriptableObject.lastPageMat;
+            defaultMat = ledgerScriptableObject.defaultMat;
+
+            pagePrefab = ledgerScriptableObject.pagePrefab;
+            doubleSidedPagePrefab = ledgerScriptableObject.doubleSidedPagePrefab;
+
             base.m_Start();
             onStartLedgerData.RunAction(this);
         }
@@ -87,6 +93,10 @@ namespace UI
         public void CloseBook()
         {
             GameObject nbookObj = GetLedger();
+            if(nbookObj == null)
+            {
+                return;
+            }
             UIManager.INSTANCE.DisableUIObject(ref nbookObj);
         }
         public void AddPage(int index, int max)
@@ -122,9 +132,18 @@ namespace UI
                 page = CreateDoubleSidedPage();
                 frontPage = page.transform.GetChild(0).gameObject;
                 backPage = page.transform.GetChild(1).gameObject;
+                
+
 
                 pageObjects.Add(frontPage);
                 pageObjects.Add(backPage);
+
+                var frontPageImage = frontPage.transform.GetChild(frontPage.transform.childCount - 1).gameObject; //get 
+                var backPageImage = backPage.transform.GetChild(backPage.transform.childCount - 1).gameObject;
+
+                imageObjects.Add(frontPageImage);
+                imageObjects.Add(backPageImage);
+
                 rotatePageObjects.Add(page);
         }
         public void MakePageColor(int index, Color c){
@@ -173,17 +192,128 @@ namespace UI
         {
             return ledgerObject;
         }
-
-        public void FlipPageLeft(int index)
+        public void ChangeLayerUp(int index, int nextImageQueue)
         {
-           // ChangeLayerLeft(index, pageObjects.Count - 1);
-            StartCoroutine(FlipPageAnimation(index, 180, 0));
+           var image = imageObjects[index].GetComponent<Renderer>();
+           ChangeRenderQueue(ref image, 3100, Color.red);
+           var page = pageObjects[index].GetComponent<Renderer>();
+           ChangeRenderQueue(ref page, 3000, Color.white);
+
+
+           if(isLeft) 
+           {
+                if(index - 1 >= 0)
+                {
+                    var nextImage = imageObjects[index - 1].GetComponent<Renderer>();
+                    ChangeRenderQueue(ref nextImage, nextImageQueue + 1, Color.yellow);
+                        
+                    var nextPage = pageObjects[index - 1].GetComponent<Renderer>();
+                    ChangeRenderQueue(ref nextPage, nextImageQueue, Color.white);
+                }
+           }
+           else //is right
+           {
+              if(index + 1 < pageObjects.Count - 1)
+              {
+                        var nextImage = imageObjects[index + 1].GetComponent<Renderer>();
+                        ChangeRenderQueue(ref nextImage, nextImageQueue + 1, Color.yellow);
+                        
+                        var nextPage = pageObjects[index + 1].GetComponent<Renderer>();
+                        ChangeRenderQueue(ref nextPage, nextImageQueue, Color.white);
+              }
+           }
+        }
+        
+        public void ChangeLayerDown(int index, int prevIndexOneQueue, int prevIndexTwoQueue)
+        {
+
+           Renderer pageR = pageObjects[index].GetComponent<Renderer>();
+           Renderer imageR = imageObjects[index].GetComponent<Renderer>();
+
+            int max = pageObjects.Count - 1;
+
+           
+
+           if(isLeft) 
+           {
+                if(index + 1 <= max)
+                {
+                Renderer pagePrev = pageObjects[index + 1].GetComponent<Renderer>();
+                Renderer imagePrev = imageObjects[index + 1].GetComponent<Renderer>();
+
+                ChangeRenderQueue(ref pagePrev, prevIndexTwoQueue, Color.white);
+                ChangeRenderQueue(ref imagePrev, prevIndexTwoQueue + 1, Color.magenta);
+                }
+              if(index + 2 <= max)
+              {
+                    Renderer pagePrev = pageObjects[index + 2].GetComponent<Renderer>();
+                    Renderer imagePrev = imageObjects[index + 2].GetComponent<Renderer>();
+
+                    ChangeRenderQueue(ref pagePrev, prevIndexOneQueue, Color.white);
+                    ChangeRenderQueue(ref imagePrev, prevIndexOneQueue + 1, Color.blue);
+              }
+              if(index + 3 <= max)
+              {
+                   Renderer pagePrev = pageObjects[index + 3].GetComponent<Renderer>();
+                   Renderer imagePrev = imageObjects[index + 3].GetComponent<Renderer>();
+
+                    ChangeRenderQueue(ref pagePrev, prevIndexTwoQueue, Color.white);
+                    ChangeRenderQueue(ref imagePrev, prevIndexTwoQueue + 1, Color.magenta);
+              }
+           }
+           else //is right
+           {
+            
+            if(index - 1 >= 0)
+            {
+                Renderer pagePrev = pageObjects[index - 1].GetComponent<Renderer>();
+                Renderer imagePrev = imageObjects[index - 1].GetComponent<Renderer>();
+
+                ChangeRenderQueue(ref pagePrev, prevIndexTwoQueue, Color.white);
+                ChangeRenderQueue(ref imagePrev, prevIndexTwoQueue + 1, Color.magenta);
+            }
+              if(index - 2 >= 0)
+              {
+                    Renderer pagePrev = pageObjects[index - 2].GetComponent<Renderer>();
+                    Renderer imagePrev = imageObjects[index - 2].GetComponent<Renderer>();
+
+                    ChangeRenderQueue(ref pagePrev, prevIndexOneQueue, Color.white);
+                    ChangeRenderQueue(ref imagePrev, prevIndexOneQueue + 1, Color.blue);
+              }
+              if(index - 3 >= 0)
+              {
+                   Renderer pagePrev = pageObjects[index - 3].GetComponent<Renderer>();
+                   Renderer imagePrev = imageObjects[index - 3].GetComponent<Renderer>();
+
+                    ChangeRenderQueue(ref pagePrev, prevIndexTwoQueue, Color.white);
+                    ChangeRenderQueue(ref imagePrev, prevIndexTwoQueue + 1, Color.magenta);
+              }
+           }
+
+           
+        }
+
+        public void LayerDownAtIndex(int index, int indexQueue) //will change layer of page and image at the index, use this function if you are rese
+        {
+            Renderer pagePrev = pageObjects[index].GetComponent<Renderer>();
+            Renderer imagePrev = imageObjects[index].GetComponent<Renderer>();
+            ChangeRenderQueue(ref pagePrev, indexQueue, Color.white);
+            ChangeRenderQueue(ref imagePrev, indexQueue + 1, Color.magenta);
+        }
+  
+       
+
+        public void FlipPageLeft(int pindex, int index)
+        {
+            onFlipPage.RunAction(this);
+            StartCoroutine(FlipPageAnimation(isLeft,pindex, index, 180, 0));
             LedgerMovement.INSTANCE.MoveHandAwaitPoint();
         }
-        public void FlipPageRight(int index)
+        public void FlipPageRight(int pindex, int index)
         {
            // ChangeLayerRight(index, pageObjects.Count - 1);
-            StartCoroutine(FlipPageAnimation(index, 0, 180));
+            onFlipPage.RunAction(this);
+            StartCoroutine(FlipPageAnimation(isLeft,pindex, index, 0, 180));
             LedgerMovement.INSTANCE.MoveHandAwaitPoint();
         }
         public Renderer GetPageOverlayRenderer(int index)
@@ -192,16 +322,7 @@ namespace UI
            return temp;
         }
 
-        public (Renderer, Renderer) GetChildrenOfRotateIndex(int rotateIndex)
-        {
-            
-            Renderer[] pages = rotatePageObjects[rotateIndex].GetComponentsInChildren<Renderer>();
-            if(pages.Length < 4)
-            {
-                return (null, null);
-            }
-            return (pages[0], pages[2]);
-        }
+    
         public void ChangeRenderQueue(ref Renderer renderer, int r, Color c)
         {
             renderer.material.renderQueue = r; 
@@ -215,34 +336,7 @@ namespace UI
                 Debug.LogError("no color found");
             }
         }
-        public void ChangeRenderQueueImage(ref Renderer renderer, int r, Color c)
-        {
-            renderer = renderer.GetComponentsInChildren<Renderer>()[1]; //obtain the image
-            if(renderer == null)
-            {
-                Debug.Log("image was not obtained");
-            }
-            renderer.material.renderQueue = r; 
-            if(renderer.material.GetTexture("_MainTex") == null)
-            {
-                c = Color.clear;
-                //a strang edge case below. If paper has no overlay texture (is null) and we are attempting to make the overlay appear first, make the PAGE aka the parent appear above all else in this instance...
-                if(r == 3100) 
-                {
-                    var pageObject = renderer.transform.parent.GetComponent<Renderer>();
-                    ChangeRenderQueue(ref pageObject, 3100,Color.white);
-                }
-            }
-           
-            if(renderer.material.HasColor("_Color"))
-            {
-            renderer.material.SetColor("_Color", c);
-            }
-            else
-            {
-                Debug.LogError("no color found");
-            }
-        }
+     
         public void ChangeTexture(ref Renderer renderer, Texture texture)
         {
              if(renderer.material.HasTexture("_MainTex"))
@@ -255,135 +349,57 @@ namespace UI
              }
         }
 
-
-
-        public void ChangeLayerLeft(int rotateIndex, int index)
-        {
-          Color c = Color.white;
-         //  onBorderCheck.RunAction(this); //obtain whether is left or right page movement
-
-           //new idea ==> 
-           Renderer renderer =  pageObjects[index].GetComponent<Renderer>();
-           ChangeRenderQueue(ref renderer, 3050, Color.blue);
-            
-           if(GetChildrenOfRotateIndex(rotateIndex).Item1 == null || GetChildrenOfRotateIndex(rotateIndex).Item2 == null)
-           {
-            return;
-           }
-           if(!isLeft)
-           {
-             
-             Renderer frontPage = GetChildrenOfRotateIndex(rotateIndex).Item1;
-            
-             if(rotateIndex == 1)
-             {
-                ChangeRenderQueueImage(ref frontPage, 3100, c);
-                return;
-             }
-            int max = rotatePageObjects.Count; 
-            if(rotateIndex > max - 2)
-            {
-                return;
-            }
-          // Renderer frontPage = GetChildrenOfRotateIndex(rotateIndex).Item1; //frontpage
-           Renderer backPage = GetChildrenOfRotateIndex(rotateIndex - 1).Item2;
-
-           previousNeighbourIndex = neighbourIndex;
-           neighbourIndex = rotateIndex;
-           frontPage = GetChildrenOfRotateIndex(neighbourIndex).Item1;
-           ChangeRenderQueueImage(ref frontPage, 3100, c);
-           ChangeRenderQueueImage(ref backPage, 3100,  c);
-           }
-           else //is left
-           {
-             Renderer frontPage = GetChildrenOfRotateIndex(rotateIndex).Item1;
-             if(rotateIndex == 1)
-             {
-                ChangeRenderQueueImage(ref frontPage, 3100, c);
-                return;
-             }
-             
-            previousNeighbourIndex = neighbourIndex;
-            neighbourIndex = rotateIndex - 1;
-            Renderer backPage = GetChildrenOfRotateIndex(neighbourIndex).Item2;
-
-           ChangeRenderQueueImage(ref frontPage, 3100, c);
-           ChangeRenderQueueImage(ref backPage, 3100, c);
-           }
-          
-        
-
-        }
-        public void ChangeOverLayDown(int i) //i hate this
-        {
-            if(previousNeighbourIndex == -1)
-            {
-                return;
-            }
-            Debug.Log("prev neighbour" + previousNeighbourIndex);
-            Renderer neighbour = pageObjects[previousNeighbourIndex].GetComponent<Renderer>();
-            Renderer current = pageObjects[i].GetComponent<Renderer>();
-            ChangeRenderQueueImage(ref neighbour, 3000, Color.white);
-            ChangeRenderQueueImage(ref current, 3000 + i + 1 , Color.white);
-        }
-      
-        public void ChangeLayerDown(int i)
-        {
-           Renderer r = pageObjects[i].GetComponent<Renderer>();
-           ChangeRenderQueue(ref r, 3000 + i, Color.grey);
-        }
-       
         public void ChangeBorderLeft()
         {
             Renderer r = rotatePageObjects[0].GetComponentInChildren<Renderer>();
-            ChangeRenderQueue(ref r, 3300, Color.red);
+            ChangeRenderQueue(ref r, 3300, Color.white);
         
         }
         public void NoBorder()
         {
             Renderer r = rotatePageObjects[0].GetComponentInChildren<Renderer>();
-            ChangeRenderQueue(ref r, 2800, Color.white);
+            ChangeRenderQueue(ref r, 2000, Color.white);
 
             Renderer r2 = rotatePageObjects[^1].GetComponentInChildren<Renderer>();
-            ChangeRenderQueue(ref r2, 2800, Color.white);
+            ChangeRenderQueue(ref r2, 2000, Color.white);
         }
         public void ChangeBorderRight()
         {
             Renderer r = rotatePageObjects[^1].GetComponentInChildren<Renderer>();
-            ChangeRenderQueue(ref r, 3200, Color.red);
+            ChangeRenderQueue(ref r, 3200, Color.white);
 
          //   rotatePageObjects[rotatePageObjects.Count - 1].GetComponentInChildren<Renderer>().material.SetColor("_Color", new Color(1, 0, 0 , 1));
         }
         public void SetTextureToPage(int index, Texture tex)
         {
-            Renderer pageObjectRenderer = pageObjects[index].GetComponent<Renderer>();
-            Renderer overlayImage = pageObjectRenderer.GetComponentsInChildren<Renderer>()[1];
+            Renderer overlayImage = imageObjects[index].GetComponent<Renderer>();
             ChangeTexture(ref overlayImage, tex);
         }
 
-        private IEnumerator FlipPageAnimation(int index, float startAngle, float endAngle)
+        private IEnumerator FlipPageAnimation(bool isLeft,int pIndex, int index, float startAngle, float endAngle)
         {
-            int nindex = index;
-            onFlipPage.RunAction(this);
+            int nindex = pIndex;
+            bool nisLeft = isLeft;
             float time = 0.0f;
             bool runOnce = false;
             Debug.Log("FLIPPING ANIMATION IS GOING");
+            onBeginFlipPage.RunAction((nisLeft, nindex, this));
             while(time < 1.0f)
             {
                 isPageMoving = true;
                 if((Mathf.Floor(time * 10f) / 10f) == 0.5 && runOnce == false)
                 {
-                    onFlipAt90Degrees.RunAction((nindex,this)); 
+                    onFlipAt90Degrees.RunAction((nisLeft,nindex,this)); 
                     runOnce = true;
                 }
-                Debug.Log("going! " + flipPageSpeed);
+              //  Debug.Log("going! " + flipPageSpeed);
                 time += Time.deltaTime / flipPageSpeed;
                 float theta = Mathf.Lerp(startAngle, endAngle, time);
                 rotatePageObjects[index].transform.localEulerAngles = new Vector3(0 ,theta, 0);
                 yield return new WaitForFixedUpdate();
             }
             rotatePageObjects[index].transform.localEulerAngles = new Vector3(0, endAngle, 0);
-            onAfterFlipPage.RunAction((nindex,this));
+            onAfterFlipPage.RunAction((nisLeft,nindex,this));
             isPageMoving = false;
             
             yield return null;

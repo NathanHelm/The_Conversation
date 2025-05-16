@@ -8,10 +8,8 @@ public class StaticInstance<T> : MonoBehaviour
 
 	public virtual void Awake()
 	{
-		if(INSTANCE == null)
-		{
-			INSTANCE = GetComponent<T>();
-		}
+		INSTANCE = GetComponent<T>();
+
 		//every "static instance" in scene subscribes the MManager class as one centeral class for "manager" start execution. 
 	
 		

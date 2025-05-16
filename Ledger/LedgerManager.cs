@@ -17,6 +17,9 @@ public class LedgerManager : StaticInstance<LedgerManager>
     public static SystemActionCall<LedgerManager> onMovePageLeft = new SystemActionCall<LedgerManager>();
     public static SystemActionCall<LedgerManager> onMovePageRight = new SystemActionCall<LedgerManager>();
     
+    public static SystemActionCall<LedgerManager> onAfterMovePageFurthestLeft = new SystemActionCall<LedgerManager>();
+
+    public static SystemActionCall<LedgerManager> onSelectPage = new SystemActionCall<LedgerManager>();
     public List<LedgerImage> ledgerImages = new List<LedgerImage>();
     
     public int index{get; set;} = 0;
@@ -24,17 +27,18 @@ public class LedgerManager : StaticInstance<LedgerManager>
 
     public readonly int ledgerLength = 10;
 
+
     public bool isLedgerCreated {get;set;} = false;
 
     public bool isLedgerActive {get;set;} = false;
     
-    int pageL; 
+    private int pageObjectLength; 
 
     int furthestRight; //index of furthest-most ledger image
 
     public bool edgechecker {get; private set;} = true;
 
-    public bool isLeft {get; set;} = false;
+    public bool isLeft {get; set;} = true;
 
     [SerializeField]
     float speed = 2.7f; 
@@ -48,15 +52,22 @@ public class LedgerManager : StaticInstance<LedgerManager>
     public override void OnEnable()
     {
        // Debug.LogError("OI bruv its time you lock tf in and get pages rights for ledger manager.");
-     //   MManager.onStartManagersAction?.AddAction((MManager m) => { m.ledgerManager = this; });
+        MManager.onStartManagersAction?.AddAction((MManager m) => { m.ledgerManager = this; });
         base.OnEnable();
     }
 
 
     public override void m_Start()
     {
-        LedgerUIManager.INSTANCE.onFlipAt90Degrees.AddPriorityAction(((int,LedgerUIManager) ledgerManagerUI) => { ChangeColorAndLayering(index) ;});
-        furthestRight = 2 * (ledgerLength - 2);
+        LedgerUIManager.onFlipAt90Degrees.AddPriorityAction(((bool,int,LedgerUIManager) ledgerManagerUI) => { 
+            ChangeLayering(ledgerManagerUI.Item2) ;});
+        LedgerUIManager.onAfterFlipPage.AddPriorityAction(((bool, int,LedgerUIManager) ledgerManagerUI) => {  
+            ChangeLayeringAfterPageFlip(ledgerManagerUI.Item2); });
+
+        LedgerUIManager.onBeginFlipPage.AddPriorityAction(((bool, int,LedgerUIManager) ledgerManagerUI) => {  
+            ChangeLayeringOnBeginFlipPage(ledgerManagerUI.Item2);});
+
+        
         base.m_Start();
         onStartLedgerData.RunAction(this);
          
@@ -70,27 +81,38 @@ public class LedgerManager : StaticInstance<LedgerManager>
         }
 
     }
+    public void ResetLedger()
+    {
+        MovePagesToFurthestLeft();
+    }
     private void RunLedger()
     {
        
+
         if(!isLedgerCreated)
         {
             CreateLedger(); //make a ten page ledger
             LedgerData.INSTANCE.isLedgerCreated = isLedgerCreated = true;
+
+             pageObjectLength = UI.LedgerUIManager.INSTANCE.GetPageLength();
+            animationSpeed = (speed / pageObjectLength);
+            furthestRight = 2 * (ledgerLength - 2);
+
+
+            LedgerData.INSTANCE.isLeft = false;
+            UI.LedgerUIManager.INSTANCE.FlipPageRight(0,0);
+
+
+            ChangeColorLayeringBorderLeft();
         }
         if(!isLedgerActive)
         {
         LedgerMovement.INSTANCE.MoveHandLeft();
         EnableLedger();
-        UI.LedgerUIManager.INSTANCE.FlipPageRight(0);
-        ChangeColorLayeringBorderLeft();
+        GameEventManager.INSTANCE.OnEvent(typeof(PlayCutsceneState));
         isLedgerActive = true;
+
         }
-
-        pageL = UI.LedgerUIManager.INSTANCE.GetPageLength();
-        LedgerImageManager.INSTANCE.MaxLedgerImageLength = pageL;
-
-        animationSpeed = (speed / pageL) ;
 
         
         onActiveLedger.RunAction(this); //for one, upadte ledgerimages list...
@@ -107,27 +129,46 @@ public class LedgerManager : StaticInstance<LedgerManager>
     {
         
         RunLedger();
+       
         if(!LedgerImageManager.INSTANCE.IsTemporyImageNull()) //we have a temporary image which we can replace!
         {
             Debug.Log("LOG: there is a temporary that is not null, list has reached limit.");
             GameEventManager.INSTANCE?.OnEvent(typeof(ReplaceLedgerState));
             return;
         }
+
+        //move furthest right begins AFTER pages are at index 0 and have moved left!
+
+        onAfterMovePageFurthestLeft.AddAction(lm => { 
+
+        MovePagesToFurthestLedgerImage();  
+
+        LedgerMovement.onAfterFlipAwait.AddAction(
+        LedgerData.INSTANCE.writeActionLedgerMovement
+        );
         
-        MovePagesToFurthestLedgerImage();
-        //TODO
-        DrawImageManager.INSTANCE?.Drawing();
+        });
+        ResetLedger();
+        
+
+   
+        DrawingManager.INSTANCE?.RunDrawingPPEffect();
         AddImagesToLedgerPages();
       //  LedgerImageManager.INSTANCE.ReplaceImage(ledgerImagesMax, ledgerImages[ledgerImagesMax]);
         
     }
     public void MovePagesFurthestRight()
     {
-         StartCoroutine(MoveRightUntilIndex(index, furthestRight, animationSpeed));
+         StartCoroutine(MoveRightUntilIndex(index, furthestRight, animationSpeed, 0));
     }
     public void MovePagesToFurthestLedgerImage()
     {
-         StartCoroutine(MoveRightUntilIndex(index, ledgerImages.Count - 1, animationSpeed));
+        StartCoroutine(MoveRightUntilIndex(0, ledgerImages.Count - 1, animationSpeed, 0f));
+    }
+    public void MovePagesToFurthestLeft()
+    {
+        StartCoroutine(MovePageLeftUntilIndex(index, 0, animationSpeed, 0));
+      
     }
 
     public void OpenLedger()
@@ -136,53 +177,50 @@ public class LedgerManager : StaticInstance<LedgerManager>
     }
    // ==================================================================================================================
 
+    
     public void ChangeColorLayeringBorderLeft()
     {
-        for(int i = 0; i < pageL; i++)
+        for(int i = 0; i < pageObjectLength; i++)
             {
-                UI.LedgerUIManager.INSTANCE.ChangeLayerDown(i);
-                UI.LedgerUIManager.INSTANCE.MakePageColor(i, new Color(1, 1, 1, 1));
+                UI.LedgerUIManager.INSTANCE.LayerDownAtIndex(i, 2500);
             }  
         UI.LedgerUIManager.INSTANCE.ChangeBorderLeft();
     }
 
      public void ChangeColorLayeringBorderRight()
     {
-        for(int i = 0; i < pageL; i++)
-            {
-                UI.LedgerUIManager.INSTANCE.ChangeLayerDown(i);
-                UI.LedgerUIManager.INSTANCE.MakePageColor(i, new Color(1, 1, 1, 1));
-            }
+        //TODO
+        Debug.LogError("add change color layering border right...");
+
+        for(int i = 0; i < pageObjectLength; i++)
+        {
+                UI.LedgerUIManager.INSTANCE.LayerDownAtIndex(i, 2500);
+        }
         UI.LedgerUIManager.INSTANCE.ChangeBorderRight();
+
     }
-    public void ChangeColorAndLayering(int ind)
+    public void ChangeLayering(int ind)
+    {
+         UI.LedgerUIManager.INSTANCE.ChangeLayerUp(ind, 3000);
+         UI.LedgerUIManager.INSTANCE.ChangeLayerDown(ind, 2700, 2600);
+       
+    }
+    public void ChangeLayeringOnBeginFlipPage(int ind)
     {
         UI.LedgerUIManager.INSTANCE.NoBorder();
-     
-        for(int i = 0; i < pageL; i++)
-        {
-            if(i == ind)
-            {
-                UI.LedgerUIManager.INSTANCE.MakePageColor(ind, new Color(1, 0, 0, 1));
-                continue;
-            }
-            UI.LedgerUIManager.INSTANCE.ChangeLayerDown(i);
-            UI.LedgerUIManager.INSTANCE.ChangeOverLayDown(i);
-            UI.LedgerUIManager.INSTANCE.MakePageColor(i, new Color(1, 1, 1, 1));
-        }
-         UI.LedgerUIManager.INSTANCE.ChangeLayerLeft(rotateIndex + 1, ind);   
-        
+        UI.LedgerUIManager.INSTANCE.ChangeLayerUp(ind, 2900);
     }
-    public void StayIndex(int rIndex)
+    public void ChangeLayeringAfterPageFlip(int ind)
     {
-        UI.LedgerUIManager.INSTANCE.ChangeLayerLeft(rIndex, index - 1);   
+        UI.LedgerUIManager.INSTANCE.ChangeLayerDown(ind, 2500, 2500);
     }
+
 
     public void MovePages()
     {
-        Debug.Log("current index " + index);
+       // Debug.Log("current index " + index);
         if(Input.GetKeyDown(KeyCode.D))
-        {
+        {      
             MovePageRight();
         }
         if (Input.GetKeyDown(KeyCode.A))
@@ -190,18 +228,27 @@ public class LedgerManager : StaticInstance<LedgerManager>
             MovePageLeft();
         }
     }
+    public void SelectPage()
+    {
+        if(InputBuffer.INSTANCE.IsPressCharacter(KeyCode.Return))
+        {
+            //select the page
+            onSelectPage.RunAction(this);
+        }
+    }
      public void MovePageRight()
     {
        
             LedgerData.INSTANCE.isLeft = false;
-            if(index < pageL)
+
+            if(index < pageObjectLength)
             {
                 edgechecker = true;
                 runOnce = true;
             }
             if(rotateIndex + 1 >= ledgerLength - 1)
             {
-                UI.LedgerUIManager.INSTANCE.FlipPageRight(rotateIndex + 1);
+                UI.LedgerUIManager.INSTANCE.FlipPageRight(index,rotateIndex + 1);
                 /*
                 TODO continue work on the ledger layering
                 Action<(int,LedgerUIManager)> a = null;
@@ -227,34 +274,35 @@ public class LedgerManager : StaticInstance<LedgerManager>
            
             if(indexplusone % 2 == 0 )
             {
-                UI.LedgerUIManager.INSTANCE.FlipPageRight(rotateIndex + 1);
+                UI.LedgerUIManager.INSTANCE.FlipPageRight(index,rotateIndex + 1);
                 ++rotateIndex;
                // UI.LedgerUIManager.INSTANCE.ChangeBorderLeft();
-                StayIndex(rotateIndex); 
+           
                 //and change color
                 return;
             }
            // GameEventManager.INSTANCE.OnEvent(typeof(PointHandState));
             onMovePageRight.RunAction(this);
-            ChangeColorAndLayering(index);
+           // ChangeLayering()
 
     }
     public void MovePageLeft()
     {
             LedgerData.INSTANCE.isLeft = true;
+     
             if(index == 0)
             {
-                ChangeColorAndLayering(0);
-                ChangeColorLayeringBorderLeft();
+                //ChangeLayering(0);
+                //ChangeColorLayeringBorderLeft();
                 return;
             }
-            if(index == pageL - 1 && edgechecker) //if is we are on last index and the prevous index was < 
+            if(index == pageObjectLength - 1 && edgechecker) //if is we are on last index and the prevous index was < 
             {
-                UI.LedgerUIManager.INSTANCE.FlipPageLeft(rotateIndex + 1); 
+                UI.LedgerUIManager.INSTANCE.FlipPageLeft(index - 1,rotateIndex + 1); 
                 edgechecker = false;
                return;
             }
-            if(index < pageL)
+            if(index < pageObjectLength)
             {
                 edgechecker = true;
             }
@@ -265,8 +313,8 @@ public class LedgerManager : StaticInstance<LedgerManager>
             {
                  --rotateIndex;
    
-                UI.LedgerUIManager.INSTANCE.FlipPageLeft(rotateIndex + 1);
-                StayIndex(rotateIndex + 1); 
+                UI.LedgerUIManager.INSTANCE.FlipPageLeft(index - 1,rotateIndex + 1);
+            
                // UI.LedgerUIManager.INSTANCE.ChangeBorderLeft();
                 --index;
                 LedgerData.INSTANCE.pageObjectsIndex = index;
@@ -279,7 +327,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
            
            onMovePageLeft.RunAction(this);
           // GameEventManager.INSTANCE.OnEvent(typeof(PointHandState));
-           ChangeColorAndLayering(index);
+          // ChangeColorAndLayering(index);
     }
 
    
@@ -292,11 +340,20 @@ public class LedgerManager : StaticInstance<LedgerManager>
        {
          //TODO do some strange animation here.
        }
-       if(Input.GetKeyDown(KeyCode.Return))
+       if(InputBuffer.INSTANCE.IsPressCharacter(KeyCode.Return))
        {
          LedgerImage temporaryImage = LedgerImageManager.INSTANCE.temporaryImage;
          LedgerImageManager.INSTANCE.ReplaceImage(index, temporaryImage);
          AddImagesToLedgerPages(); //reset all pages... 
+         LedgerImageManager.INSTANCE.SetTemporaryImageToNull();
+        //disable left hand after the erase animation:
+         PageAnimations.onAfterEraseImage.AddAction(LedgerData.INSTANCE.disableleftHandPage);
+         HandAnimations.INSTANCE.EraseImageAnimationLeftHandPage();
+
+        //page that is being replaced get an animation
+        PageAnimations.INSTANCE.DrawImageOnCurrentPage();
+
+        GameEventManager.INSTANCE.OnEvent(typeof(OpenLedgerState));
          
          //TODO run "replace animation"
        } 
@@ -316,17 +373,20 @@ public class LedgerManager : StaticInstance<LedgerManager>
         }
         for(int i = 0; i < ledgerImages.Count; i++)
         {
+           
            UI.LedgerUIManager.INSTANCE.SetTextureToPage(i, ledgerImages[i].ledgerImage);
         }
     }
 
 
 
-    public IEnumerator MoveRightUntilIndex(int startIndex,int toIndex, float speed)
+    public IEnumerator MoveRightUntilIndex(int startIndex,int toIndex, float speed, float delayTime)
     {
+        yield return new WaitForSeconds(delayTime);
         var prevflippageS = LedgerData.INSTANCE.flipPageTime;
         LedgerData.INSTANCE.flipPageTime = animationSpeed + 0.5f;
-       
+
+      
 
         while(startIndex < toIndex)
         {
@@ -335,7 +395,35 @@ public class LedgerManager : StaticInstance<LedgerManager>
             MovePageRight();
             ++startIndex;
         }
+        if(index == 0)
+        {
+           LedgerMovement.INSTANCE.MoveHandAwaitPoint();
+        }
+
         LedgerData.INSTANCE.flipPageTime = prevflippageS;
+        yield return null;
+    }
+    public IEnumerator MovePageLeftUntilIndex(int startIndex,int toIndex, float speed, float delayTime)
+    {
+        yield return new WaitForSeconds(delayTime);
+        var prevflippageS = LedgerData.INSTANCE.flipPageTime;
+        LedgerData.INSTANCE.flipPageTime = animationSpeed + 0.5f;
+
+        while(startIndex >= toIndex)
+        {
+            yield return new WaitForSeconds(speed);
+            MovePageLeft();
+            --startIndex;
+        }
+        if(index == 0)
+        {
+           LedgerMovement.INSTANCE.MoveHandAwaitPoint();
+        }
+
+        LedgerData.INSTANCE.flipPageTime = prevflippageS;
+
+        onAfterMovePageFurthestLeft.RunAction(this);
+        onAfterMovePageFurthestLeft.RemoveAllActions();
         yield return null;
     }
 

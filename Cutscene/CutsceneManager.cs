@@ -6,151 +6,128 @@ using System.Linq;
 using Data;
 public class CutsceneManager : StaticInstance<CutsceneManager>
 {
+    private object[] idlestates = new object[] {};
+    private object[] previousStates = new object[] {};
 
+    private (string stateMonoName, Type state)[] oPauseState = new (string stateMonoName, Type state)[] {}; 
+    private (string stateMonoName, Type state)[] oPreviousState = new (string stateMonoName, Type state)[] {}; 
 
-    public Dictionary<string, Type> stopStatesDict { get; private set; }
-    public Dictionary<string, Type> startStatesDict { get; private set; }
+    private List<string> removeStateOnRunPreviousState = new List<string>(); 
+    private List<string> removeStateOnStopState = new List<string>(); 
 
-    private IEnumerator cutsceneEnumerator;
+    private Dictionary<string, Type> stateMachineStateName = new Dictionary<string, Type>();
 
-
-    public override void OnEnable()
-    {
-        MManager.onStartManagersAction.AddAction((MManager m) => { m.cutsceneManager = this; });
-
-        base.OnEnable();
-    }
-    public void CutsceneOnState()
-    {
-        StopStates();
-    }
-    public void EndCutsceneOnState(){
-
-       RunSnapShotStates();
-    }
-
-
-    private IEnumerator ActionAndTime((Action, float)[] actionAndTime)
-    {
-        StopStates(); //all states are paused as cutscene in playing
-        for(int i = 0; i < actionAndTime.Length; i++)
-        {
-            actionAndTime[i].Item1();
-            yield return new WaitForSeconds(actionAndTime[i].Item2);
-            
-        }
-        RunSnapShotStates(); //revert back to previous states.
-        GameEventManager.INSTANCE.OnEvent(typeof(StopCutsceneState));
-    }
-
-    private IEnumerator ActionAndCondition((Action, bool)[] actionAndTime)
-    {
-        StopStates(); //all states are paused as cutscene in playing
-        int i = 0;
-        while (i < actionAndTime.Length)
-        {
-            actionAndTime[i].Item1();
-            if (actionAndTime[i].Item2 == true)
-            {
-                i++;
-            }
-            yield return new WaitForFixedUpdate();
-        }
-        RunSnapShotStates(); //revert back to previous states.
-        GameEventManager.INSTANCE.OnEvent(typeof(StopCutsceneState));
-    }
-
-    public void PlayCutscene()
-    {
-       StartCoroutine(cutsceneEnumerator = ActionAndTime(CutsceneData.INSTANCE.cutsceneActionsAndTimeTurnaround));
-    }
-    public void PauseCutscene()
-    {
-        //cutscene with continue booling is true.
-        StartCoroutine(cutsceneEnumerator = ActionAndCondition(CutsceneData.INSTANCE.cutsceneActionAndConditions));
-    }
     
-
-    public void SetCutSceneActionAndTime((Action, float)[] cutSceneActionAndTime)
+    public override void m_Start()
     {
-        CutsceneData.INSTANCE.cutsceneActionsAndTimeTurnaround = cutSceneActionAndTime;
+       idlestates = StateManager.INSTANCE.stopStates;
+       stateMachineStateName = StateManager.INSTANCE.GetStateHashmap(idlestates);
     }
-    public void SetCutSceneConditions((Action, bool)[] cutSceneActionAndCondition)
+    //below we set what states on play and stop cutscene will be
+    public void SetOPauseState((string stateMonoName, Type state)[] oPauseState) //set both fields before running code 
     {
-        CutsceneData.INSTANCE.cutsceneActionAndConditions = cutSceneActionAndCondition;
+        this.oPauseState = oPauseState;
     }
-
-    public void SetSnapShot((string, Type)[] snapShotThatAreReplaced)
+    public void SetOPreviousState((string stateMonoName, Type state)[] oPreviousState)
     {
-        CutsceneData.INSTANCE.replaceSnapShots = snapShotThatAreReplaced;
+        this.oPreviousState = oPreviousState;
     }
-
-    public void StopCutscene()
+    //running states on pause
+    public void PauseAllStates()
     {
-        //in the event you must stop the cutscene.
-        StopCoroutine(cutsceneEnumerator);
-    }
-    private void StopStates()
-    {
-        CutsceneData.INSTANCE.snapShotCutscene = StateManager.INSTANCE.SnapShotCurrentStates(); //make snapshot.
-        var stopStates = StateManager.INSTANCE.stopStates;
-        stopStatesDict = StateManager.INSTANCE.GetStateHashmap(stopStates);
-        Type[] values = stopStatesDict.Values.ToArray();
+        //get previous states before transitioning current states to idle
+        previousStates = StateManager.INSTANCE.SnapShotCurrentStates();
 
-        for(int i = 0; i < values.Length; i++)
+        idlestates = StateManager.INSTANCE.stopStates;
+        stateMachineStateName = StateManager.INSTANCE.GetStateHashmap(idlestates);
+       
+
+        foreach((string,Type) overridePauseState in oPauseState)
         {
-           GameEventManager.INSTANCE.OnEvent(values[i]);
-        }
-    }
-    private void RunSnapShotStates()
-    {
-        //cutscene states return back to values BEFORE cutscene occured
-        var snap = CutsceneData.INSTANCE.snapShotCutscene.ToList();
-
-        for(int i = 0; i < snap.Count; i++)
-        {
-           if(snap[i] is CutsceneState)
-           {
-                Debug.LogError("removing cutscene state");
-                snap.RemoveAt(i);
-           }
+           stateMachineStateName[overridePauseState.Item1] = overridePauseState.Item2;
         }
 
+        RemoveStateMono(removeStateOnStopState);
 
-        var replaceSnap = CutsceneData.INSTANCE.replaceSnapShots;
-        
-        if (snap == null || snap?.Count == 0)
+
+        removeStateOnStopState = new List<string>(); //reset states 
+
+        RunState();
+
+        oPauseState = new (string stateMonoName, Type state)[] {};
+
+    }
+   
+    //running previous states when cutscene ends
+    public void PlayAllPreviousStates()
+    {
+        if(previousStates.Length == 0)
         {
-            throw new Exception("snapshot data is either null or length 0");
+            Debug.LogError("previous states not found");
         }
-        startStatesDict = StateManager.INSTANCE.GetStateHashmap(snap.ToArray());
-        
+        stateMachineStateName = StateManager.INSTANCE.GetStateHashmap(previousStates);
 
-        if (replaceSnap != null)
+        foreach((string,Type) overridePreviousState in oPreviousState)
         {
-            if (replaceSnap.Length > 0)
-            {
-                for (int i = 0; i < replaceSnap.Length; i++)
-                {
-                    if (startStatesDict.ContainsKey(replaceSnap[i].Item1))
-                    {
-                        startStatesDict[replaceSnap[i].Item1] = replaceSnap[i].Item2;
-                    }
-                    else
-                    {
-                        Debug.LogError("Replacment " + replaceSnap[i].Item1 + " didn't work");
-                    }
-                }
-            }
+           stateMachineStateName[overridePreviousState.Item1] = overridePreviousState.Item2;
         }
-        Type[] values = startStatesDict.Values.ToArray();
 
-        for (int i = 0; i < values.Length; i++)
+        RemoveStateMono(removeStateOnRunPreviousState);
+        removeStateOnRunPreviousState = new List<string>(); //reset string
+
+        RunState();
+        oPreviousState = new (string stateMonoName, Type state)[] {};
+    }
+
+    public void RemovePreviousStateMono(string s) //states that will not run when returning to previous state when cutscene is over
+    {
+        //for example to ledger that is running stop cutscene does not need to be overriden with the "returning" ledger state. 
+       removeStateOnStopState.Add(s);
+    }
+    public void RemoveStopStateMono(string s) //states that will not run when entering a cutscene.
+    {
+        //if a cutscene is running, there might be states which will be enabled.
+        removeStateOnRunPreviousState.Add(s);
+    }
+    private void RemoveStateMono(List<string> s)
+    {
+        for(int i = 0; i < s.Count; i++)
         {
-            GameEventManager.INSTANCE.OnEvent(values[i]);
-            //give up
+        stateMachineStateName.Remove(s[i]);
+        }
+       
+    }
 
+    public void ResetStateMachineState()
+    {
+        oPreviousState = new (string stateMonoName, Type state)[] {};
+        oPauseState = new (string stateMonoName, Type state)[] {};
+    }
+
+   
+    private void RunState() //runs the states in state dictionary
+    {
+       var values = stateMachineStateName.Values;
+        foreach(Type state in values)
+        {
+            GameEventManager.INSTANCE.OnEvent(state);
         }
     }
+
+    public void LedgerDialog()
+    {
+       SetOPreviousState(new (string, Type)[] { new("DimensionState", typeof(TransitionTo3d)), new("PlayerState", typeof(PlayerLook3dState)), new ("DialogueState",typeof(NoConversationState))});
+       RemovePreviousStateMono("CutsceneState");
+       RemoveStopStateMono("CutsceneState");
+       RemoveStopStateMono("LedgerState");
+       RemovePreviousStateMono("LedgerState");
+       RemoveStopStateMono("HandState");
+       RemovePreviousStateMono("HandState");
+    }
+
+
+
+
+
 
 }

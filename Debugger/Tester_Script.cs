@@ -12,11 +12,12 @@ public class Tester_Script : MonoBehaviour
     [SerializeField]
     bool isReplace = false;
 
+    
     public static LedgerImage temporaryImageTest;
 
     private void Start()
     {
-        
+       /* 
         UI.LedgerUIManager.INSTANCE.m_Start();
         LedgerManager.INSTANCE.m_Start();
         LedgerImageManager.INSTANCE.m_Start();
@@ -26,18 +27,18 @@ public class Tester_Script : MonoBehaviour
         HandAnimations.INSTANCE.m_Start();
         StateManager.INSTANCE.m_Start();
         PageAnimations.INSTANCE.m_Start();
-       
+        DrawingManager.INSTANCE.m_Start();
+       */
 
-        temporaryImageTest = new LedgerImage("description " + 0 + ".", 0, ClueMono.clueQuestionID, texture[0], overlayTex, null, 0);
+      //  temporaryImageTest = new LedgerImage("description " + 0 + ".", 0, ClueMono.clueQuestionID, texture[0], overlayTex, null, 0);
         if(texture.Length == 0)
         {
             Debug.LogError("add images for this tester script to show images :)");
         }
         for(int i = 0; i < texture.Length; i++)
         {
-            LedgerImageManager.INSTANCE.AddRayInfoToLedgerImage("description " + i + ".", 0, ClueMono.clueQuestionID, texture[i], overlayTex, null, 0);
-        
-
+            LedgerImageManager.INSTANCE.AddRayInfoToLedgerImage("description " + i + ".", 0, 0, texture[i], overlayTex, 0);
+    
         }
         
         
@@ -46,21 +47,25 @@ public class Tester_Script : MonoBehaviour
     }
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Y))
-        {
-           // ImitateOmitRay();
-           LedgerData.INSTANCE.flipPageTime = 5f;
-           LedgerMovement.INSTANCE.HandWriting();
-           LedgerData.INSTANCE.flipPageTime = 1f;
-        }
+ 
       
         //LedgerManager.INSTANCE.UseLedgerState();
         //LedgerManager.INSTANCE.EnableLedger();
         //LedgerManager.INSTANCE.MovePages();
-        if(Input.GetKeyDown(KeyCode.R))
+        if(Input.GetKeyDown(KeyCode.Return))
         {
           // GameEventManager.INSTANCE.OnEvent(typeof(WriteToPageLedgerState));
-          ImitateOmitRay();
+         // ImitateOmitRay();
+          for(int i = 0; i < texture.Length; i++)
+        {
+          //  LedgerImageManager.INSTANCE.AddRayInfoToLedgerImage("description " + i + ".", 0, ClueMono.clueQuestionID, texture[i], overlayTex, null, 0);
+           
+        }
+        // LedgerManager.INSTANCE.WriteToPageInLedger();
+        }
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            GameEventManager.INSTANCE.OnEvent(typeof(ReplaceLedgerState));
         }
 
         /*
@@ -78,10 +83,10 @@ public class Tester_Script : MonoBehaviour
     private void ImitateOmitRay()
     {
         ClueMono clueMonoInRay = FindObjectOfType<ClueMono>().GetComponent<ClueMono>();
-        Texture IMAGECREATORTEXTURE = clueMonoInRay.ledgerImage;
-        LedgerImageManager.INSTANCE.AddRayInfoToLedgerImage(clueMonoInRay.imageDescription, clueMonoInRay.questionID, ClueMono.clueQuestionID , IMAGECREATORTEXTURE,clueMonoInRay.ledgerOverlays, clueMonoInRay.memoryId,clueMonoInRay.clueBodyID); //adding 'hit data information to ledger manager'
+        Texture IMAGECREATORTEXTURE = DrawingManager.INSTANCE.TakeScreenShot();
+        LedgerImageManager.INSTANCE.AddRayInfoToLedgerImage(clueMonoInRay.imageDescription, clueMonoInRay.questionID, clueMonoInRay.clueQuestionID , IMAGECREATORTEXTURE,clueMonoInRay.ledgerOverlays, ClueMono.clueBodyID); //adding 'hit data information to ledger manager'
         GameEventManager.INSTANCE.OnEvent(typeof(WriteToPageLedgerState));
-       
+        DrawingManager.INSTANCE.RunDrawingPPEffect();
        // GameEventManager.I
     }
     

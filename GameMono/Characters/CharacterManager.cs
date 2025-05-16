@@ -36,7 +36,7 @@ public class CharacterManager : StaticInstance<CharacterManager>, ISaveLoad
 
         if(characterMono == null)
         {
-            throw new NullReferenceException("no characters found");
+           Debug.LogError("no characters found");
         }
 
         for(int i = 0; i < characterMono.Length; i++)
