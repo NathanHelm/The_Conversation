@@ -22,6 +22,8 @@ public class WriteToPageLedgerState : LedgerState
         LedgerManager.onMovePageRight.RemoveAction(
         LedgerData.INSTANCE.pointActionLedgerManager
         );
+
+        GameEventManager.INSTANCE.OnEvent(typeof(EnableHandState));
         
 
         /* TODO add if needed

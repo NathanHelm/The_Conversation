@@ -16,29 +16,44 @@ public class SystemActionCall<T>
         initialAction += action;
     }
     public void AddAction(Action<T> action)
-    {            
+    { 
+               
         actionSetup += action;
     }
-    public void RemoveAction(Action<T> action)
+    public bool IsThereAction(Action<T> action)
     {
-        if(actionSetup != null)
+        if(actionSetup.GetInvocationList().Contains(action) ||
+         initialAction.GetInvocationList().Contains(initialAction))
         {
-        if(actionSetup.GetInvocationList().Contains(action))
-        {
-            actionSetup -= action;
+            return true;
         }
         else
         {
-            UnityEngine.Debug.LogError("action cannot be found");
-            UnityEngine.Debug.Log("invocation size" + actionSetup.GetInvocationList());
+            return false;
         }
-        }
-        if(initialAction != null)
+    }
+  
+
+    public void RemoveAction(Action<T> action)
+    {
+        if (actionSetup != null)
         {
-        if(initialAction.GetInvocationList().Contains(action))
-        {
-            initialAction -= action;
+            if (actionSetup.GetInvocationList().Contains(action))
+            {
+                actionSetup -= action;
+            }
+            else
+            {
+                UnityEngine.Debug.LogError("action cannot be found");
+                UnityEngine.Debug.Log("invocation size" + actionSetup.GetInvocationList());
+            }
         }
+        if (initialAction != null)
+        {
+            if (initialAction.GetInvocationList().Contains(action))
+            {
+                initialAction -= action;
+            }
         }
     }
     public void RemoveAllActions()

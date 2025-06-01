@@ -4,42 +4,57 @@ using System.Diagnostics;
 using UnityEngine;
 using System.Collections;
 using Data;
+using UnityEngine.InputSystem.XR.Haptics;
+
 
 public class SceneStateMono : StateMono<SceneData>
 {
-    private void OnEnable()
-    {
-        Value = SceneData.INSTANCE;
-    }
+  public static State<SceneData> currentSceneState;
+  private void OnEnable()
+  {
+    Value = SceneData.INSTANCE;
+   
+  }
+    
+
+
     public void SwitchScene(State<SceneData> nextState, SceneNames nextSceneName)
+  {
+    if (SceneData.INSTANCE == null)
     {
-       if(SceneData.INSTANCE == null)
-       {
-         UnityEngine.Debug.LogError("Scene data is not found, cannot execute switch scene function.");
-         return;
-       }
-       SceneData.INSTANCE.nextScene = nextSceneName;
+      UnityEngine.Debug.LogError("Scene data is not found, cannot execute switch scene function.");
+      return;
+    }
+    SceneData.INSTANCE.nextScene = nextSceneName;
 
-       currentState.OnExit(Value);
+     currentSceneState.OnExit(Value);
 
-      
 
-       SceneManager.onAfterSceneChange.AddAction(sm => {
 
-        currentState = nextState;
+    SceneManager.onAfterSceneChange.AddAction(sm => //after scene runs
+    {
+      SceneManager.onStartSceneManager.AddAction(sm => //function runs in MManager
+      {
 
-        currentState.Value = Value;
+        currentSceneState = nextState;
 
-        currentState.OnEnter(Value);
+        currentSceneState.Value = Value;
+
+        currentSceneState.OnEnter(Value);
+        
         SceneData.INSTANCE.currentScene = nextSceneName;
 
         SceneManager.onAfterSceneChange.RemoveAllActions();
-       });
+        SceneManager.onStartSceneManager.RemoveAllActions();
+
+      });
+
+    });
 
 
-        SceneManager.INSTANCE?.LoadScene(nextSceneName);
+    SceneManager.INSTANCE?.LoadScene(nextSceneName);
 
-       // SceneManager.INSTANCE. Scene currentState.OnExit(Value);
-    }
+    // SceneManager.INSTANCE. Scene currentState.OnExit(Value);
+  }
 
 }

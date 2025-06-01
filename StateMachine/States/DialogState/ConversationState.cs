@@ -26,12 +26,6 @@ public class ConversationState : DialogueState
         {
             DialogueManager.INSTANCE.RunDialog();
         }
-        if(Input.GetKeyDown(KeyCode.Tab))
-        {
-            //TODO --> initiate interview state...
-            
-            Debug.Log("InterviewState!");
-        }
     }
 }
 

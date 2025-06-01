@@ -11,7 +11,7 @@ public class DialogueManager : StaticInstance<DialogueManager>
     public static SystemActionCall<DialogueManager> actionOnAfterRunDialog = new SystemActionCall<DialogueManager>();
 
     public static SystemActionCall<DialogueManager> onEndDialogue = new SystemActionCall<DialogueManager>();
-
+    public static SystemActionCall<DialogueManager> onPressTabConversation = new SystemActionCall<DialogueManager>();
 
     private int dialogueIndex = 0;
     public string currentLine { get; set; }

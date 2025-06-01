@@ -37,8 +37,7 @@ public class PlayerMovement : MonoBehaviour
     {
 
         playerMovementActionCallOnStart.RunAction(this);
-        startPosition = playerRigidBody2d.position;
-        start3dPosition = playerRigidBody3d.position;
+       
 
 
     }

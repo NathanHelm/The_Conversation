@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Data;
 using UI;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 public enum LedgerAnimation{
     DrawImage
@@ -19,13 +20,16 @@ public class PageAnimations : StaticInstance<PageAnimations>{
 
     public Renderer currentPageOverlayImage {get; set;}
 
+    private IEnumerator single;
+
     public override void OnEnable()
     {
         MManager.onStartManagersAction.AddAction(m => m.pageAnimations = this);
         base.OnEnable();
     }
 
-    public override void m_Start(){
+    public override void m_Start()
+    {
         noiseTextures = pageScriptableObject.noiseTextures;
     }
     public void DrawImageOnCurrentPage()
@@ -38,23 +42,27 @@ public class PageAnimations : StaticInstance<PageAnimations>{
         DrawImage(currentPageOverlayImage);
         
     }
-    public void DrawLedgerImageUI(){
-        
-        DrawImage(UIData.INSTANCE.ledgerUIImage);
-    }
-    public void EraseLedgerImageUI()
-    {
-        EraseImage(UIData.INSTANCE.ledgerUIImage);
-    }
+
+
 
     public void DrawImage(Renderer renderer)
     {
-        StartCoroutine(DrawImageAnimations(LedgerData.INSTANCE.flipPageTime * 1.9f, renderer));
+        if (single != null)
+        {
+            StopCoroutine(single);
+        }
+            StartCoroutine(single = DrawImageAnimations(LedgerData.INSTANCE.flipPageTime * 1.9f, renderer));
+        
     }
 
     public void EraseImage(Renderer renderer)
     {
-       StartCoroutine(EraseImageAnimations(LedgerData.INSTANCE.flipPageTime * 0.5f, renderer));
+        if (single != null)
+        {
+            StopCoroutine(single);
+        }
+            StartCoroutine(single = EraseImageAnimations(LedgerData.INSTANCE.flipPageTime * 0.5f, renderer));
+        
     }
     
     
@@ -62,19 +70,20 @@ public class PageAnimations : StaticInstance<PageAnimations>{
     public IEnumerator DrawImageAnimations(float seconds, Renderer renderer)
     {
         Texture nTex = GetRandomNoiseTexture();
-      float time = 0;
-      var drawShaderMaterial =  renderer.material;
-      drawShaderMaterial.SetTexture("_NoiseTex", nTex);
-      while(time < 1){
+        float time = 0;
+        var drawShaderMaterial = renderer.material;
+        drawShaderMaterial.SetTexture("_NoiseTex", nTex);
+        while (time < 1) {
 
-      time += Time.deltaTime / seconds;
-      
-      drawShaderMaterial.SetFloat("_Val", time);
+            time += Time.deltaTime / seconds;
 
-      yield return new WaitForFixedUpdate();
-      }
-      drawShaderMaterial.SetFloat("_Val", 1);
-      yield return null;
+            drawShaderMaterial.SetFloat("_Val", time);
+
+            yield return new WaitForFixedUpdate();
+        }
+        drawShaderMaterial.SetFloat("_Val", 1);
+        single = null;
+        yield return null;
     }
     public IEnumerator EraseImageAnimations(float seconds, Renderer renderer)
     {
@@ -92,6 +101,7 @@ public class PageAnimations : StaticInstance<PageAnimations>{
       }
       drawShaderMaterial.SetFloat("_Val", 0);
       onAfterEraseImage.RunAction(this);
+        single = null;
       yield return null;
     }
     private Texture GetRandomNoiseTexture()

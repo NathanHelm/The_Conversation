@@ -4,22 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class GameEventManager : MonoBehaviour
+public class GameEventManager : StaticInstance<GameEventManager>
 {
-    public static GameEventManager INSTANCE = new GameEventManager();
 	public Dictionary<string, Action> onStateNameToAction = new Dictionary<string, Action>(); //gets a event name (OnTransitionTo2d for example) and adds a function to it. 
 
     private Dictionary<string, Action> previousAction = new Dictionary<string, Action>(); //gets a event name (OnTransitionTo2d for example) and adds a function to it. 
 
-
     //public Dictionary<string, Func<object, object>> onIDtoReturnFuncPara = new Dictionary<string, Func<object, object>>();
 
     // public Dictionary<string, Func<object>> onIDtoReturnFunc = new Dictionary<string, Func<object>>();
-
-    public void Awake()
-    {
-        INSTANCE = FindObjectOfType<GameEventManager>();
-    }
 
     public void ReplaceEvent(string name, Action action)
     {

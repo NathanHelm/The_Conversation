@@ -10,6 +10,8 @@ public class ReplaceLedgerState : LedgerState
   */
     public override void OnEnter(LedgerData data)
     {
+      GameEventManager.INSTANCE.OnEvent(typeof(EnableHandState));
+      
       LedgerMovement.onAfterFlipAwait.RemoveAction(
             LedgerData.INSTANCE.writeActionLedgerMovement
         );

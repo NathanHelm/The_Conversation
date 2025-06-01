@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using Data;
 using Codice.Client.Common;
+using PlasticPipe.PlasticProtocol.Messages;
 public class TriggerActionManager : StaticInstance<TriggerActionManager>
 {
 	public static SystemActionCall<TriggerActionManager> onTriggerActionTriggerActionManager = new SystemActionCall<TriggerActionManager>();
@@ -19,13 +20,11 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>
     public override void m_Start()
     {
 		SetUpTriggerActionManager();
-        SetTriggerManager();
         base.m_Start();
     }
-	private void SetTriggerManager()
-	{
-		//set trigger manager with proper trigger actions.
-        TriggerManager.onStartTriggerManagerAction.AddAction((TriggerManager t) => { t.triggerActionManager = this; });
+	public override void OnDisable()
+    {
+        base.OnDisable();
     }
 
     public void SetUpTriggerActionManager()
@@ -65,14 +64,26 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>
 
 		});
 		//NOTE: EVERY CHARACTER- or characterID with the id 2 - will run the action below, use with caution!
-		characterIDToTriggerAction.Add(2, ()=> {
+		characterIDToTriggerAction.Add(2, ()=>
+		{
 			Debug.Log("hey hey, its me number 2!");
-		
+			GameEventManager.INSTANCE.OnEvent(typeof(InterviewLedgerState));
+			GameEventManager.INSTANCE.OnEvent(typeof(ConversationState));
+
+			//one change that will effect all chracters 
+
+		});
+		characterIDToTriggerExitAction.Add(2, () =>
+		{
+			DialogueManager.INSTANCE.NoDialogue();
+            GameEventManager.INSTANCE.OnEvent(typeof(NoConversationState));
+			GameEventManager.INSTANCE.OnEvent(typeof(DisableLedgerState));
 			
 		});
 
         characterIDToTriggerAction.Add(12, () =>
 		{
+			
 			//Game
 		});
 
@@ -102,54 +113,94 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>
 	I think I made the mistake on over relying on integer ids which suck if you want multiple paticular events to kick off because of you id... 
 	
 	*/
+ 
+
+
 	public Action GetTriggerAction(int characterID) //really only used for ontrigger events :/ 
 	{
-        onTriggerActionTriggerActionManager?.RunAction(this);
+		onTriggerActionTriggerActionManager?.RunAction(this);
 
 		int getFirstVal = GetFirstVal(characterID);
 		Debug.Log("LOG first value that's in trigger --> " + getFirstVal);
 
 		if (!characterIDToTriggerAction.ContainsKey(characterID)) //if there is no character id found the warrant a trigger event (see characterIDToTriggerAction dictionary)
 		{
-			
-			//if getfirstvalue = 2, character,
-			//if 1, its a body. 
-			if (triggerOnTrigger.charactersOnTrigger.Count > 0 && getFirstVal == 2)
-			{
-				if (triggerOnTrigger.charactersOnTrigger[0] is CharacterMono)
-				{
-					//enable default conversation
-					return characterIDToTriggerAction[20]; //writes message saying 'running default event...'
-				}
-			}
-
-			else if (triggerOnTrigger.bodiesOnTrigger.Count > 0 && getFirstVal == 1)
-			{
-
-				return () => { Debug.Log("this is a body-- attach some character ID functionality @ triggeraction manager"); };
-			}
-			else
-			{
-				return ()=>{Debug.Log("neither body nor character. \nPlaying it safe and running no trigger action.");};
-			}
+			Debug.LogError("could not find id " + characterID +" in trigger action");
 		}
-		 
-		if(getFirstVal == 2)
+		if (getFirstVal == 2)
 		{
 			Debug.Log("LOG playing default character trigger at --> 2");
 			characterIDToTriggerAction[2]();
 		}
-		
+		else if (getFirstVal == 3)
+		{
+			characterIDToTriggerAction[3]();
+		}
+		else if (getFirstVal == 1)
+		{
+			characterIDToTriggerAction[1]();
+		}
+		else
+		{
+			Debug.LogWarning("interesting -- your id with: " + getFirstVal + " does not start with 1, 2, or 3.");
+		}
+
+		if (!characterIDToTriggerAction.ContainsKey(characterID)) //if there is no character id found the warrant a trigger event (see characterIDToTriggerAction dictionary)
+		{
+			Debug.LogError("could not find id " + characterID + " in trigger exit action");
+			return () => { Debug.LogError("run action!"); };
+		}
+
+
 		return characterIDToTriggerAction[characterID];
-		 
+
 	}
+	public Action GetTriggerExitAction(int characterID) //really only used for ontrigger events :/ 
+	{
+		onTriggerActionTriggerActionManager?.RunAction(this);
+
+		int getFirstVal = GetFirstVal(characterID);
+		Debug.Log("LOG first value that's in trigger --> " + getFirstVal);
+
+		if (getFirstVal == 1)
+		{
+			characterIDToTriggerExitAction[1]();
+		}
+		else if (getFirstVal == 2)
+		{
+			Debug.Log("LOG playing default character trigger at --> 2");
+			characterIDToTriggerExitAction[2]();
+		}
+		else if (getFirstVal == 3)
+		{
+			characterIDToTriggerExitAction[3]();
+		}
+		else
+		{
+			Debug.LogWarning("interesting -- your id with: " + getFirstVal + " does not start with 1, 2, or 3.");
+		}
+
+		if (!characterIDToTriggerExitAction.ContainsKey(characterID)) //if there is no character id found the warrant a trigger event (see characterIDToTriggerAction dictionary)
+		{
+			Debug.LogError("could not find id " + characterID + " in trigger exit action");
+			return () => { Debug.LogError("run action!"); };
+		}
+
+
+		
+
+		return characterIDToTriggerExitAction[characterID];
+
+	}
+
+
 	private int GetFirstVal(int characterID)
 	{
-		return (int)characterID.ToString()[0];
+		return int.Parse(characterID.ToString()[0].ToString());
 	}
 	private int GetNVal(int characterID, int N)
 	{
-		return (int)characterID.ToString()[N];
+		return int.Parse(characterID.ToString()[N].ToString());
 	}
 
 	 

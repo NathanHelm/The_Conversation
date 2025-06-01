@@ -5,7 +5,7 @@ using System.ComponentModel;
 
 namespace Data
 {
-    public class PlayerData : StaticInstance<PlayerData> 
+    public class PlayerData : StaticInstanceData<PlayerData> 
     {
 
         public PlayerScriptableObject playerSO, slowPlayerSO, currentPlayerSO;
@@ -16,6 +16,9 @@ namespace Data
         public Rigidbody2D rb2D;
         public Rigidbody rb3D;
         public Transform trans2d, trans3d;
+
+        public Vector2 start2dPos;
+        public Vector3 start3dPos;
 
         public int currentQuestionID; //question that the player asks
 
@@ -38,8 +41,12 @@ namespace Data
                 p.playerMovementAnim = playerAnimator;
                 p.moveSpeed = playerSO.speed;
                 p.playerLook = this.playerLook;
+                p.startPosition = start2dPos;
+                p.start3dPosition = start3dPos;
 
             });
+
+            
 
         }
 
@@ -54,6 +61,10 @@ namespace Data
             rb3D = FindObjectOfType<PlayerLook>().GetComponent<Rigidbody>();
             trans2d = FindObjectOfType<PlayerMovement>().transform;
             trans3d = FindObjectOfType<PlayerLook>().transform;
+
+            start2dPos = rb2D.position;
+            start3dPos = rb3D.position;
+
           
         }
  

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using UnityEngine.UIElements;
 using Codice.Client.BaseCommands.TubeClient;
 using Codice.Client.BaseCommands;
+using GluonGui.WorkspaceWindow.Views.WorkspaceExplorer.Explorer;
 
 public class LedgerManager : StaticInstance<LedgerManager>
 {
@@ -20,6 +21,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
     public static SystemActionCall<LedgerManager> onAfterMovePageFurthestLeft = new SystemActionCall<LedgerManager>();
 
     public static SystemActionCall<LedgerManager> onSelectPage = new SystemActionCall<LedgerManager>();
+
     public List<LedgerImage> ledgerImages = new List<LedgerImage>();
     
     public int index{get; set;} = 0;
@@ -75,9 +77,17 @@ public class LedgerManager : StaticInstance<LedgerManager>
     public void UseLedgerState()
     {
         //Pressing tab opens the ledger
-        if(Input.GetKeyDown(KeyCode.Tab))
+        if (InputBuffer.INSTANCE.IsPressCharacter(KeyCode.Tab))
         {
-            OpenLedgerState();
+            if (CutsceneData.INSTANCE != null)
+            {
+                CutsceneManager.INSTANCE?.LedgerDialog();
+            }
+            else
+            {
+                Debug.LogError("cutscene data not found");
+            }
+            GameEventManager.INSTANCE.OnEvent(typeof(OpenLedgerState));       
         }
 
     }
@@ -94,7 +104,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
             CreateLedger(); //make a ten page ledger
             LedgerData.INSTANCE.isLedgerCreated = isLedgerCreated = true;
 
-             pageObjectLength = UI.LedgerUIManager.INSTANCE.GetPageLength();
+            pageObjectLength = UI.LedgerUIManager.INSTANCE.GetPageLength();
             animationSpeed = (speed / pageObjectLength);
             furthestRight = 2 * (ledgerLength - 2);
 
@@ -105,12 +115,13 @@ public class LedgerManager : StaticInstance<LedgerManager>
 
             ChangeColorLayeringBorderLeft();
         }
-        if(!isLedgerActive)
+        if (!isLedgerActive)
         {
-        LedgerMovement.INSTANCE.MoveHandLeft();
-        EnableLedger();
-        GameEventManager.INSTANCE.OnEvent(typeof(PlayCutsceneState));
-        isLedgerActive = true;
+            LedgerMovement.INSTANCE.MoveHandLeft();
+            EnableLedger();
+            GameEventManager.INSTANCE.OnEvent(typeof(PlayCutsceneState));
+            isLedgerActive = true;
+        
 
         }
 
@@ -215,12 +226,11 @@ public class LedgerManager : StaticInstance<LedgerManager>
         UI.LedgerUIManager.INSTANCE.ChangeLayerDown(ind, 2500, 2500);
     }
 
-
     public void MovePages()
     {
-       // Debug.Log("current index " + index);
-        if(Input.GetKeyDown(KeyCode.D))
-        {      
+        // Debug.Log("current index " + index);
+        if (Input.GetKeyDown(KeyCode.D))
+        {
             MovePageRight();
         }
         if (Input.GetKeyDown(KeyCode.A))
@@ -377,27 +387,34 @@ public class LedgerManager : StaticInstance<LedgerManager>
            UI.LedgerUIManager.INSTANCE.SetTextureToPage(i, ledgerImages[i].ledgerImage);
         }
     }
+    public void SetImageValueToOne(int index)
+    {
+
+        Renderer ren = LedgerUIManager.INSTANCE.GetPageOverlayRenderer(index);
+        ren.material.SetFloat("_Val", 1);
+
+    }
 
 
 
-    public IEnumerator MoveRightUntilIndex(int startIndex,int toIndex, float speed, float delayTime)
+    public IEnumerator MoveRightUntilIndex(int startIndex, int toIndex, float speed, float delayTime)
     {
         yield return new WaitForSeconds(delayTime);
         var prevflippageS = LedgerData.INSTANCE.flipPageTime;
         LedgerData.INSTANCE.flipPageTime = animationSpeed + 0.5f;
 
-      
 
-        while(startIndex < toIndex)
+
+        while (startIndex < toIndex)
         {
-           
+
             yield return new WaitForSeconds(speed);
             MovePageRight();
             ++startIndex;
         }
-        if(index == 0)
+        if (index == 0)
         {
-           LedgerMovement.INSTANCE.MoveHandAwaitPoint();
+            LedgerMovement.INSTANCE.MoveHandAwaitPoint();
         }
 
         LedgerData.INSTANCE.flipPageTime = prevflippageS;
@@ -435,8 +452,10 @@ public class LedgerManager : StaticInstance<LedgerManager>
     }
     public void DisableLedger()
     {
+       
         isLedgerActive = false;
         UI.LedgerUIManager.INSTANCE.CloseBook();
+        
     }
     
    
@@ -468,6 +487,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
         }
     }
     
+    
 
    
 
@@ -480,7 +500,7 @@ public class LedgerManager : StaticInstance<LedgerManager>
         CutsceneManager.INSTANCE.SetCutSceneConditions(new (Action, bool)[] { ( () => { Debug.Log("cutscene with condition is active..."); }, isLedgerEnabled)});
         CutsceneManager.INSTANCE.PlayCutscene();
        */
-       // GameEventManager.INSTANCE.OnEvent(typeof(OpenLedgerState));
+        // GameEventManager.INSTANCE.OnEvent(typeof(OpenLedgerState));
 
     }
  

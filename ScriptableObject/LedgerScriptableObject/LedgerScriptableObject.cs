@@ -5,6 +5,7 @@ using UnityEngine;
 public class LedgerScriptableObject : ScriptableObject
 {
     public Material firstPageMat, lastPageMat, defaultMat;
+    public Texture interviewIcon;
     public GameObject pagePrefab, doubleSidedPagePrefab;
 
 }

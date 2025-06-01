@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Data;
 
 public class MovementManager : StaticInstance<MovementManager>
 { 
@@ -10,9 +11,11 @@ public class MovementManager : StaticInstance<MovementManager>
         positionTransformation = new Vector3(difference.x, 0, difference.y);
         return positionTransformation;
     }
+     
+
     public override void OnEnable()
     {
-        PlayerMovement.playerMovementActionCallOnUpdate.AddAction((PlayerMovement p)=> { p.set2dAnd3dOffset( SetThreeDMovementOnTwoDMovement(p.playerRigidBody2d.position, p.startPosition)); });
+        PlayerMovement.playerMovementActionCallOnUpdate.AddAction((PlayerMovement p) => { p.set2dAnd3dOffset(SetThreeDMovementOnTwoDMovement(PlayerData.INSTANCE.rb2D.position, PlayerData.INSTANCE.start2dPos)); });
         TwoTo3dPositions.twoTo3dPostionOnActionStart.AddAction((TwoTo3dPositions t) => { t.threeToTwoDMovement = SetThreeDMovementOnTwoDMovement(t.physicsGameObject2D.currentPos, t.initialPosition); });
     }
     

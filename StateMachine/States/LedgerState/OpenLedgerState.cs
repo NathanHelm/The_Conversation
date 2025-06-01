@@ -7,6 +7,7 @@ public class OpenLedgerState : LedgerState
     {
         Debug.Log("Active ledger state");
         LedgerManager.INSTANCE.OpenLedger();
+        GameEventManager.INSTANCE.OnEvent(typeof(EnableHandState));
       
         base.OnEnter(data);
     }

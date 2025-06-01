@@ -10,6 +10,10 @@ public class DialogueConversation
 
     [SerializeField]
     public Texture defaultImageTex;
+
+    [SerializeField]
+    public int defaultImageTexIndex;
+
    
  
     

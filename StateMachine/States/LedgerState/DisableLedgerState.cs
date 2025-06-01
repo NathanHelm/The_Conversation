@@ -7,21 +7,21 @@ public class DisableLedgerState : LedgerState
     public override void OnEnter(Data.LedgerData data)
     {
         Debug.Log("entered disable ledger state");
+
         LedgerManager.INSTANCE.DisableLedger();
-        GameEventManager.INSTANCE.OnEvent(typeof(DisableHandState));
+
+       
+
+       
         base.OnEnter(data);
     }
     public override void OnUpdate(Data.LedgerData data)
     {
-      if(InputBuffer.INSTANCE.IsPressCharacter(KeyCode.Tab))
-      {
-        CutsceneManager.INSTANCE?.LedgerDialog();
-        GameEventManager.INSTANCE.OnEvent(typeof(OpenLedgerState));           
-      }
+      LedgerManager.INSTANCE.UseLedgerState(); //NOTE THIS WILL CHANGE DEPENDING ON A ID 2 is in trigger or not.
     }
     public override void OnExit(LedgerData data)
     {
-        GameEventManager.INSTANCE.OnEvent(typeof(EnableHandState));
+     
     }
 }
 

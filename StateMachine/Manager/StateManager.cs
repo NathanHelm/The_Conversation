@@ -53,6 +53,7 @@ public class  StateManager: StaticInstance<StateManager>
     public ReplaceLedgerState replaceLedgerState = new();
     public WriteToPageLedgerState writeToPageLedgerState = new();
     public InspectClueLedgerState inspectClueLedgerState = new();
+    public InterviewLedgerState interviewLedgerState = new();
 
 
 
@@ -137,7 +138,7 @@ public class  StateManager: StaticInstance<StateManager>
             GameEventManager.INSTANCE.AddEvent(typeof(ClueConversationState), ()=> {dialogueState.SwitchState(clueConversationState); });
             GameEventManager.INSTANCE.AddEvent(typeof(EndConversationState), () => { dialogueState.SwitchState(endConversationState); });
 
-            dialogueState.SwitchState(endConversationReplayState);
+            dialogueState.SwitchState(noConversationState);
         }
         if (TriggerData.INSTANCE != null)
         {
@@ -154,39 +155,47 @@ public class  StateManager: StaticInstance<StateManager>
             GameEventManager.INSTANCE.AddEvent(typeof(StopCutsceneState), () => { cutsceneState.SwitchState(stopCutsceneState); });
             cutsceneState.SwitchState(noCutsceneState);
         }
-        if(LedgerData.INSTANCE != null)
+        if (LedgerData.INSTANCE != null)
         {
             GameEventManager.INSTANCE.AddEvent(typeof(OpenLedgerState), () => { ledgerState.SwitchState(openLedgerState); });
             GameEventManager.INSTANCE.AddEvent(typeof(IdleLedgerState), () => { ledgerState.SwitchState(idleLedgerState); });
             GameEventManager.INSTANCE.AddEvent(typeof(DisableLedgerState), () => { ledgerState.SwitchState(disableLedgerState); });
             GameEventManager.INSTANCE.AddEvent(typeof(WriteToPageLedgerState), () => { ledgerState.SwitchState(writeToPageLedgerState); });
             GameEventManager.INSTANCE.AddEvent(typeof(ReplaceLedgerState), () => { ledgerState.SwitchState(replaceLedgerState); });
-            GameEventManager.INSTANCE.AddEvent(typeof(InspectClueLedgerState), ()=> {ledgerState.SwitchState(inspectClueLedgerState);});
-           
+            GameEventManager.INSTANCE.AddEvent(typeof(InspectClueLedgerState), () => { ledgerState.SwitchState(inspectClueLedgerState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(InterviewLedgerState), () => { ledgerState.SwitchState(interviewLedgerState); });
             //yes...hand state and ledgerstate carry the same data
-            GameEventManager.INSTANCE.AddEvent(typeof(IdleHandState), ()=> {handState.SwitchState(idleHandState);});
-            GameEventManager.INSTANCE.AddEvent(typeof(EnableHandState), ()=> {handState.SwitchState(enableHandState);});
-            GameEventManager.INSTANCE.AddEvent(typeof(DisableHandState), ()=> {handState.SwitchState(disableHandState);});
-            GameEventManager.INSTANCE.AddEvent(typeof(PointHandState), ()=> {handState.SwitchState(pointHandState);});
-            GameEventManager.INSTANCE.AddEvent(typeof(MoveHandFlipState), ()=> {handState.SwitchState(moveHandFlipState);});
-            GameEventManager.INSTANCE.AddEvent(typeof(ClickHandState), ()=> {handState.SwitchState(clickHandState);});
-            GameEventManager.INSTANCE.AddEvent(typeof(WriteHandState), ()=> {handState.SwitchState(writeHandState);});
-            GameEventManager.INSTANCE.AddEvent(typeof(HoldPageState), ()=> {handState.SwitchState(holdPageState);});
-        
-            
+            GameEventManager.INSTANCE.AddEvent(typeof(IdleHandState), () => { handState.SwitchState(idleHandState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(EnableHandState), () => { handState.SwitchState(enableHandState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(DisableHandState), () => { handState.SwitchState(disableHandState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(PointHandState), () => { handState.SwitchState(pointHandState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(MoveHandFlipState), () => { handState.SwitchState(moveHandFlipState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(ClickHandState), () => { handState.SwitchState(clickHandState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(WriteHandState), () => { handState.SwitchState(writeHandState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(HoldPageState), () => { handState.SwitchState(holdPageState); });
+
+
             ledgerState.SwitchState(disableLedgerState);
             handState.SwitchState(disableHandState);
+            
         }
-        //this comes last--
+        //this comes last-- scene states have to potential to change other states!
         if(SceneData.INSTANCE != null)
         {
             GameEventManager.INSTANCE.AddEvent(typeof(VetHouseSceneState), ()=> { sceneStateMono.SwitchScene(vetHouseSceneState, SceneNames.VetHouseScene);});
             GameEventManager.INSTANCE.AddEvent(typeof(InterviewSceneState),()=>{ sceneStateMono.SwitchScene(interviewSceneState, SceneNames.InterviewScene);} );
-            GameEventManager.INSTANCE.AddEvent(typeof(IdleSceneState), ()=> {sceneStateMono.SwitchState(idleSceneState);});
-            
-         
+            GameEventManager.INSTANCE.AddEvent(typeof(IdleSceneState), ()=> {
+            sceneStateMono.SwitchState(idleSceneState);});
 
-            sceneStateMono.SwitchState(idleSceneState);
+
+
+            if (SceneStateMono.currentSceneState == null)
+            {
+                Debug.LogError("Assigning state vet house because current scene is null!");
+                SceneStateMono.currentSceneState = vetHouseSceneState;
+                sceneStateMono.SwitchState(vetHouseSceneState);
+                //sceneStateMono.SwitchState(idleHandState);
+            }
         }
         
       

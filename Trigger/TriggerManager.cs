@@ -138,6 +138,26 @@ public class TriggerManager : StaticInstance<TriggerManager>
     public void DefaultTriggerExit(Collider other, Trigger trigger)
     {
         PlayerLook player = other.GetComponent<PlayerLook>();
+
+        if (player != null && trigger.charactersOnTrigger.Count > 0) //if player != null return
+        {
+            int characterOnTriggerId = GetCharacterID(trigger);
+            triggerActionManager.GetTriggerExitAction(characterOnTriggerId)();
+        }
+        
+         if (player != null && trigger.bodiesOnTrigger.Count > 0) //is player
+            {
+                /*
+                DialogueManager.INSTANCE.NoDialogue();
+                GameEventManager.INSTANCE.OnEvent(typeof(NoConversationState));
+                */
+
+                int bodyOnTriggerId = GetBodyID(trigger);
+                triggerActionManager.GetTriggerExitAction(bodyOnTriggerId)();
+
+            }
+       
+
         if (other.GetComponent<CharacterMono>() != null)
         {
             trigger.charactersOnTrigger.Remove(other.GetComponent<CharacterMono>());
@@ -147,15 +167,8 @@ public class TriggerManager : StaticInstance<TriggerManager>
             trigger.bodiesOnTrigger.Remove(other.GetComponent<BodyMono>());
         }
 
-        if (player != null) //is player
-        {
-            DialogueManager.INSTANCE.NoDialogue();
-            GameEventManager.INSTANCE.OnEvent(typeof(NoConversationState));
-            return;
-        }
-
     }
-
+   
     public void IdleTriggerEnterState(Collider other, ref Trigger trigger)
     {
         Debug.Log("trigger enter is in idle");

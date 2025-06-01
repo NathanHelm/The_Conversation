@@ -7,7 +7,10 @@ public class InputBuffer : MonoBehaviour{
     public static InputBuffer INSTANCE;
     private void Awake()
     {
-       INSTANCE = this;
+        if (INSTANCE == null)
+        {
+            INSTANCE = this;
+        }
     }
 
     private bool isInputActive = false;

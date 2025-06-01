@@ -51,10 +51,10 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
             }
 
             }
-            
+
         }
         });
-                                        //character id example     
+        //character id example     
         conversationKeyToDialogActions.Add(2, new Dictionary<int, Dictionary<int, Action>>()
         {
            //QuestionID -- the 'response' to a paticular question id, character id determines which lists what
@@ -69,14 +69,14 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
 
               //  ()=>{Debug.Log("On index 1, play button option dialog"); GameEventManager.INSTANCE.OnEvent(typeof(ButtonOptionDialogState));
             }
-            
+
             }
             }
         });
         conversationKeyToDialogActions.Add(33, new Dictionary<int, Dictionary<int, Action>>()
         {
             {
-                2, 
+                2,
                 new Dictionary<int, Action>(){
                     {
                         3, ()=> {Debug.Log("AHA! -- you unlocked a memory conDRAGulations");}
@@ -119,7 +119,7 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
                         });
 
                         GameEventManager.INSTANCE.OnEvent(typeof(ButtonOptionDialogState));
-                    
+
                      }
 
                     }
@@ -127,6 +127,23 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
             }
             }
         });
+        conversationKeyToDialogActions.Add(24, new Dictionary<int, Dictionary<int, Action>>()
+        {
+            { 46,
+            new Dictionary<int, Action>() { 
+            //index in the conversation
+            { 1, ()=>{
+
+                Debug.Log("index 1!");
+
+            }
+            }
+
+            }
+            }
+        });
+
+
     }
 
 

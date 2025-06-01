@@ -10,7 +10,7 @@ namespace Data
         public Trigger triggerOnTrigger { get; set; }
         public DialogueData dialogueData;
 
-        public bool isPlayerOnCharacter {get; set;} = false; 
+        public bool isPlayerOnCharacter {get; set;} = false;
 
         public override void OnEnable()
         {
@@ -18,6 +18,9 @@ namespace Data
             dialogueData = FindObjectOfType<DialogueData>();
             SetUpTriggerManager();
             SetUpTriggerActionManager();
+            
+            TriggerManager.onStartTriggerManagerAction.AddAction((TriggerManager t) => { t.triggerActionManager = TriggerActionManager.INSTANCE; });
+            
             
         }
         private void SetUpTriggerManager()
@@ -28,7 +31,7 @@ namespace Data
         private void SetUpTriggerActionManager()
         {
            
-                TriggerActionManager.onTriggerActionTriggerActionManager.AddAction((TriggerActionManager t) => { t.triggerOnTrigger = this.triggerOnTrigger; });
+            TriggerActionManager.onTriggerActionTriggerActionManager.AddAction((TriggerActionManager t) => { t.triggerOnTrigger = this.triggerOnTrigger; });
         }
         
 

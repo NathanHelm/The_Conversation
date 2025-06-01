@@ -1,10 +1,8 @@
 using Data;
 
 public class ClueConversationState : DialogueState{
-    //like immediate conversation state, only a few extra step
-    //ledger state temporarily become clue-inspection state.
-    //image enabled
-    //when dialog stops running, you are taken 
+  
+    //when dialog stops running, you are taken back to ledgeropen state
     public override void OnEnter(DialogueData data)
     {
         if (DialogueManager.INSTANCE != null)

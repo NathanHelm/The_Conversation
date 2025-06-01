@@ -3,20 +3,20 @@ using System.Collections;
 using Cinemachine;
 
 namespace Data
-{ 
-public class DimensionData : StaticInstance<DimensionData>
 {
-	[SerializeField]
-	public DimensionScriptableObject TransitionTo2dSo;
-	[SerializeField]
-	public DimensionScriptableObject TransitionTo3dSo;
-	public Camera cam;
-	public UIData uIData;
-	public UIManager uIManager;
-	
+	public class DimensionData : StaticInstanceData<DimensionData>
+	{
+		[SerializeField]
+		public DimensionScriptableObject TransitionTo2dSo;
+		[SerializeField]
+		public DimensionScriptableObject TransitionTo3dSo;
+		public Camera cam;
+		public UIData uIData;
+		public UIManager uIManager;
 
-    public override void Awake()
-    {
+
+		public override void Awake()
+		{
 			try
 			{
 				cam = FindObjectOfType<Camera>().GetComponent<Camera>();
@@ -33,17 +33,28 @@ public class DimensionData : StaticInstance<DimensionData>
 			{
 				base.Awake();
 			}
-    }
-        public override void OnEnable()
+		}
+		public override void OnEnable()
+		{
+
+			TransitionManager.actionOnStartConversation.AddAction((TransitionManager e) => { e.cam = this.cam; });
+			base.OnEnable();
+		}
+		private void Start()
+		{
+			uIData = UIData.INSTANCE;
+		}
+	   public void ChangeTexture(ref Renderer renderer, Texture texture)
         {
-          
-			TransitionManager.actionOnStartConversation.AddAction((TransitionManager e)=>{e.cam = this.cam;});
-			  base.OnEnable();
+             if(renderer.material.HasTexture("_MainTex"))
+             {
+                renderer.material.SetTexture("_MainTex", texture);
+             }
+             else
+             {
+                Debug.Log("_MainTex does not exist for this shader");
+             }
         }
-        private void Start()
-    {
-        uIData = UIData.INSTANCE;
-    }
 
     
 }

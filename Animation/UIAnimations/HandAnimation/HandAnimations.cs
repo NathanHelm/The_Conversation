@@ -1,3 +1,4 @@
+using Codice.LogWrapper;
 using Data;
 using UnityEngine;
 
@@ -29,16 +30,22 @@ public class HandAnimations : StaticInstance<HandAnimations>{
         MManager.onStartManagersAction.AddAction(m => m.handAnimations = this);
         base.OnEnable();
     }
+    public override void OnDisable()
+    {
+        MManager.INSTANCE.handAnimations = null;
+        base.OnDisable();
+    }
 
     public override void m_Start()
+  {
+    LedgerMovement.onAfterCreateHands.AddAction((LedgerMovement lm) =>
     {
-        LedgerMovement.onAfterCreateHands.AddAction((LedgerMovement lm) => {
-        rightHandAnim = LedgerData.INSTANCE.rightHandAnim;
-        leftHandAnim = LedgerData.INSTANCE.leftHandAnim;
-        leftHand = LedgerData.INSTANCE.leftHandObj;
-      });
-        
-    }
+      rightHandAnim = LedgerData.INSTANCE.rightHandAnim;
+      leftHandAnim = LedgerData.INSTANCE.leftHandAnim;
+      leftHand = LedgerData.INSTANCE.leftHandObj;
+    });
+
+  }
     public void PlayHandAnimation(HandAnimation handAnimation, float speed)
     {
         Animator handAnim = rightHandAnim;

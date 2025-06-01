@@ -4,40 +4,41 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using Data;
-public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
+public class QuestionResponseManager : StaticInstance<QuestionResponseManager>, ISaveLoad
 {
 	//based on relevant Character and Question id; output a conversation response.
 
 	private DialogueData dialogueData;
-	
+
 	Dictionary<int, Dictionary<int, DialogueConversation>> npcToQuestionDialogueNpc = new Dictionary<int, Dictionary<int, DialogueConversation>>();
 
-    public override void OnEnable()
-    {
+	public override void OnEnable()
+	{
 		MManager.onStartManagersAction.AddAction((MManager m) =>
 		{
 			m.questionResponseManager = this;
 		});
 
-        base.OnEnable();
+		base.OnEnable();
 
 	}
 
-    public override void m_Start()
-    {
+	public override void m_Start()
+	{
 
-        SetUpQuestionResponseManager();
+		SetUpQuestionResponseManager();
 		//injecting 'set question' via quesetion and characterID
-		DialogueManager.actionOnStartConversation.AddAction((DialogueManager d) => {d.dialogueObjects = getDialogueConversation(DialogueData.INSTANCE.currentCharacterID, DialogueData.INSTANCE.currentQuestionID); });
-        Debug.Log("LOG: Adding character id: " + DialogueData.INSTANCE.currentCharacterID + " and question ID to: " + DialogueData.INSTANCE.currentCharacterID);
-		
-    }
+		DialogueManager.actionOnStartConversation.AddAction(
+			(DialogueManager d) => { d.dialogueObjects = getDialogueConversation(DialogueData.INSTANCE.currentCharacterID, DialogueData.INSTANCE.currentQuestionID); });
+		Debug.Log("LOG: Adding character id: " + DialogueData.INSTANCE.currentCharacterID + " and question ID to: " + DialogueData.INSTANCE.currentCharacterID);
+
+	}
 
 
-    public void SetUpQuestionResponseManager()
+	public void SetUpQuestionResponseManager()
 	{
 		Debug.Log("add Questions and Response here!");
-        npcToQuestionDialogueNpc.Add(1, new Dictionary<int, DialogueConversation>());
+		npcToQuestionDialogueNpc.Add(1, new Dictionary<int, DialogueConversation>());
 
 		npcToQuestionDialogueNpc[1] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[] {
 
@@ -49,6 +50,10 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 			 here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
 			 */
 		});
+
+
+
+
 		npcToQuestionDialogueNpc.Add(22, new Dictionary<int, DialogueConversation>());
 
 		npcToQuestionDialogueNpc[22] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[] {
@@ -60,6 +65,16 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 			/*
 			 here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
 			 */
+		});
+
+
+		npcToQuestionDialogueNpc.Add(24, new Dictionary<int, DialogueConversation>());
+
+		npcToQuestionDialogueNpc[24] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[]{
+
+			new (new int[] { 0,5,2 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(24, 2)),
+			new(new int[] { 46 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(24, 46))
+
 		});
 
 		npcToQuestionDialogueNpc.Add(210, new Dictionary<int, DialogueConversation>());
@@ -74,13 +89,13 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 			 LOOK: here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
 			 */
 		});
-		 //31 is the character id for ALL clues
+		//31 is the character id for ALL clues
 		npcToQuestionDialogueNpc.Add(31, new Dictionary<int, DialogueConversation>());
 		npcToQuestionDialogueNpc[31] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[]{
 			new (new int[] { 1 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(31, 1))
 		});
 
-		
+
 
 
 		/*
@@ -102,31 +117,31 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 		*/
 
 
-    }
+	}
 
-    public Dictionary<int, DialogueConversation> AddQuestionsIDToCharacterAnswer((int[], DialogueConversation)[] keys) 
+	public Dictionary<int, DialogueConversation> AddQuestionsIDToCharacterAnswer((int[], DialogueConversation)[] keys)
 	{
 		Dictionary<int, DialogueConversation> keyValuePairs = new Dictionary<int, DialogueConversation>();
 
-		for(int i = 0; i < keys.Length; i++)
+		for (int i = 0; i < keys.Length; i++)
 		{
-			
+
 			for (int j = 0; j < keys[i].Item1.Length; j++)
 			{
-	
-                keyValuePairs.Add(keys[i].Item1[j], keys[i].Item2); //for each int in key array, add a responding key pair value.
+
+				keyValuePairs.Add(keys[i].Item1[j], keys[i].Item2); //for each int in key array, add a responding key pair value.
 			}
 		}
 		return keyValuePairs;
 	}
 
 
-    public DialogueObject[] getDialogueConversation(int characterID, int playerQuestionID)
+	public DialogueObject[] getDialogueConversation(int characterID, int playerQuestionID)
 	{
 		//code for question response type dialog
-		if(!npcToQuestionDialogueNpc.ContainsKey(characterID))
+		if (!npcToQuestionDialogueNpc.ContainsKey(characterID))
 		{
-			throw new KeyNotFoundException("character ID "+ characterID + " does not match with value");
+			throw new KeyNotFoundException("character ID " + characterID + " does not match with value");
 		}
 		if (!npcToQuestionDialogueNpc[characterID].ContainsKey(playerQuestionID))
 		{
@@ -144,8 +159,18 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>
 		}
 		Debug.Log("LOG: obtained conversation dialogue objects from character " + characterID + " based on question: " + playerQuestionID);
 		return npcToQuestionDialogueNpc[characterID][playerQuestionID].dialogueObjects;
-		
+
 	}
- 
+
+    public (FileNames, JsonObject[])[] Save()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Load()
+    {
+		npcToQuestionDialogueNpc = new Dictionary<int, Dictionary<int, DialogueConversation>>();
+		SetUpQuestionResponseManager();
+    }
 }
 

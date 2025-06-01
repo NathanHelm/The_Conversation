@@ -5,16 +5,21 @@ using Data;
 using Persistence;
 using UnityEngine;
 
-public class InterviewData : StaticInstance<InterviewData>, ISaveLoad
+public class InterviewData : StaticInstanceData<InterviewData>, ISaveLoad
 {
    //data that is nessecary for the interview scene to function...
    public int questionID = 0; //note, we obtain this from 
    public int characterID = 0;
    public SceneNames previousScene;
 
+    public Renderer interviewFaceRenderer;
+
     public void Load()
     {
-       
+        List<JsonInterviewObject> loadList = SavePersistenceManager.INSTANCE.LoadDataFromFile<JsonInterviewObject>(FileNames.InterviewFile);
+
+        DialogueData.INSTANCE.currentQuestionID = questionID = loadList[0].questionID;
+        DialogueData.INSTANCE.currentCharacterID = characterID = loadList[0].characterID;
     }
 
     public (FileNames, JsonObject[])[] Save()
@@ -27,7 +32,7 @@ public class InterviewData : StaticInstance<InterviewData>, ISaveLoad
         
         return new (FileNames, JsonObject[])[]
         {
-            (FileNames.InterviewFile, new JsonObject[]{ jsonInterviewObject }),     
+            (FileNames.InterviewFile, new JsonInterviewObject[]{ jsonInterviewObject }),     
         };
 
     }

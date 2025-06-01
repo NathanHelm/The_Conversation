@@ -7,7 +7,7 @@ using System;
 
 public class UIManager : StaticInstance<UIManager>
 {
-    
+
 
     TextMeshProUGUI dialogText;
 
@@ -21,7 +21,7 @@ public class UIManager : StaticInstance<UIManager>
 
     public override void m_Start()
     {
-       
+
         if (UIData.INSTANCE != null)
         {
             dialogText = UIData.INSTANCE.dialogText;
@@ -35,12 +35,12 @@ public class UIManager : StaticInstance<UIManager>
 
     private void UIFogIn()
     {
-      // UIData.
+        // UIData.
     }
 
     public void ResetText()
     {
-        if(dialogText == null)
+        if (dialogText == null)
         {
             throw new NullReferenceException("dialog is not added");
         }
@@ -78,6 +78,17 @@ public class UIManager : StaticInstance<UIManager>
     {
         var rectTransform = uiObject.GetComponent<RectTransform>();
         rectTransform.localPosition = uiObjectPos;
+    }
+    public void ChangeTexture(ref Renderer renderer, Texture texture)
+    {
+        if(renderer.material.HasTexture("_MainTex"))
+        {
+        renderer.material.SetTexture("_MainTex", texture);
+        }
+        else
+        {
+        Debug.Log("_MainTex does not exist for this shader");
+        }
     }
     
  

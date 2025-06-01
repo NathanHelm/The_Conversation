@@ -8,8 +8,10 @@ public class CharacterMono : BodyMono
 	private CharacterScriptableObject characterScriptableObject;
 
 
-	public DialogueConversation[] dialogueConversation {get; set;}
-	public MemoryStage[] memoryStages {get; set;}
+	public DialogueConversation[] dialogueConversation { get; set; }
+	public MemoryStage[] memoryStages { get; set; }
+
+	public Texture[] characterFaceSheet {get; set;}
 
 	[SerializeField]
 	public int persistentConversationId;
@@ -23,6 +25,7 @@ public class CharacterMono : BodyMono
 			persistentConversationId = characterScriptableObject.character.persistentConversationID;
 			dialogueConversation = characterScriptableObject.character.dialogueConversations;
 			memoryStages = characterScriptableObject.character.memoryStages;
+			characterFaceSheet = characterScriptableObject.character.characterFaceSheet;
 		}
 		else
 		{

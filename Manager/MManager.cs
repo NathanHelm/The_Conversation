@@ -4,54 +4,61 @@ using System.Collections;
 using UI;
 using System.Buffers;
 using Unity.Mathematics;
+using UnityEditor.SearchService;
+using UnityEngine.SceneManagement;
 
 public class MManager : StaticInstance<MManager>
 {
     //character
     public static SystemActionCall<MManager> onStartManagersAction { get; set; } = new SystemActionCall<MManager>();
 
-    public SavePersistenceManager savePersistenceManager {get; set;}
-    public CharacterManager characterManager { get; set; }
-    public TriggerActionManager triggerActionManager { get; set; }
-    public TriggerManager triggerManager { get; set; }
-    public DialogueManager dialogueManager { get; set; }
-    public DialogueActionManager dialogueActionManager { get; set; }
-    public QuestionResponseManager questionResponseManager { get; set; }
-    public UIManager uIManager { get; set; }
+    public SavePersistenceManager savePersistenceManager { get; set; } = null;
+    public CharacterManager characterManager { get; set; } = null;
+    public TriggerActionManager triggerActionManager { get; set; } = null;
+    public TriggerManager triggerManager { get; set; } = null;
+    public DialogueManager dialogueManager { get; set; } = null;
+    public DialogueActionManager dialogueActionManager { get; set; } = null;
+    public QuestionResponseManager questionResponseManager { get; set; } = null; 
+    public UIManager uIManager { get; set; } = null;
 
-    public ButtonDialogueManager buttonDialogueManager {get; set;}
-    public MovementManager movementManager { get; set; }
-
-//================================================================================================================================================================
-    public LedgerManager ledgerManager { get; set; }
-    public LedgerUIManager ledgerUIManager { get; set; }
-    public LedgerImageManager ledgerImageManager {get; set;}
-    public LedgerMovement ledgerMovement {get; set;}
-
-    public HandAnimations handAnimations {get; set;}
-
-    public PageAnimations pageAnimations {get; set;}
-
-    public DrawingManager drawingManager {get; set;}
+    public ButtonDialogueManager buttonDialogueManager {get; set;} = null;
+    public MovementManager movementManager { get; set; } = null;
 
 //================================================================================================================================================================
-    public AnimationManager animationManager {get; set;}
-    public CutsceneManager cutsceneManager { get; set; }
-    public MemoryManager memoryManager {get; set;}
+    public LedgerManager ledgerManager { get; set; } = null;
+    public LedgerUIManager ledgerUIManager { get; set; } = null;
+    public LedgerImageManager ledgerImageManager {get; set;} = null;
+    public LedgerMovement ledgerMovement {get; set;} = null;
+
+    public HandAnimations handAnimations {get; set;} = null;
+
+    public PageAnimations pageAnimations {get; set;} = null;
+    
+    public ImageUIAnimations imageUIAnimations { get; set;} = null;
+
+    public DrawingManager drawingManager { get; set; } = null;
+
+//================================================================================================================================================================
+    public AnimationManager animationManager {get; set;} = null;
+    public CutsceneManager cutsceneManager { get; set; } = null;
+    
+    public SceneManager sceneManager { get; set; } = null;
+    public MemoryManager memoryManager { get; set; } = null;
 
 
 
-    public TransitionManager transitionManager {get; set;}
+    public TransitionManager transitionManager {get; set;} = null;
 
-    public StateManager stateManager {get; set;} //this one stays last
+    public StateManager stateManager {get; set;} = null; //this one stays last
 
-
+    public void StartData()
+    {}
     public void StartManagers()
     {
         onStartManagersAction.RunAction(this); //todo subsribe all manager with
 
         savePersistenceManager?.m_Start();
-        
+
         characterManager?.m_Start();
 
         triggerActionManager?.m_Start();
@@ -84,6 +91,8 @@ public class MManager : StaticInstance<MManager>
 
         pageAnimations?.m_Start();
 
+        imageUIAnimations?.m_Start();
+
         drawingManager?.m_Start();
 
         cutsceneManager?.m_Start();
@@ -94,7 +103,8 @@ public class MManager : StaticInstance<MManager>
 
         stateManager?.m_Start(); //state manager ALWAYS comes last. 
 
-       
+        sceneManager?.m_Start(); //...unless your scene makes changes which will change state. 
+
         Debug.Log("LOG: managers ran their m_Start!");
 
 
@@ -104,6 +114,8 @@ public class MManager : StaticInstance<MManager>
     public void Start()
     {
         StartManagers();
+       // UnityEngine.SceneManagement.SceneManager.sceneLoaded += (Scene, LoadSceneMode) => {
+       //     StartManagers(); };
     }
 }
 

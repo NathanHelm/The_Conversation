@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using PlasticGui.WorkspaceWindow;
 using UnityEngine;
 
-public class MemoryData : StaticInstance<MemoryData>
+public class MemoryData : StaticInstanceData<MemoryData>
 {
     public MemoryStage[] memoryStages {get; set;}  //all memories in the dream scene.
 

@@ -6,7 +6,7 @@ using System;
 namespace Data
 {
 
-	public class DialogueData : StaticInstance<DialogueData>
+	public class DialogueData : StaticInstanceData<DialogueData>
 	{
 		[SerializeField]
 		public int currentCharacterID, currentPersistentConversationID;
@@ -33,18 +33,25 @@ namespace Data
 			//SetDialogueData();
 		 
 		}
-        public override void OnEnable()
+		public override void OnEnable()
+		{
+
+			//SetDialogueData();
+			  SetTriggerManager();
+           
+        }
+
+        public override void m_Start()
         {
-            //make sure that priority actions are used before the start function. 
-            //SetDialogueData();
-            SetTriggerManager();
+		   //make sure that priority actions are used before the start function. 
+         
         }
 		
 
 		private void SetTriggerManager()
 		{
 			TriggerManager.onStartTriggerManagerAction.AddAction((TriggerManager t) => { t.dialogueData = this; });
-			
+
 		}
 		
 

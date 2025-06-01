@@ -336,18 +336,6 @@ namespace UI
                 Debug.LogError("no color found");
             }
         }
-     
-        public void ChangeTexture(ref Renderer renderer, Texture texture)
-        {
-             if(renderer.material.HasTexture("_MainTex"))
-             {
-                renderer.material.SetTexture("_MainTex", texture);
-             }
-             else
-             {
-                Debug.Log("_MainTex does not exist for this shader");
-             }
-        }
 
         public void ChangeBorderLeft()
         {
@@ -373,7 +361,7 @@ namespace UI
         public void SetTextureToPage(int index, Texture tex)
         {
             Renderer overlayImage = imageObjects[index].GetComponent<Renderer>();
-            ChangeTexture(ref overlayImage, tex);
+            UIManager.INSTANCE.ChangeTexture(ref overlayImage, tex);
         }
 
         private IEnumerator FlipPageAnimation(bool isLeft,int pIndex, int index, float startAngle, float endAngle)
