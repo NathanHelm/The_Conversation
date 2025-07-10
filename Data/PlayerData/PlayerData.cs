@@ -5,7 +5,7 @@ using System.ComponentModel;
 
 namespace Data
 {
-    public class PlayerData : StaticInstanceData<PlayerData> 
+    public class PlayerData : StaticInstanceData<PlayerData> , IExecution
     {
 
         public PlayerScriptableObject playerSO, slowPlayerSO, currentPlayerSO;
@@ -23,17 +23,16 @@ namespace Data
         public int currentQuestionID; //question that the player asks
 
 
-        public override void Awake()
+        public override void m_Awake()
         {
 
             currentPlayerSO = playerSO;
             SetUpPlayerData();
-            base.Awake();
+            base.m_Awake();
         }
-        public override void OnEnable()
+        public override void m_OnEnable()
         {
             //assigning variables to playermovement onstart.
-            Debug.Log("setting up player look");
             PlayerMovement.playerMovementActionCallOnStart.AddPriorityAction((PlayerMovement p) =>
             {
                 p.playerRigidBody3d = rb3D;

@@ -4,7 +4,7 @@ using Cinemachine;
 
 namespace Data
 {
-	public class DimensionData : StaticInstanceData<DimensionData>
+	public class DimensionData : StaticInstanceData<DimensionData>, IExecution
 	{
 		[SerializeField]
 		public DimensionScriptableObject TransitionTo2dSo;
@@ -15,15 +15,16 @@ namespace Data
 		public UIManager uIManager;
 
 
-		public override void Awake()
+		public override void m_Awake()
 		{
 			try
 			{
 				cam = FindObjectOfType<Camera>().GetComponent<Camera>();
 
-				CinemachineVirtualCamera[] cinemachineVirtualCamera = FindObjectsOfType<CinemachineVirtualCamera>();
-				TransitionTo2dSo.cinemachineVirtualCamera = cinemachineVirtualCamera[0];
-				TransitionTo3dSo.cinemachineVirtualCamera = cinemachineVirtualCamera[1];
+				CinemachineVirtualCamera cinemachineVirtualCamera2D = GameObject.FindWithTag("vcam2D").GetComponent<CinemachineVirtualCamera>();
+				CinemachineVirtualCamera cinemachineVirtualCamera3D = GameObject.FindWithTag("vcam3D").GetComponent<CinemachineVirtualCamera>();
+				TransitionTo2dSo.cinemachineVirtualCamera = cinemachineVirtualCamera2D;
+				TransitionTo3dSo.cinemachineVirtualCamera = cinemachineVirtualCamera3D;
 			}
 			catch (System.NullReferenceException e)
 			{
@@ -31,14 +32,14 @@ namespace Data
 			}
 			finally
 			{
-				base.Awake();
+				base.m_Awake();
 			}
 		}
-		public override void OnEnable()
+		public override void m_OnEnable()
 		{
 
 			TransitionManager.actionOnStartConversation.AddAction((TransitionManager e) => { e.cam = this.cam; });
-			base.OnEnable();
+			base.m_OnEnable();
 		}
 		private void Start()
 		{

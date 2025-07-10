@@ -9,22 +9,30 @@ public class InterviewLedgerState : LedgerState
     {
         LedgerManager.INSTANCE.DisableLedger();
         GameEventManager.INSTANCE.OnEvent(typeof(DisableHandState));
-        //TODO apply variation
 
+        //TODO apply variation
         ImageUIAnimations.INSTANCE.DrawInterviewIcon();
+
+        ActionController.PRESSTAB_LEDGER += ActionController.INSTANCE.actionOpenLedgerTab.pressTabEnterInterviewScene;
 
         base.OnEnter(data);
 
     }
     public override void OnExit(LedgerData data)
     {
+        ActionController.PRESSTAB_LEDGER -= ActionController.INSTANCE.actionOpenLedgerTab.pressTabEnterInterviewScene;
         ImageUIAnimations.INSTANCE.EraseInterviewIcon();
+
+    
     }
     public override void OnUpdate(LedgerData data)
     {
+        /*
         if (InputBuffer.INSTANCE.IsPressCharacter(KeyCode.Tab))
         {
-            GameEventManager.INSTANCE.OnEvent(typeof(InterviewSceneState));
+            ActionController.PRESSTAB(LedgerManager.INSTANCE);
+            
         }
+        */
     }
 }

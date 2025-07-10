@@ -5,7 +5,7 @@ using TMPro;
    
 namespace Data
 {
-    public class UIData : StaticInstanceData<UIData>
+    public class UIData : StaticInstanceData<UIData>, IExecution
     { 
         public Animator transitionAnimator { get; set; }
         public Image dialogBlock { get; set; }
@@ -17,11 +17,11 @@ namespace Data
         public Button dialogueButton, dialogueButton1; 
 
 
-        public override void OnEnable()
+        public override void m_OnEnable()
         {
             transitionAnimator = GetComponentInChildren<Animator>();
             dialogText = FindObjectOfType<UIDialogText>().GetComponent<TextMeshProUGUI>();
-            dialogBlock = FindObjectOfType<Image>();
+            dialogBlock = GameObject.FindGameObjectWithTag("UI")?.transform.GetChild(0).GetComponent<Image>();
             var buttons = FindObjectsOfType<DialogueButton>();
 
             ledgerUIImage = GameObject.FindGameObjectWithTag("LedgerImage")?.GetComponent<Renderer>();
@@ -44,7 +44,7 @@ namespace Data
             ButtonDialogueManager.onActionStart.AddAction((ButtonDialogueManager e)=>{e.button1 = dialogueButton; e.button2 = dialogueButton1;});
             
 
-            base.OnEnable();
+            base.m_OnEnable();
         }
       
 

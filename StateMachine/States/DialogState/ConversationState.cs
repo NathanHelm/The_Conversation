@@ -9,7 +9,7 @@ public class ConversationState : DialogueState
     {
         if (DialogueManager.INSTANCE != null)
         {
-            DialogueManager.onEndDialogue.AddAction(DialogueData.INSTANCE.runEndDialogConversation); //switchstate
+            DialogueManager.onEndDialogue.AddAction(ActionController.INSTANCE.actionEndDialogue.runEndDialogConversation); //switchstate
 
             DialogueManager.INSTANCE.StartConversation(data);
         }
@@ -17,7 +17,7 @@ public class ConversationState : DialogueState
     }
     public override void OnExit(DialogueData data)
     {
-       DialogueManager.onEndDialogue.RemoveAction(DialogueData.INSTANCE.runEndDialogConversation); //switchstate
+       DialogueManager.onEndDialogue.RemoveAction(ActionController.INSTANCE.actionEndDialogue.runEndDialogConversation); //switchstate
       
     }
     public override void OnUpdate(DialogueData data)

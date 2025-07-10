@@ -7,18 +7,17 @@ using Codice.Client.BaseCommands.BranchExplorer;
 using System.IO;
 using System.Linq;
 using Persistence;
-public class CharacterManager : StaticInstance<CharacterManager>, ISaveLoad
+public class CharacterManager : StaticInstance<CharacterManager>, ISaveLoad, IExecution
 {
     private CharacterMono[] characterMono;
     private ClueMono[] clueMono;
 
     private Dictionary<int, Dictionary<int, DialogueConversation>> characterIDtoConverationIdtoConversation = new Dictionary<int, Dictionary<int, DialogueConversation>>();
-    private Dictionary<int, Dictionary<int, MemoryStage>> characterStageIdToMemory = new Dictionary<int, Dictionary<int, MemoryStage>>();
-
-    public override void OnEnable()
+    
+    public override void m_OnEnable()
     {
-        MManager.onStartManagersAction.AddAction((MManager m) => { m.characterManager = this; });
-        base.OnEnable();
+        MManager.INSTANCE.onStartManagersAction.AddAction((MManager m) => { m.characterManager = this; });
+        base.m_OnEnable();
     }
     public override void m_Start()
     {
@@ -43,7 +42,7 @@ public class CharacterManager : StaticInstance<CharacterManager>, ISaveLoad
         {
             int bodyId = characterMono[i].bodyID;
             AddDialogueObjToDict(characterMono[i].dialogueConversation, bodyId);
-            AddMemoryFromCharacter(characterMono[i].memoryStages, bodyId);
+            AddMemoryFromCharacter(characterMono[i].memoryObjects, bodyId);
             //add the body id, makes a new dictionary.
         }
         if(clueMono == null)
@@ -86,17 +85,12 @@ public class CharacterManager : StaticInstance<CharacterManager>, ISaveLoad
             characterIDtoConverationIdtoConversation[bodyId].Add(dialogueConversation[j].ID, dialogueConversation[j]);
         }
     }
-    public void AddMemoryFromCharacter(MemoryStage[] memoryStages,int bodyID)
+    public void AddMemoryFromCharacter(MemoryObject[] memoryStages,int bodyID)
     {
-       
-        characterStageIdToMemory.Add(bodyID,new Dictionary<int, MemoryStage>());
-      
-        for(int i = 0; i < memoryStages.Length; i++)
+        foreach (MemoryObject single in memoryStages)
         {
-        characterStageIdToMemory[bodyID].Add(memoryStages[i].memoryId,memoryStages[i]);
+            MemoryManager.INSTANCE?.AddMemory(bodyID, single);
         }
-        
-        
     }
     public DialogueConversation GetConversationOnCharacterID(int characterID, int characterConversationID)
     {
@@ -122,26 +116,6 @@ public class CharacterManager : StaticInstance<CharacterManager>, ISaveLoad
         return characterIDtoConverationIdtoConversation[characterID][characterConversationID];
     }
 
-      public MemoryStage GetMemoriesOnCharacterID(int characterID, int memoryID)
-    {
-        //making dummy dialogue conversation in case character is not in scene. 
-        MemoryStage dummymemorystage = new MemoryStage(); 
-        dummymemorystage.stage = null;
-        dummymemorystage.memoryId = 1000;
-
-        if(!characterStageIdToMemory.ContainsKey(characterID))
-        {
-            Debug.LogError("character id " + memoryID + " not found in scene, therefore we can't obtain it. [for memory]");
-            return dummymemorystage;
-        }
-        if(!characterIDtoConverationIdtoConversation[characterID].ContainsKey(memoryID))
-        {
-         Debug.LogError("character id " + characterID + " does not have memory id" + memoryID +" therefore we can't obtain memory. [for memory]");
-            return dummymemorystage;
-        }
-        Debug.Log("LOG: obtained character ID: " + characterID + "and memory id: " + memoryID); 
-        return characterStageIdToMemory[characterID][memoryID];
-    }
 
     public (FileNames, JsonObject[])[] Save()
     {

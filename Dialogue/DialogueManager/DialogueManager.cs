@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using System;
 using Data;
-public class DialogueManager : StaticInstance<DialogueManager>
+public class DialogueManager : StaticInstance<DialogueManager>, IExecution
 {
     public static SystemActionCall<DialogueManager> actionOnStartConversation = new SystemActionCall<DialogueManager>();
     public static SystemActionCall<DialogueManager> actionOnAfterRunDialog = new SystemActionCall<DialogueManager>();
@@ -24,9 +24,9 @@ public class DialogueManager : StaticInstance<DialogueManager>
     private IEnumerator dialogScroll = null;
 
 
-    public override void OnEnable()
+    public override void m_OnEnable()
     {
-        MManager.onStartManagersAction.AddAction((MManager m) => { m.dialogueManager = this; /*add m_start action*/ }); //dialogemanager has priority as other managers RELY on the dialogue manager.
+        MManager.INSTANCE.onStartManagersAction.AddAction((MManager m) => { m.dialogueManager = this; /*add m_start action*/ }); //dialogemanager has priority as other managers RELY on the dialogue manager.
     }
 
 
@@ -42,7 +42,7 @@ public class DialogueManager : StaticInstance<DialogueManager>
        // dialogueObjects = actionManagerImplement.GetDialogueConversation(characterID, questionID) ;
        // dialogueLineToAction = qresponseMImplement.getDialogueAction();
     }
-
+   
     public void RunDialog()
     {
 
@@ -129,13 +129,14 @@ public class DialogueManager : StaticInstance<DialogueManager>
     //noconversationstate
     public void NoDialogue()
     {
-        if(dialogScroll != null)
+        if (dialogScroll != null)
         {
-        StopCoroutine(dialogScroll);
+            StopCoroutine(dialogScroll);
         }
-    
+
         UIManager.INSTANCE.DisableDialogUI();
         dialogueIndex = 0;
+        isDialogueScrolling = false;
     }
     public void PlayerMove()
     {

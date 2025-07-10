@@ -45,7 +45,7 @@ public class SystemActionCall<T>
             else
             {
                 UnityEngine.Debug.LogError("action cannot be found");
-                UnityEngine.Debug.Log("invocation size" + actionSetup.GetInvocationList());
+                //UnityEngine.Debug.Log("invocation size" + actionSetup.GetInvocationList());
             }
         }
         if (initialAction != null)

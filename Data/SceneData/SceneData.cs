@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace Data{
-    public class SceneData : StaticInstanceData<SceneData>
+    public class SceneData : StaticInstanceData<SceneData>, IExecution
     {
 
         public SceneNames nextScene { get; set; } = 0;

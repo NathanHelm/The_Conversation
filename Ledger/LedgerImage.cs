@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Codice.ThemeImages;
-
+[System.Serializable]
 public class LedgerImage
 {
 	public string imageDescription  {get;set;} = "";  //TODO maybe change this? 

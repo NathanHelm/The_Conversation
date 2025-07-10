@@ -5,7 +5,6 @@ public class Character : Body
 {
 	 
 	public DialogueConversation[] dialogueConversations;
-	public MemoryStage[] memoryStages;
 
 	public Texture[] characterFaceSheet; 
 

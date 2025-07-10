@@ -5,15 +5,15 @@ using Data;
 using TMPro;
 using System;
 
-public class UIManager : StaticInstance<UIManager>
+public class UIManager : StaticInstance<UIManager>, IExecution
 {
 
 
     TextMeshProUGUI dialogText;
 
-    public override void OnEnable()
+    public override void m_OnEnable()
     {
-        MManager.onStartManagersAction.AddAction((MManager m) =>
+        MManager.INSTANCE.onStartManagersAction.AddAction((MManager m) =>
         {
             m.uIManager = this;
         });

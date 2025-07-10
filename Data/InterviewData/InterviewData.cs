@@ -5,7 +5,7 @@ using Data;
 using Persistence;
 using UnityEngine;
 
-public class InterviewData : StaticInstanceData<InterviewData>, ISaveLoad
+public class InterviewData : StaticInstanceData<InterviewData>, ISaveLoad, IExecution
 {
    //data that is nessecary for the interview scene to function...
    public int questionID = 0; //note, we obtain this from 
@@ -13,6 +13,8 @@ public class InterviewData : StaticInstanceData<InterviewData>, ISaveLoad
    public SceneNames previousScene;
 
     public Renderer interviewFaceRenderer;
+
+    public Vector2 levelPosition = new Vector2();
 
     public void Load()
     {

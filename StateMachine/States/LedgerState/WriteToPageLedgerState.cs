@@ -12,16 +12,20 @@ public class WriteToPageLedgerState : LedgerState
         //NOTE--> ledger image data has already BEEN added with omit raycast call. 
         Debug.Log("write to ledger");
 
-         LedgerMovement.onAfterFlipAwait.RemoveAction(
-        LedgerData.INSTANCE.pointActionLedgerMovement
-        );
+        ActionController.AFTERPAGEFLIP_LEDGER -= ActionController.INSTANCE.afterFlipBehaviour.pointActionLedgerMovement;
+
         
-        LedgerManager.onMovePageLeft.RemoveAction(
+        /*
+        LedgerManager.INSTANCE.movePageLeft.RemoveAction(
         LedgerData.INSTANCE.pointActionLedgerManager
         );
-        LedgerManager.onMovePageRight.RemoveAction(
+        LedgerManager.INSTANCE.movePageRight.RemoveAction(
         LedgerData.INSTANCE.pointActionLedgerManager
         );
+        */
+
+        LedgerManager.INSTANCE.subject.RemoveObserver(LedgerData.INSTANCE);
+        LedgerManager.INSTANCE.subject.RemoveObserver(LedgerData.INSTANCE);
 
         GameEventManager.INSTANCE.OnEvent(typeof(EnableHandState));
         
@@ -75,28 +79,12 @@ public class WriteToPageLedgerState : LedgerState
     public override void OnExit(LedgerData data)
     {
         //return back to hand point state, remove current write state 
-        LedgerMovement.onAfterFlipAwait.RemoveAction(
-            LedgerData.INSTANCE.writeActionLedgerMovement
-        );
-        /*
-        LedgerManager.onMovePageLeft.RemoveAction(
-            LedgerData.INSTANCE.writeActionLedgerManager
-        );
-        LedgerManager.onMovePageRight.RemoveAction(
-            LedgerData.INSTANCE.writeActionLedgerManager
-        );
-        */
+        ActionController.AFTERPAGEFLIP_LEDGER -= ActionController.INSTANCE.afterFlipBehaviour.writeActionLedgerMovement;
+        ActionController.AFTERPAGEFLIP_LEDGER += ActionController.INSTANCE.afterFlipBehaviour.pointActionLedgerMovement;
 
-
-        LedgerMovement.onAfterFlipAwait.AddAction(
-        LedgerData.INSTANCE.pointActionLedgerMovement
-        );
-        LedgerManager.onMovePageLeft.AddAction(
-        LedgerData.INSTANCE.pointActionLedgerManager
-        );
-        LedgerManager.onMovePageRight.AddAction(
-        LedgerData.INSTANCE.pointActionLedgerManager
-        );
+        
+        LedgerManager.INSTANCE.subject.AddObserver(LedgerData.INSTANCE);
+        LedgerManager.INSTANCE.subject.AddObserver(LedgerData.INSTANCE);
 
     }
 }

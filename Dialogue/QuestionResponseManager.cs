@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using Data;
-public class QuestionResponseManager : StaticInstance<QuestionResponseManager>, ISaveLoad
+public class QuestionResponseManager : StaticInstance<QuestionResponseManager>, ISaveLoad, IExecution
 {
 	//based on relevant Character and Question id; output a conversation response.
 
@@ -12,14 +12,14 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>, 
 
 	Dictionary<int, Dictionary<int, DialogueConversation>> npcToQuestionDialogueNpc = new Dictionary<int, Dictionary<int, DialogueConversation>>();
 
-	public override void OnEnable()
+	public override void m_OnEnable()
 	{
-		MManager.onStartManagersAction.AddAction((MManager m) =>
+		MManager.INSTANCE.onStartManagersAction.AddAction((MManager m) =>
 		{
 			m.questionResponseManager = this;
 		});
 
-		base.OnEnable();
+		base.m_OnEnable();
 
 	}
 
@@ -84,7 +84,7 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>, 
 		//key pair value code goes here.
 		//question id							
 			new (new int[] { 2, 4, 5}, CharacterManager.INSTANCE.GetConversationOnCharacterID(210,2)), //based on character & conversation id, return conversation
-			
+			new (new int[]{46}, CharacterManager.INSTANCE.GetConversationOnCharacterID(210, 46)),
 			/*
 			 LOOK: here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
 			 */

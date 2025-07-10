@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using Data;
-public class TriggerManager : StaticInstance<TriggerManager>
+public class TriggerManager : StaticInstance<TriggerManager>, IExecution
 {
     public static SystemActionCall<TriggerManager> onStartTriggerManagerAction = new SystemActionCall<TriggerManager>();
     public static SystemActionCall<TriggerManager> onTriggerTriggerManagerAction = new SystemActionCall<TriggerManager>();
@@ -15,10 +15,10 @@ public class TriggerManager : StaticInstance<TriggerManager>
 
     
 
-    public override void OnEnable()
+    public override void m_OnEnable()
     {
-        MManager.onStartManagersAction.AddAction((MManager m) => { m.triggerManager = this; });
-        base.OnEnable();
+        MManager.INSTANCE.onStartManagersAction.AddAction((MManager m) => { m.triggerManager = this; });
+        base.m_OnEnable();
     }
     public override void m_Start()
     {

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using Data;
-public class DialogueActionManager : StaticInstance<DialogueActionManager>
+public class DialogueActionManager : StaticInstance<DialogueActionManager>, IExecution
 {
     public Dictionary<int, Dictionary<int, Dictionary<int, Action>>> conversationKeyToDialogActions =
 
@@ -17,9 +17,9 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
       
 
     }
-    public override void OnEnable()
+    public override void m_OnEnable()
     {
-        MManager.onStartManagersAction.AddAction((MManager m) =>
+        MManager.INSTANCE.onStartManagersAction.AddAction((MManager m) =>
         {
             m.dialogueActionManager = this;
         });
@@ -28,7 +28,7 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
             //gets dialogie line based on character and question id. 
             d.dialogueLineToAction = GetActionOnConversation(DialogueData.INSTANCE.currentCharacterID, DialogueData.INSTANCE.currentQuestionID);
         });
-        base.OnEnable();
+        base.m_OnEnable();
     }
 
     public void SetUpDialogueAction() //preprocess the dialogue action
@@ -93,7 +93,7 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
 
                     ()=>{ Debug.Log("210 has been triggered!"); 
                         //setting action to button manager.
-
+                        /*
                             ButtonDialogueManager.INSTANCE.SetActions(()=> {
                             //open journal
                             //todo ==> add ledger state based on currentcharacterId. 
@@ -119,7 +119,7 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>
                         });
 
                         GameEventManager.INSTANCE.OnEvent(typeof(ButtonOptionDialogState));
-
+                        */
                      }
 
                     }

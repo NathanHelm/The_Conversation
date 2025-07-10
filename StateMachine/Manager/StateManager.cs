@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEditor.Build.Reporting;
 
-public class  StateManager: StaticInstance<StateManager>
+public class StateManager: StaticInstance<StateManager>, IExecution
 {
     /*
       add monobehaviour states here
@@ -54,6 +54,7 @@ public class  StateManager: StaticInstance<StateManager>
     public WriteToPageLedgerState writeToPageLedgerState = new();
     public InspectClueLedgerState inspectClueLedgerState = new();
     public InterviewLedgerState interviewLedgerState = new();
+    public PreviousSceneInterviewLedgerState previousSceneInterviewLedgerState = new();
 
 
 
@@ -94,10 +95,10 @@ public class  StateManager: StaticInstance<StateManager>
     };
     private readonly string[] stateParent = new string[] { "PlayerState", "CutsceneState", "DialogueState", "TriggerState", "DimensionState", "LedgerState", "HandState" };
 
-    public override void OnEnable()
+    public override void m_OnEnable()
     {
-        MManager.onStartManagersAction.AddAction((MManager e) =>{e.stateManager = this;});
-        base.OnEnable();
+        MManager.INSTANCE.onStartManagersAction.AddAction((MManager e) =>{e.stateManager = this;});
+        base.m_OnEnable();
     }
 
     public override void m_Start()
@@ -164,6 +165,8 @@ public class  StateManager: StaticInstance<StateManager>
             GameEventManager.INSTANCE.AddEvent(typeof(ReplaceLedgerState), () => { ledgerState.SwitchState(replaceLedgerState); });
             GameEventManager.INSTANCE.AddEvent(typeof(InspectClueLedgerState), () => { ledgerState.SwitchState(inspectClueLedgerState); });
             GameEventManager.INSTANCE.AddEvent(typeof(InterviewLedgerState), () => { ledgerState.SwitchState(interviewLedgerState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(PreviousSceneInterviewLedgerState), () => { ledgerState.SwitchState(previousSceneInterviewLedgerState); });
+         
             //yes...hand state and ledgerstate carry the same data
             GameEventManager.INSTANCE.AddEvent(typeof(IdleHandState), () => { handState.SwitchState(idleHandState); });
             GameEventManager.INSTANCE.AddEvent(typeof(EnableHandState), () => { handState.SwitchState(enableHandState); });
@@ -175,8 +178,8 @@ public class  StateManager: StaticInstance<StateManager>
             GameEventManager.INSTANCE.AddEvent(typeof(HoldPageState), () => { handState.SwitchState(holdPageState); });
 
 
-            ledgerState.SwitchState(disableLedgerState);
-            handState.SwitchState(disableHandState);
+            ledgerState.SwitchState(idleLedgerState);
+            handState.SwitchState(idleHandState);
             
         }
         //this comes last-- scene states have to potential to change other states!

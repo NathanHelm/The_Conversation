@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class GameEventManager : StaticInstance<GameEventManager>
+public class GameEventManager : StaticInstance<GameEventManager>, IExecution
 {
 	public Dictionary<string, Action> onStateNameToAction = new Dictionary<string, Action>(); //gets a event name (OnTransitionTo2d for example) and adds a function to it. 
 

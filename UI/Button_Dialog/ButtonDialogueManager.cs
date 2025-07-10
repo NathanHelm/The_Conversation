@@ -6,8 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
-public class ButtonDialogueManager : StaticInstance<ButtonDialogueManager>{
-
+public class ButtonDialogueManager : StaticInstance<ButtonDialogueManager>, IExecution{
 
 public static SystemActionCall<ButtonDialogueManager> onActionStart = new SystemActionCall<ButtonDialogueManager>();
 private Action action1, action2;
@@ -16,9 +15,9 @@ public Button button1, button2;
 
 private  bool isYes = false;
 
-    public override void OnEnable()
+    public override void m_OnEnable()
     {
-       MManager.onStartManagersAction.AddAction((MManager e) => {e.buttonDialogueManager = this;});
+       MManager.INSTANCE.onStartManagersAction.AddAction((MManager e) => {e.buttonDialogueManager = this;});
     }
 
     public override void m_Start()

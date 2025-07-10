@@ -4,24 +4,24 @@ using UnityEngine;
 using System;
 using System.Linq;
 using Data;
-public class CutsceneManager : StaticInstance<CutsceneManager>
+public class CutsceneManager : StaticInstance<CutsceneManager>, IExecution
 {
-    private object[] idlestates = new object[] {};
-    private object[] previousStates = new object[] {};
+    private object[] idlestates = new object[] { };
+    private object[] previousStates = new object[] { };
 
-    private (string stateMonoName, Type state)[] oPauseState = new (string stateMonoName, Type state)[] {}; 
-    private (string stateMonoName, Type state)[] oPreviousState = new (string stateMonoName, Type state)[] {}; 
+    private (string stateMonoName, Type state)[] oPauseState = new (string stateMonoName, Type state)[] { };
+    private (string stateMonoName, Type state)[] oPreviousState = new (string stateMonoName, Type state)[] { };
 
-    private List<string> removeStateOnRunPreviousState = new List<string>(); 
-    private List<string> removeStateOnStopState = new List<string>(); 
+    private List<string> removeStateOnRunPreviousState = new List<string>();
+    private List<string> removeStateOnStopState = new List<string>();
 
     private Dictionary<string, Type> stateMachineStateName = new Dictionary<string, Type>();
 
-    
+
     public override void m_Start()
     {
-       idlestates = StateManager.INSTANCE.stopStates;
-       stateMachineStateName = StateManager.INSTANCE.GetStateHashmap(idlestates);
+        idlestates = StateManager.INSTANCE.stopStates;
+        stateMachineStateName = StateManager.INSTANCE.GetStateHashmap(idlestates);
     }
     //below we set what states on play and stop cutscene will be
     public void SetOPauseState((string stateMonoName, Type state)[] oPauseState) //set both fields before running code 
@@ -40,11 +40,11 @@ public class CutsceneManager : StaticInstance<CutsceneManager>
 
         idlestates = StateManager.INSTANCE.stopStates;
         stateMachineStateName = StateManager.INSTANCE.GetStateHashmap(idlestates);
-       
 
-        foreach((string,Type) overridePauseState in oPauseState)
+
+        foreach ((string, Type) overridePauseState in oPauseState)
         {
-           stateMachineStateName[overridePauseState.Item1] = overridePauseState.Item2;
+            stateMachineStateName[overridePauseState.Item1] = overridePauseState.Item2;
         }
 
         RemoveStateMono(removeStateOnStopState);
@@ -54,61 +54,67 @@ public class CutsceneManager : StaticInstance<CutsceneManager>
 
         RunState();
 
-        oPauseState = new (string stateMonoName, Type state)[] {};
+        oPauseState = new (string stateMonoName, Type state)[] { };
 
     }
-   
+
     //running previous states when cutscene ends
     public void PlayAllPreviousStates()
     {
-        if(previousStates.Length == 0)
+        if (previousStates.Length == 0)
         {
             Debug.LogError("previous states not found");
         }
+        if (previousStates.Any(x => x is PlayCutsceneState))
+        {
+            Debug.LogWarning("removed play cutscene state from captured previous states!");
+            RemoveCapturedCutsceneState();
+        }
         stateMachineStateName = StateManager.INSTANCE.GetStateHashmap(previousStates);
 
-        foreach((string,Type) overridePreviousState in oPreviousState)
+        foreach ((string, Type) overridePreviousState in oPreviousState)
         {
-           stateMachineStateName[overridePreviousState.Item1] = overridePreviousState.Item2;
+            stateMachineStateName[overridePreviousState.Item1] = overridePreviousState.Item2;
         }
 
         RemoveStateMono(removeStateOnRunPreviousState);
         removeStateOnRunPreviousState = new List<string>(); //reset string
 
         RunState();
-        oPreviousState = new (string stateMonoName, Type state)[] {};
+        oPreviousState = new (string stateMonoName, Type state)[] { };
     }
 
     public void RemovePreviousStateMono(string s) //states that will not run when returning to previous state when cutscene is over
     {
         //for example to ledger that is running stop cutscene does not need to be overriden with the "returning" ledger state. 
-       removeStateOnStopState.Add(s);
+        removeStateOnRunPreviousState.Add(s);
     }
     public void RemoveStopStateMono(string s) //states that will not run when entering a cutscene.
     {
         //if a cutscene is running, there might be states which will be enabled.
-        removeStateOnRunPreviousState.Add(s);
+        removeStateOnStopState.Add(s);
     }
     private void RemoveStateMono(List<string> s)
     {
-        for(int i = 0; i < s.Count; i++)
+        for (int i = 0; i < s.Count; i++)
         {
-        stateMachineStateName.Remove(s[i]);
+            stateMachineStateName.Remove(s[i]);
         }
-       
+
     }
 
     public void ResetStateMachineState()
     {
-        oPreviousState = new (string stateMonoName, Type state)[] {};
-        oPauseState = new (string stateMonoName, Type state)[] {};
+        oPreviousState = new (string stateMonoName, Type state)[] { };
+        oPauseState = new (string stateMonoName, Type state)[] { };
     }
 
-   
+
     private void RunState() //runs the states in state dictionary
     {
-       var values = stateMachineStateName.Values;
-        foreach(Type state in values)
+       
+        var values = stateMachineStateName.Values;
+        foreach (Type state in values)
         {
             GameEventManager.INSTANCE.OnEvent(state);
         }
@@ -116,13 +122,17 @@ public class CutsceneManager : StaticInstance<CutsceneManager>
 
     public void LedgerDialog()
     {
-       SetOPreviousState(new (string, Type)[] { new("DimensionState", typeof(TransitionTo3d)), new("PlayerState", typeof(PlayerLook3dState)), new ("DialogueState",typeof(NoConversationState))});
-       RemovePreviousStateMono("CutsceneState");
-       RemoveStopStateMono("CutsceneState");
-       RemoveStopStateMono("LedgerState");
-       RemovePreviousStateMono("LedgerState");
-       RemoveStopStateMono("HandState");
-       RemovePreviousStateMono("HandState");
+        SetOPreviousState(new (string, Type)[] { new("DimensionState", typeof(TransitionTo3d)), new("PlayerState", typeof(PlayerLook3dState)), new("DialogueState", typeof(NoConversationState)) });
+        RemovePreviousStateMono("CutsceneState");
+        RemoveStopStateMono("CutsceneState");
+        RemoveStopStateMono("LedgerState");
+        RemovePreviousStateMono("LedgerState");
+        RemoveStopStateMono("HandState");
+        RemovePreviousStateMono("HandState");
+    }
+    public void RemoveCapturedCutsceneState()
+    {
+        RemovePreviousStateMono("CutsceneState");
     }
 
 

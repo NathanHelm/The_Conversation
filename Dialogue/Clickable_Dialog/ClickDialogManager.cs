@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine.UI;
 using System;
 using Data;
-public class ClickDialogManager : StaticInstance<ClickDialogManager>
+public class ClickDialogManager : StaticInstance<ClickDialogManager>, IExecution
 {
     public static SystemActionCall<ClickDialogManager> actionOnStartConversation = new SystemActionCall<ClickDialogManager>();
     private string currentDialogueLine;

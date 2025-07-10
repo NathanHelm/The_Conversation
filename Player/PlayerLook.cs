@@ -6,7 +6,7 @@ using Data;
 using System;
 using Codice.Client.Common.GameUI;
 
-public class PlayerLook : MonoBehaviour
+public class PlayerLook : MonoBehaviour, IExecution
 {
     public float mouseSensitivity { get; set; }
     PlayerData playerData;
@@ -19,7 +19,7 @@ public class PlayerLook : MonoBehaviour
     private Vector2 centerPosition = new Vector2();
 
 
-    private void Start()
+    public void m_GameExecute()
     {
         playerData = PlayerData.INSTANCE;
         mouseSensitivity = playerData.currentPlayerSO.cameraSensitivity;
@@ -114,5 +114,17 @@ public class PlayerLook : MonoBehaviour
     {
         StateManager.INSTANCE.playerDataState.SwitchState(StateManager.INSTANCE.playerClickOnClueState);
     }
+
+    public void m_Awake()
+    {
+       
+    }
+
+    public void m_OnEnable()
+    {
+        
+    }
+
+
 }
 

@@ -7,7 +7,7 @@ public class ClueConversationState : DialogueState{
     {
         if (DialogueManager.INSTANCE != null)
         {
-            DialogueManager.onEndDialogue.AddAction(DialogueData.INSTANCE.runEndClueInspection); 
+            DialogueManager.onEndDialogue.AddAction(ActionController.INSTANCE.actionEndDialogue.runEndClueInspection); 
 
             DialogueManager.INSTANCE.StartConversation(data);
             DialogueManager.INSTANCE.RunDialogueNoInput();
@@ -24,7 +24,7 @@ public class ClueConversationState : DialogueState{
     }
     public override void OnExit(DialogueData data)
     {
-        DialogueManager.onEndDialogue.RemoveAction(DialogueData.INSTANCE.runEndClueInspection); 
+        DialogueManager.onEndDialogue.RemoveAction(ActionController.INSTANCE.actionEndDialogue.runEndClueInspection); 
 
         base.OnExit(data);
     }

@@ -53,7 +53,7 @@ public class FileHandler<T> where T : JsonObject
 
         if(string.IsNullOrEmpty(jsonFromFile))
         {
-            Debug.LogError("no json found in file");
+            Debug.LogError("no json found in file in " + Path);
            return;
         }
 
@@ -75,7 +75,7 @@ public class FileHandler<T> where T : JsonObject
         List<T> temp = new List<T>();
         if(gameObjectsInJson.Count == 0)
         {
-            Debug.LogError("there are no json objects");
+            Debug.LogError("there are no json objects in path" + Path);
         }
         while(gameObjectsInJson.Count > 0)
         {

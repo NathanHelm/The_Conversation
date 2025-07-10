@@ -13,7 +13,7 @@ using UnityEngine.UI;
 
 namespace UI 
 {
-    public class LedgerUIManager : StaticInstance<LedgerUIManager>
+    public class LedgerUIManager : StaticInstance<LedgerUIManager>, IExecution
     {
         public static SystemActionCall<LedgerUIManager> onStartLedgerData = new SystemActionCall<LedgerUIManager>();
         public static SystemActionCall<LedgerUIManager> onFlipPage = new SystemActionCall<LedgerUIManager>();
@@ -56,12 +56,12 @@ namespace UI
         {
             return pageObjects.Count;
         }
-        public override void OnEnable()
+        public override void m_OnEnable()
         {
 
-            MManager.onStartManagersAction.AddAction((MManager m) => { m.ledgerUIManager = this; });
+            MManager.INSTANCE.onStartManagersAction.AddAction((MManager m) => { m.ledgerUIManager = this; });
 
-            base.OnEnable();
+            base.m_OnEnable();
         }
         public override void m_Start()
         {
@@ -311,7 +311,7 @@ namespace UI
         }
         public void FlipPageRight(int pindex, int index)
         {
-           // ChangeLayerRight(index, pageObjects.Count - 1);
+       
             onFlipPage.RunAction(this);
             StartCoroutine(FlipPageAnimation(isLeft,pindex, index, 0, 180));
             LedgerMovement.INSTANCE.MoveHandAwaitPoint();

@@ -1,27 +1,24 @@
-using System;
 using UnityEngine;
-namespace Persistence
+[System.Serializable]
+public class JsonLedgerImageObject
 {
-    [System.Serializable]
-    public class JsonLedgerImageObject : JsonObject
+    public string imageDescription = "";  //TODO maybe change this? 
+    public int questionID; //certain images unlocks questions that vet can ask to others.
+    public Texture ledgerImage;
+
+    public Texture[] ledgerOverlays;
+
+    public int clueQuestionID;
+
+    public int clueBodyID = 31; //set value to whatever you desire
+
+    public JsonLedgerImageObject(string imageDescription, int questionID, int clueQuestionID, Texture ledgerImg, Texture[] ledgerOverlays, int clueBodyID)
     {
-        public int questionID; //certain images unlocks questions that vet can ask to others.
-        public Texture ledgerImage;
-        public Texture[] ledgerOverlays;
-        public int clueQuestionID;
-        public int clueBodyID = 31;
-
-        public string imageDescription;
-
-        public JsonLedgerImageObject(string imageDescription ,int questionID, Texture ledgerImage, int clueQuestionID, Texture[] ledgerOverlays)
-        {
-            this.imageDescription = imageDescription;
-            this.questionID = questionID;
-            this.ledgerImage = ledgerImage;
-            this.ledgerOverlays = ledgerOverlays;
-            this.clueQuestionID = clueQuestionID;
-        }
-
-
+        this.imageDescription = imageDescription;
+        this.questionID = questionID;
+        this.clueQuestionID = clueQuestionID;
+        this.clueBodyID = clueBodyID;
+        this.ledgerImage = ledgerImg;
+        this.ledgerOverlays = ledgerOverlays;
     }
 }

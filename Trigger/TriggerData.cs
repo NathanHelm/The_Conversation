@@ -2,7 +2,7 @@
 using System.Collections;
 namespace Data
 {
-	public class TriggerData : StaticInstance<TriggerData>
+	public class TriggerData : StaticInstance<TriggerData>, IExecution
 	{
        
 
@@ -12,7 +12,7 @@ namespace Data
 
         public bool isPlayerOnCharacter {get; set;} = false;
 
-        public override void OnEnable()
+        public override void m_OnEnable()
         {
             triggers = FindObjectsOfType<Trigger>();
             dialogueData = FindObjectOfType<DialogueData>();

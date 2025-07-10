@@ -7,10 +7,10 @@ using Unity.Mathematics;
 using UnityEditor.SearchService;
 using UnityEngine.SceneManagement;
 
-public class MManager : StaticInstance<MManager>
+public class MManager : StaticInstance<MManager>, IExecution
 {
     //character
-    public static SystemActionCall<MManager> onStartManagersAction { get; set; } = new SystemActionCall<MManager>();
+    public SystemActionCall<MManager> onStartManagersAction { get; set; } = new SystemActionCall<MManager>();
 
     public SavePersistenceManager savePersistenceManager { get; set; } = null;
     public CharacterManager characterManager { get; set; } = null;
@@ -21,8 +21,11 @@ public class MManager : StaticInstance<MManager>
     public QuestionResponseManager questionResponseManager { get; set; } = null; 
     public UIManager uIManager { get; set; } = null;
 
-    public ButtonDialogueManager buttonDialogueManager {get; set;} = null;
+    public ActionController actionController { get; set; } = null;
+    public ButtonDialogueManager buttonDialogueManager { get; set; } = null;
     public MovementManager movementManager { get; set; } = null;
+
+    public SpawnerManager spawnerManager { get; set; } = null;
 
 //================================================================================================================================================================
     public LedgerManager ledgerManager { get; set; } = null;
@@ -39,15 +42,16 @@ public class MManager : StaticInstance<MManager>
     public DrawingManager drawingManager { get; set; } = null;
 
 //================================================================================================================================================================
-    public AnimationManager animationManager {get; set;} = null;
+    public AnimationManager animationManager { get; set; } = null;
     public CutsceneManager cutsceneManager { get; set; } = null;
     
     public SceneManager sceneManager { get; set; } = null;
+
+
     public MemoryManager memoryManager { get; set; } = null;
+    public MemorySpawnerManager memorySpawnerManager { get; set; } = null;
 
-
-
-    public TransitionManager transitionManager {get; set;} = null;
+    public TransitionManager transitionManager { get; set; } = null;
 
     public StateManager stateManager {get; set;} = null; //this one stays last
 
@@ -58,6 +62,10 @@ public class MManager : StaticInstance<MManager>
         onStartManagersAction.RunAction(this); //todo subsribe all manager with
 
         savePersistenceManager?.m_Start();
+
+        memoryManager?.m_Start();
+
+        spawnerManager?.m_Start();
 
         characterManager?.m_Start();
 
@@ -76,6 +84,8 @@ public class MManager : StaticInstance<MManager>
         buttonDialogueManager?.m_Start();
 
         movementManager?.m_Start();
+
+        spawnerManager?.m_Start();
 
         ledgerManager?.m_Start();
 
@@ -99,7 +109,7 @@ public class MManager : StaticInstance<MManager>
 
         transitionManager?.m_Start();
 
-        memoryManager?.m_Start();
+        actionController?.m_Start();
 
         stateManager?.m_Start(); //state manager ALWAYS comes last. 
 

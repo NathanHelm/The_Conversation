@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 namespace Data
 {
-	public class CutsceneData : StaticInstanceData<CutsceneData>
+	public class CutsceneData : StaticInstanceData<CutsceneData>, IExecution
 	{
 		public object[] snapShotCutscene { get; set; }
 		public (Action, float)[] cutsceneActionsAndTimeTurnaround { get; set; }

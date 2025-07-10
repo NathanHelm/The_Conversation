@@ -7,7 +7,7 @@ public class Tester_Scene : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.L))
         {
-            GameEventManager.INSTANCE.OnEvent(typeof(InterviewSceneState));
+            GameEventManager.INSTANCE.OnEvent(typeof(VetHouseSceneState));
         }
 
     }

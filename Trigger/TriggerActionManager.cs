@@ -5,17 +5,17 @@ using System;
 using Data;
 using Codice.Client.Common;
 using PlasticPipe.PlasticProtocol.Messages;
-public class TriggerActionManager : StaticInstance<TriggerActionManager>
+public class TriggerActionManager : StaticInstance<TriggerActionManager>, IExecution
 {
 	public static SystemActionCall<TriggerActionManager> onTriggerActionTriggerActionManager = new SystemActionCall<TriggerActionManager>();
 	public Dictionary<int, Action> characterIDToTriggerAction = new Dictionary<int, Action>();
 	public Dictionary<int, Action> characterIDToTriggerExitAction = new Dictionary<int, Action>();
 	public Trigger triggerOnTrigger { get; set; }
 
-    public override void OnEnable()
+    public override void m_OnEnable()
     {
-        MManager.onStartManagersAction.AddAction((MManager m) => { m.triggerActionManager = this; });
-        base.OnEnable();
+        MManager.INSTANCE.onStartManagersAction.AddAction((MManager m) => { m.triggerActionManager = this; });
+        base.m_OnEnable();
     }
     public override void m_Start()
     {

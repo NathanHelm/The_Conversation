@@ -2,13 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Data;
+using ObserverAction;
 using UI;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 public enum LedgerAnimation{
     DrawImage
 }
-public class PageAnimations : StaticInstance<PageAnimations>{
+public class PageAnimations : StaticInstance<PageAnimations>, IExecution, IObserver<ObserverAction.LedgerMovementActions>
+{
 
     public static SystemActionCall<PageAnimations> onDrawImageOnCurrentPage = new SystemActionCall<PageAnimations>();
     public static SystemActionCall<PageAnimations> onAfterEraseImage = new SystemActionCall<PageAnimations>();
@@ -22,15 +24,16 @@ public class PageAnimations : StaticInstance<PageAnimations>{
 
     private IEnumerator single;
 
-    public override void OnEnable()
+    public override void m_OnEnable()
     {
-        MManager.onStartManagersAction.AddAction(m => m.pageAnimations = this);
-        base.OnEnable();
+        MManager.INSTANCE.onStartManagersAction.AddAction(m => m.pageAnimations = this);
+        base.m_OnEnable();
     }
 
     public override void m_Start()
     {
         noiseTextures = pageScriptableObject.noiseTextures;
+
     }
     public void DrawImageOnCurrentPage()
     {
@@ -110,5 +113,18 @@ public class PageAnimations : StaticInstance<PageAnimations>{
         int i = rnd.Next(0,noiseTextures.Length - 1);
         return noiseTextures[i];
     }
-    
+
+    public void OnNotify(LedgerMovementActions data)
+    {
+        //for ledgermovement...
+        /*
+        if (data == LedgerMovementActions.onWriteHand)
+        {
+            DrawImageOnCurrentPage();
+            GameEventManager.INSTANCE.OnEvent(typeof(WriteHandState));
+        }
+        */
+        
+
+    }
 }

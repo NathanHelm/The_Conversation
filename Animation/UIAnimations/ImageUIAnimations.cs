@@ -1,6 +1,6 @@
 using Data;
 using UnityEngine;
-public class ImageUIAnimations : StaticInstance<ImageUIAnimations>
+public class ImageUIAnimations : StaticInstance<ImageUIAnimations>, IExecution
 {
     public static SystemActionCall<ImageUIAnimations> onStartImageUIAnimations = new SystemActionCall<ImageUIAnimations>();
 
@@ -31,10 +31,11 @@ public class ImageUIAnimations : StaticInstance<ImageUIAnimations>
 
         base.m_Start();
     }
-    public override void OnEnable()
+    
+    public override void m_OnEnable()
     {
-      MManager.onStartManagersAction.AddAction(mm => { mm.imageUIAnimations = this; });
-    base.OnEnable();
+        MManager.INSTANCE.onStartManagersAction.AddAction(mm => { mm.imageUIAnimations = this; });
+        base.m_OnEnable();
     }
     public override void OnDisable()
     {
@@ -60,4 +61,5 @@ public class ImageUIAnimations : StaticInstance<ImageUIAnimations>
        PageAnimations.INSTANCE.EraseImage(interviewImageUI);
     }
 
+    
 }

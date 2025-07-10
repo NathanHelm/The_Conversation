@@ -1,5 +1,6 @@
 using Codice.LogWrapper;
 using Data;
+using ObserverAction;
 using UnityEngine;
 
 public enum HandAnimation{
@@ -13,7 +14,7 @@ public enum HandAnimation{
 
     LLastFlip
 }
-public class HandAnimations : StaticInstance<HandAnimations>{
+public class HandAnimations : StaticInstance<HandAnimations>, IExecution, IObserver<ObserverAction.LedgerMovementActions>{
     
     public Animator rightHandAnim {get; set;}
     public Animator leftHandAnim {get; set;}
@@ -25,10 +26,10 @@ public class HandAnimations : StaticInstance<HandAnimations>{
     [SerializeField]
     HandScriptableObject handScriptableObject;
 
-    public override void OnEnable()
+    public override void m_OnEnable()
     {
-        MManager.onStartManagersAction.AddAction(m => m.handAnimations = this);
-        base.OnEnable();
+        MManager.INSTANCE.onStartManagersAction.AddAction(m => m.handAnimations = this);
+        base.m_OnEnable();
     }
     public override void OnDisable()
     {
@@ -37,15 +38,10 @@ public class HandAnimations : StaticInstance<HandAnimations>{
     }
 
     public override void m_Start()
-  {
-    LedgerMovement.onAfterCreateHands.AddAction((LedgerMovement lm) =>
     {
-      rightHandAnim = LedgerData.INSTANCE.rightHandAnim;
-      leftHandAnim = LedgerData.INSTANCE.leftHandAnim;
-      leftHand = LedgerData.INSTANCE.leftHandObj;
-    });
+      LedgerMovement.INSTANCE.subject.AddObserver(this);
 
-  }
+    }
     public void PlayHandAnimation(HandAnimation handAnimation, float speed)
     {
         Animator handAnim = rightHandAnim;
@@ -136,6 +132,14 @@ public class HandAnimations : StaticInstance<HandAnimations>{
     {
      PageAnimations.INSTANCE.DrawImage(leftHandPageShader);
     }
-   
 
+  public void OnNotify(LedgerMovementActions data)
+  {
+    if (data == LedgerMovementActions.onCreatedHands)
+    {
+        rightHandAnim = LedgerData.INSTANCE.rightHandAnim;
+        leftHandAnim = LedgerData.INSTANCE.leftHandAnim;
+        leftHand = LedgerData.INSTANCE.leftHandObj;
+    }
+  }
 }

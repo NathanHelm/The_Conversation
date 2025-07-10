@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Data;
 using Persistence;
 using PlasticGui.WorkspaceWindow;
 using UI;
 using UnityEngine;
 
-public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad
+public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad, IExecution
 {
 
     public LedgerImage temporaryImage { get; set; } = null;
@@ -16,11 +17,11 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad
     public List<LedgerImage> ledgerImages { get; set; } = new();
     public int MaxLedgerImageLength { get; set; }
 
-    public override void OnEnable()
+    public override void m_OnEnable()
     {
 
-        MManager.onStartManagersAction.AddAction(m => { m.ledgerImageManager = this; });
-        base.OnEnable();
+        MManager.INSTANCE.onStartManagersAction.AddAction(m => { m.ledgerImageManager = this; });
+        base.m_OnEnable();
     }
     public override void m_Start()
     {
@@ -131,18 +132,27 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad
     {
        
        
-        List<JsonLedgerImageObject> ledgerImageObjects = new();
-
-        foreach (LedgerImage single in ledgerImages)
+        JsonLedgerImagesObject ledgerImageObjects = new();
+        ledgerImageObjects.ledgerImages = new JsonLedgerImageObject[ledgerImages.Count];
+        
+        for (int i = 0; i < ledgerImages.Count; i++)
         {
-            ledgerImageObjects.Add(
-                new(single.imageDescription,single.questionID, single.ledgerImage, single.clueQuestionID, single.ledgerOverlays)
+            
+            ledgerImageObjects.ledgerImages[i] = new(
+
+            ledgerImages[i].imageDescription,
+            ledgerImages[i].questionID,
+            ledgerImages[i].clueQuestionID,
+            ledgerImages[i].ledgerImage,
+            ledgerImages[i].ledgerOverlays,
+            ledgerImages[i].clueBodyID
+            
             );
         }
 
             return new (FileNames, JsonObject[])[] {
 
-            new(FileNames.LedgerImageFile, ledgerImageObjects.ToArray()
+            new(FileNames.LedgerImageFile, new JsonLedgerImagesObject[]{ ledgerImageObjects }
 
             ) };
     }
@@ -150,16 +160,31 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad
     public void Load()
     {
 
-        List<JsonLedgerImageObject> jsonLedgerImageObjects = SavePersistenceManager.INSTANCE.LoadDataFromFile<JsonLedgerImageObject>(FileNames.LedgerImageFile);
-        //here, we are getting the image objects from the persistent file and then trasferring them to the ledger images file... 
+        JsonLedgerImagesObject jsonLedgerImageObjects = SavePersistenceManager.INSTANCE.LoadDataFromFile<JsonLedgerImagesObject>(FileNames.LedgerImageFile)[0];
+        //here, we are getting the image objects from the persistent file and getting its ledger images array.
 
-        foreach (JsonLedgerImageObject single in jsonLedgerImageObjects)
+        int n = jsonLedgerImageObjects.ledgerImages.Length;
+
+        JsonLedgerImageObject[] jsonLedgerImageObjects1 = jsonLedgerImageObjects.ledgerImages;
+
+
+        for (int i = 0; i < n; i++)
         {
-            LedgerData.INSTANCE.ledgerImages.Add(new(single.imageDescription, single.questionID, single.clueQuestionID, single.ledgerImage, single.ledgerOverlays, single.clueBodyID));
+            AddLedgerImage(new(
+            jsonLedgerImageObjects1[i].imageDescription,
+            jsonLedgerImageObjects1[i].questionID,
+            jsonLedgerImageObjects1[i].clueQuestionID,
+            jsonLedgerImageObjects1[i].ledgerImage,
+            jsonLedgerImageObjects1[i].ledgerOverlays,
+            jsonLedgerImageObjects1[i].clueBodyID
+            ));
+            LedgerData.INSTANCE.ledgerImages = ledgerImages;
         }
-        LedgerManager.INSTANCE.ledgerImages = ledgerImages;
+
+       
         LedgerManager.INSTANCE.AddImagesToLedgerPages();
-        for(int i = 0; i < ledgerImages.Count; i++)
+        
+        for (int i = 0; i < ledgerImages.Count; i++)
         {
             LedgerManager.INSTANCE.SetImageValueToOne(i);
         }

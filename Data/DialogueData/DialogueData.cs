@@ -6,17 +6,15 @@ using System;
 namespace Data
 {
 
-	public class DialogueData : StaticInstanceData<DialogueData>
+	public class DialogueData : StaticInstanceData<DialogueData>, IExecution
 	{
 		[SerializeField]
 		public int currentCharacterID, currentPersistentConversationID;
 		[SerializeField]
 		public int currentQuestionID { get; set; }
 
-		public Action<DialogueManager> runEndDialogConversation = lm => { GameEventManager.INSTANCE.OnEvent(typeof(EndConversationReplayState)); };
-		public Action<DialogueManager> runEndClueInspection = lm => { GameEventManager.INSTANCE.OnEvent(typeof(OpenLedgerState));
-		 GameEventManager.INSTANCE.OnEvent(typeof(EndConversationState));  };
-
+		//TODO make it so that when we are on interview scene we run previoussceneinterivewlederstate (its open ledger except when we press tab, )
+		
 		//public DialogueManager dialogueManager { get; set; }
 		//public QuestionResponseManager questionResponseManager { get; set; }
 		//public UIManager uIManager;
@@ -31,9 +29,9 @@ namespace Data
 			//characterManager = GameEventManager.INSTANCE.OnEventFunc<CharacterManager>(typeof(CharacterManager).ToString().ToLower());
 
 			//SetDialogueData();
-		 
+
 		}
-		public override void OnEnable()
+		public override void m_OnEnable()
 		{
 
 			//SetDialogueData();

@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using ActionControl;
 using Data;
 using UnityEngine;
 
@@ -15,20 +16,21 @@ public class InspectClueLedgerState : LedgerState
     LedgerImageManager.INSTANCE.SetRenderTextureToLedgerImage(ref renderer, data.pageObjectsIndex);
     ImageUIAnimations.INSTANCE.DrawLedgerImageUI();
 
-    
+    ActionController.PRESSTAB_LEDGER += ActionController.INSTANCE.actionOpenLedgerTab.pressTabDisableLedger;
+    ActionController.PRESSTAB_LEDGER += ActionController.INSTANCE.actionOpenLedgerTab.pressTabStopDialogue;
+    ActionController.PRESSTAB_LEDGER += ActionController.INSTANCE.actionOpenLedgerTab.pressTabStopCutscene;
 
   }
     public override void OnUpdate(LedgerData data)
     {
+      /*
     if (InputBuffer.INSTANCE.IsPressCharacter(KeyCode.Tab))
     {
-      GameEventManager.INSTANCE.OnEvent(typeof(DisableLedgerState));
-      GameEventManager.INSTANCE.OnEvent(typeof(EndConversationState));
-      GameEventManager.INSTANCE.OnEvent(typeof(DisableHandState));
-      GameEventManager.INSTANCE.OnEvent(typeof(StopCutsceneState));
-      }
+      ActionController.PRESSTAB(LedgerManager.INSTANCE);
+    }
 
         base.OnUpdate(data);
+        */
     }
     public override void OnExit(LedgerData data)
   {
@@ -36,6 +38,10 @@ public class InspectClueLedgerState : LedgerState
     ImageUIAnimations.INSTANCE.EraseLedgerImageUI();
     var ledgerUIImage = UIData.INSTANCE.ledgerUIImage.gameObject;
     UIManager.INSTANCE.DisableUIObject(ref ledgerUIImage);
+
+    ActionController.PRESSTAB_LEDGER -= ActionController.INSTANCE.actionOpenLedgerTab.pressTabDisableLedger;
+    ActionController.PRESSTAB_LEDGER -= ActionController.INSTANCE.actionOpenLedgerTab.pressTabStopDialogue;
+    ActionController.PRESSTAB_LEDGER -= ActionController.INSTANCE.actionOpenLedgerTab.pressTabStopCutscene;
 
     base.OnExit(data);
   }

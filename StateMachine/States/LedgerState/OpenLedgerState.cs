@@ -1,33 +1,47 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Data;
+using System;
 public class OpenLedgerState : LedgerState
 {
     public override void OnEnter(LedgerData data)
     {
         Debug.Log("Active ledger state");
-        LedgerManager.INSTANCE.OpenLedger();
         GameEventManager.INSTANCE.OnEvent(typeof(EnableHandState));
+        
+        LedgerManager.INSTANCE.OpenLedger();
+
+        ActionController.PRESSTAB_LEDGER += ActionController.INSTANCE.actionOpenLedgerTab.pressTabStopCutscene;
+        ActionController.PRESSTAB_LEDGER += ActionController.INSTANCE.actionOpenLedgerTab.pressTabDisableLedger;
       
+
         base.OnEnter(data);
     }
     public override void OnUpdate(LedgerData data)
     {
+
         LedgerManager.INSTANCE.MovePages();
-        LedgerManager.INSTANCE.SelectPage();
+
+        ActionController.INSTANCE.PressReturn();
+
+        /*
         
-        if(Input.GetKeyDown(KeyCode.Tab))
+        if (InputBuffer.INSTANCE.IsPressCharacter(KeyCode.Tab))
         {
-        GameEventManager.INSTANCE.OnEvent(typeof(StopCutsceneState));
-        GameEventManager.INSTANCE.OnEvent(typeof(DisableLedgerState));
-        GameEventManager.INSTANCE.OnEvent(typeof(DisableHandState));;                                       
+            ActionController.PRESSTAB(LedgerManager.INSTANCE);
         }
-      
-        
-        
+        */
+
+
+
     }
     public override void OnExit(LedgerData data)
     {
+        ActionController.PRESSTAB_LEDGER -= ActionController.INSTANCE.actionOpenLedgerTab.pressTabStopCutscene;
+        ActionController.PRESSTAB_LEDGER -= ActionController.INSTANCE.actionOpenLedgerTab.pressTabDisableLedger;
+
+
+        Debug.Log("leaving open ledger! but why?");
         base.OnExit(data);
     }
    

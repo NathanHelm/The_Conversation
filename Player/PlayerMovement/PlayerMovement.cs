@@ -70,7 +70,7 @@ public class PlayerMovement : MonoBehaviour
                 return;
             }
             playerRigidBody3d.transform.position = start3dPosition + get2dAnd3dOffset(); //setThreeDMovementOnTwoDMovement(playerRigidBody2d.position, startPosition);
-
+            SpawnData.INSTANCE.savedSpawnPosition = (Vector2)playerRigidBody2d.transform.position;
 
             movement.x = Input.GetAxisRaw("Horizontal");
             movement.y = Input.GetAxisRaw("Vertical");    

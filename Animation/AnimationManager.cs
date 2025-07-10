@@ -1,5 +1,5 @@
 using UnityEngine;
-public class AnimationManager : StaticInstance<AnimationManager>{
+public class AnimationManager : StaticInstance<AnimationManager>, IExecution{
     public void PlayAnimation(ref Animator anim, string name)
     {
         anim.Play(name);

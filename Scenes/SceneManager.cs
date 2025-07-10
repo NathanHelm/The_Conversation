@@ -11,17 +11,23 @@ public enum SceneNames{
     InterviewScene,
     HenryApartmentScene,
 }
-public class SceneManager : StaticInstance<SceneManager>
+public class SceneManager : StaticInstance<SceneManager>, IExecution
 {
 
     //This code will allow for easy transfer from one scene to another...
     public static SystemActionCall<SceneManager> onAfterSceneChange = new(); //this won't run after state manager. 
     public static SystemActionCall<SceneManager> onStartSceneManager = new(); //use this if you want to make any scene changes as it run AFTER statemanager
 
-    public override void OnEnable()
+    public Dictionary<SceneNames, Type> enumSceneNameToSceneState = new Dictionary<SceneNames, Type>();
+
+
+
+    public override void m_OnEnable()
     {
-        MManager.onStartManagersAction.AddAction(mm => { mm.sceneManager = this; });
-        base.OnEnable();
+        MManager.INSTANCE.onStartManagersAction.AddAction(mm => { mm.sceneManager = this; });
+        enumSceneNameToSceneState.Add(SceneNames.VetHouseScene, typeof(VetHouseSceneState));
+        enumSceneNameToSceneState.Add(SceneNames.InterviewScene, typeof(InterviewSceneState));
+        base.m_OnEnable();
     }
     public override void m_Start()
     {

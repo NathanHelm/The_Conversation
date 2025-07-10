@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Data;
 
 public class InterviewSceneState : SceneState{
@@ -12,30 +13,22 @@ public class InterviewSceneState : SceneState{
 
         InterviewData.INSTANCE?.Load(); //load dialogue data with proper data...
         CharacterManager.INSTANCE?.Load();
+        ActionController.PRESSTAB_LEDGER = lm => { };
+        GameEventManager.INSTANCE.OnEvent(typeof(OpenLedgerState));
 
-        GameEventManager.INSTANCE?.OnEvent(typeof(OpenLedgerState));
-        
+        ActionController.PRESSTAB_LEDGER += ActionController.INSTANCE.actionOpenLedgerTab.pressTabEnterPreviousScene;
+        ActionController.PRESSRETURN_LEDGER += ActionController.INSTANCE.actionOpenLedgerSelectPage.runDialogOnSelectPageInterviewScene;
+       
         LedgerImageManager.INSTANCE?.Load();
         QuestionResponseManager.INSTANCE?.Load();
-
-
-
-
-        LedgerManager.onSelectPage.AddAction(LedgerData.INSTANCE.runInterviewScene);
-        
-
-      
-
         //after dialogue, you are take 
         //  DialogueManager.onEndDialogue.AddAction(DialogueData.INSTANCE.runEndClueInspection;);
-
-
-
-
     }
     public override void OnExit(SceneData data)
     {
- 
+        MManager.INSTANCE.onStartManagersAction.RemoveAllActions();
+        ActionController.PRESSRETURN_LEDGER -= ActionController.INSTANCE.actionOpenLedgerSelectPage.runDialogOnSelectPageInterviewScene;
+        ActionController.PRESSTAB_LEDGER = lm => { UnityEngine.Debug.Log("exit interview log!"); };
         base.OnExit(data);
     }
 }

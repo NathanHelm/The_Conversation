@@ -4,11 +4,10 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Data;
 using Unity.Mathematics;
 using UnityEngine;
-public class LedgerMovement : StaticInstance<LedgerMovement> {
+public class LedgerMovement : StaticInstance<LedgerMovement>, IExecution {
 
+    public Subject<ObserverAction.LedgerMovementActions> subject = new();
     public static SystemActionCall<LedgerMovement> onEnableHand = new SystemActionCall<LedgerMovement>();
-    public static SystemActionCall<LedgerMovement> onHalwayToNewPosition = new SystemActionCall<LedgerMovement>();
-    
     public static SystemActionCall<LedgerMovement> onAfterCreateHands = new SystemActionCall<LedgerMovement>();
     
    // === add animations to these ==========================================================================================================
@@ -58,10 +57,10 @@ public class LedgerMovement : StaticInstance<LedgerMovement> {
     public Stack<IEnumerator> moveToPosStack = new(), writeStack = new();
     public IEnumerator recentCoroutine;
 
-    public override void OnEnable()
+    public override void m_OnEnable()
     {
-        MManager.onStartManagersAction.AddAction(m => m.ledgerMovement = this);
-        base.OnEnable();
+        MManager.INSTANCE.onStartManagersAction.AddAction(m => m.ledgerMovement = this);
+        base.m_OnEnable();
     }
 
     public override void m_Start()
@@ -112,7 +111,7 @@ public class LedgerMovement : StaticInstance<LedgerMovement> {
        LedgerData.INSTANCE.leftHandObj = leftHandObj;
        LedgerData.INSTANCE.rightHandObj = rightHandObj;
 
-       onAfterCreateHands.RunAction(this);
+        subject.NotifyObservers(ObserverAction.LedgerMovementActions.onCreatedHands);
     }
 
  
@@ -165,8 +164,9 @@ public class LedgerMovement : StaticInstance<LedgerMovement> {
    
     public void MoveHand()
     {
-        onMove.RunAction(this);
-        if(!isLeft)
+        subject.NotifyObservers(ObserverAction.LedgerMovementActions.onMoveHand);
+
+        if (!isLeft)
         {
             MoveHandToLeftPage();
         }
@@ -253,7 +253,6 @@ public class LedgerMovement : StaticInstance<LedgerMovement> {
             time += Time.deltaTime / speed;
             if((Mathf.Floor(time * 10f) / 10f) == 0.5 && runOnce == false)
             { 
-                onHalwayToNewPosition.RunAction(this); 
                 runOnce = true;
             }
             Vector3 position =  Vector3.Lerp(oldPosition,newPos,time);
@@ -338,8 +337,10 @@ public class LedgerMovement : StaticInstance<LedgerMovement> {
         MoveHand();
         yield return new WaitUntil(() => moveToPosStack.Count == 0);
 
-       //TODO 
-       onAfterFlipAwait.RunAction(this);
+        //TODO 
+        onAfterFlipAwait.RunAction(this);
+        
+        ActionController.AFTERPAGEFLIP_LEDGER(this);
 
     }
     public bool IsFlipPageCoroutineRunning()

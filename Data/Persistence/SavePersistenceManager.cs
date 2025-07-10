@@ -6,10 +6,18 @@ using Persistence;
 using UnityEngine;
 
 
-public enum FileNames { myfile, mydialogfile, DialogueConversationFile, InterviewFile, LedgerImageFile }; //enter all filenames here
+public enum FileNames { myfile, mydialogfile, DialogueConversationFile, InterviewFile, LedgerImageFile, PlayerFile, SpawnFile, MemoryFile, UnlockedMemoryFile }; //enter all filenames here
 
+/*
+so you want to save somethings
+1- add enum
+2- add the correct casting in interface implemented function  
+3- see PopulateCurrentFiles()
+4- see MakePersistenceDictionary()
+5- see SaveFileInformation()
 
-public class SavePersistenceManager : StaticInstance<SavePersistenceManager>
+*/
+public class SavePersistenceManager : StaticInstance<SavePersistenceManager>, IExecution
 {
     //handles ../../../JSON
     public readonly string jsonPath = "JSONFILES";
@@ -20,10 +28,10 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>
     public ISaveLoad[] SaveLoads { get; set; } //obtain all Isaveload
 
 
-    public override void OnEnable()
+    public override void m_OnEnable()
     {
-        MManager.onStartManagersAction.AddAction((MManager m) => { m.savePersistenceManager = this; });
-        base.OnEnable();
+        MManager.INSTANCE.onStartManagersAction.AddAction((MManager m) => { m.savePersistenceManager = this; });
+        base.m_OnEnable();
     }
     public override void m_Start()
     {
@@ -43,6 +51,7 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>
     }
     public void PopulateCurrentFiles()
     {
+        
         /*
         Add all Filehandlers to hashmap fileHandlerNameTofileHandler...
         */
@@ -64,8 +73,21 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>
         FileHandler<JsonInterviewObject> fileHandler3 = new FileHandler<JsonInterviewObject>(Path.Combine(GetPath(), FileNames.InterviewFile + ".json"));
         fileHandlerNameTofileHandler.Add(FileNames.InterviewFile, fileHandler3);
 
-        FileHandler<JsonLedgerImageObject> fileHandler4 = new FileHandler<JsonLedgerImageObject>(Path.Combine(GetPath(), FileNames.LedgerImageFile + ".json"));
+        FileHandler<JsonLedgerImagesObject> fileHandler4 = new FileHandler<JsonLedgerImagesObject>(Path.Combine(GetPath(), FileNames.LedgerImageFile + ".json"));
         fileHandlerNameTofileHandler.Add(FileNames.LedgerImageFile, fileHandler4);
+
+        FileHandler<JsonPlayerObject> fileHandler5 = new FileHandler<JsonPlayerObject>(Path.Combine(GetPath(), FileNames.PlayerFile + ".json"));
+        fileHandlerNameTofileHandler.Add(FileNames.PlayerFile, fileHandler5);
+
+         FileHandler<JsonSpawnObject> fileHandler6 = new FileHandler<JsonSpawnObject>(Path.Combine(GetPath(), FileNames.SpawnFile + ".json"));
+        fileHandlerNameTofileHandler.Add(FileNames.SpawnFile, fileHandler6);
+
+        FileHandler<JsonUnlockMemoryObject> fileHandler7 = new FileHandler<JsonUnlockMemoryObject>(Path.Combine(GetPath(), FileNames.UnlockedMemoryFile + ".json"));
+        fileHandlerNameTofileHandler.Add(FileNames.UnlockedMemoryFile, fileHandler7);
+
+        FileHandler<JsonMemoryObject> fileHandler8 = new FileHandler<JsonMemoryObject>(Path.Combine(GetPath(), FileNames.MemoryFile + ".json"));
+        fileHandlerNameTofileHandler.Add(FileNames.MemoryFile, fileHandler8);
+        
 
          //dont touch this.
         foreach (FileNames fileHandlerKey in fileHandlerNameTofileHandler.Keys)
@@ -117,6 +139,16 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>
             {
                 PopulatePersistenceDictionary<JsonDialogueConversationObject>(fileHandlerKey);
             }
+            //=memory===================================================================================================================
+            else if (jsonObject is FileHandler<JsonUnlockMemoryObject>)
+            {
+                PopulatePersistenceDictionary<JsonUnlockMemoryObject>(fileHandlerKey);
+            }
+            else if (jsonObject is FileHandler<JsonMemoryObject>)
+            {
+                PopulatePersistenceDictionary<JsonMemoryObject>(fileHandlerKey);
+            }
+            //===========================================================================================================================
             else if (jsonObject is FileHandler<JsonQuestionObject>)
             {
                 PopulatePersistenceDictionary<JsonQuestionObject>(fileHandlerKey);
@@ -125,9 +157,17 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>
             {
                 PopulatePersistenceDictionary<JsonInterviewObject>(fileHandlerKey);
             }
-            else if (jsonObject is FileHandler<JsonLedgerImageObject>)
+            else if (jsonObject is FileHandler<JsonLedgerImagesObject>)
             {
-                PopulatePersistenceDictionary<JsonLedgerImageObject>(fileHandlerKey);
+                PopulatePersistenceDictionary<JsonLedgerImagesObject>(fileHandlerKey);
+            }
+            else if (jsonObject is FileHandler<JsonPlayerObject>)
+            {
+                PopulatePersistenceDictionary<JsonPlayerObject>(fileHandlerKey);
+            }
+            else if (jsonObject is FileHandler<JsonSpawnObject>)
+            {
+                PopulatePersistenceDictionary<JsonSpawnObject>(fileHandlerKey);
             }
             else if (jsonObject is FileHandler<JsonObject>) //run last
             {
@@ -247,7 +287,7 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>
 
         if (saveObject == null)
         {
-            Debug.Log("save object is null");
+            Debug.LogError("save object is null");
             return;
         }
 
@@ -257,7 +297,7 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>
     
     //==============================================================================================================
 
-    private void SaveFileInformation((FileNames, JsonObject[])[] saveObjects)
+    public void SaveFileInformation((FileNames, JsonObject[])[] saveObjects)
     {
         foreach ((FileNames, JsonObject[]) saveObj in saveObjects)
         {
@@ -267,6 +307,14 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>
             if (saveObj.Item2 is JsonDialogueConversationObject[])
             {
                 SaveToFileName(currentFile, (JsonDialogueConversationObject[])saveObj.Item2);
+            }
+            else if (saveObj.Item2 is JsonUnlockMemoryObject[])
+            {
+                ReplaceFileName(currentFile, (JsonUnlockMemoryObject[])saveObj.Item2);
+            }
+            else if (saveObj.Item2 is JsonMemoryObject[])
+            {
+                SaveToFileName(currentFile, (JsonMemoryObject[])saveObj.Item2);
             }
             else if (saveObj.Item2 is JsonQuestionObject[])
             {
@@ -278,9 +326,17 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>
                 //update: we will make an array on size one...
                 ReplaceFileName(currentFile, (JsonInterviewObject[])saveObj.Item2);
             }
-            else if(saveObj.Item2 is JsonLedgerImageObject[])
+            else if (saveObj.Item2 is JsonLedgerImagesObject[])
             {
-                ReplaceFileName(currentFile, (JsonLedgerImageObject[])saveObj.Item2);
+                ReplaceFileName(currentFile, (JsonLedgerImagesObject[])saveObj.Item2);
+            }
+            else if (saveObj.Item2 is JsonPlayerObject[])
+            {
+                ReplaceFileName(currentFile, (JsonPlayerObject[])saveObj.Item2);
+            }
+            else if (saveObj.Item2 is JsonSpawnObject[])
+            {
+                ReplaceFileName(currentFile, (JsonSpawnObject[])saveObj.Item2);
             }
             else if (saveObj.Item2 is JsonObject[])
             {

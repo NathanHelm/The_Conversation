@@ -2,16 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
-public class InputBuffer : MonoBehaviour{
-
-    public static InputBuffer INSTANCE;
-    private void Awake()
-    {
-        if (INSTANCE == null)
-        {
-            INSTANCE = this;
-        }
-    }
+public class InputBuffer : StaticInstance<InputBuffer>, IExecution{
 
     private bool isInputActive = false;
     private IEnumerator singleCoroutine;

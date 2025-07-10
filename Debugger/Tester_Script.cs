@@ -82,11 +82,13 @@ public class Tester_Script : MonoBehaviour
     }
     private void ImitateOmitRay()
     {
+        /*
         ClueMono clueMonoInRay = FindObjectOfType<ClueMono>().GetComponent<ClueMono>();
         Texture IMAGECREATORTEXTURE = DrawingManager.INSTANCE.TakeScreenShot();
         LedgerImageManager.INSTANCE.AddRayInfoToLedgerImage(clueMonoInRay.imageDescription, clueMonoInRay.questionID, clueMonoInRay.clueQuestionID , IMAGECREATORTEXTURE,clueMonoInRay.ledgerOverlays, ClueMono.clueBodyID); //adding 'hit data information to ledger manager'
         GameEventManager.INSTANCE.OnEvent(typeof(WriteToPageLedgerState));
         DrawingManager.INSTANCE.RunDrawingPPEffect();
+        */
        // GameEventManager.I
     }
     

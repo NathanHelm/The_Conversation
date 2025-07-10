@@ -6,101 +6,56 @@ using UI;
 using System;
 using Codice.LogWrapper;
 using System.Linq;
+using ObserverAction;
+using System.Data.Common;
 
 namespace Data
 {
-public class LedgerData : StaticInstanceData<LedgerData>
-{
-	public List<LedgerImage> ledgerImages { get; set; } = new List<LedgerImage>();
-    public bool isLedgerCreated {get; set;} = false;
+    public class LedgerData : StaticInstanceData<LedgerData>, IExecution, IObserver<ObserverAction.LedgerActions>, IObserver<ObserverAction.LedgerMovementActions>
+    {
+        public List<LedgerImage> ledgerImages { get; set; } = new List<LedgerImage>();
+        public bool isLedgerCreated { get; set; } = false;
 
-    public bool isLeft {get; set;} = false;
+        public bool isLeft { get; set; } = false;
 
-    public float flipPageTime {get; set;} = 1f;
+        public float flipPageTime { get; set; } = 1f;
 
-    public int pageObjectsIndex {get; set;} = 0;
+        public int pageObjectsIndex { get; set; } = 0;
 
-    public Animator leftHandAnim {get; set;} 
-    public Animator rightHandAnim {get; set;}
+        public Animator leftHandAnim { get; set; }
+        public Animator rightHandAnim { get; set; }
 
-    public Material drawingPageMaterial {get; set;}
+        public Material drawingPageMaterial { get; set; }
 
-    public GameObject leftHandObj {get; set;}
-    public GameObject rightHandObj {get; set;}
+        public GameObject leftHandObj { get; set; }
+        public GameObject rightHandObj { get; set; }
 
-    public PencilSketchPostEffect pencilSketchPostEffect {get; set;}
-    public PencilSketchPostEffect pencilSketchPostEffectScreenShot {get; set;}
-    public Action<LedgerManager> writeActionLedgerManager =  lm => {
-        //TODO change to hand state, not function 
-         PageAnimations.INSTANCE.DrawImageOnCurrentPage();
-         GameEventManager.INSTANCE.OnEvent(typeof(WriteHandState));
-         
-         
-    }; 
-    public Action<LedgerMovement> writeActionLedgerMovement =  lm => {
-        PageAnimations.INSTANCE.DrawImageOnCurrentPage();
-        GameEventManager.INSTANCE.OnEvent(typeof(WriteHandState));
-        Debug.Log("write!");
-    };
-    public Action<LedgerMovement> pointActionLedgerMovement = lm =>{
-        if(!LedgerMovement.INSTANCE.IsFlipPageCoroutineRunning())
-        {
-            GameEventManager.INSTANCE.OnEvent(typeof(PointHandState));
-         Debug.Log("point!");
-        }
-    };
-     public Action<LedgerManager> pointActionLedgerManager = lm => {
-        if(!LedgerMovement.INSTANCE.IsFlipPageCoroutineRunning())
-        {
-        GameEventManager.INSTANCE.OnEvent(typeof(PointHandState));
-        }
-    };
-   
-    public Action<PageAnimations> disableleftHandPage = pa =>{
-          Debug.LogError("disable left hand page has not been set :/ ");
-    };
-
-    public Action<LedgerManager> runClueDialogueOnSelectPage;
-
+        public PencilSketchPostEffect pencilSketchPostEffect { get; set; }
+        public PencilSketchPostEffect pencilSketchPostEffectScreenShot { get; set; }
+        public Action<LedgerManager> writeActionLedgerManager = lm => {
+            //TODO change to hand state, not function 
+            PageAnimations.INSTANCE.DrawImageOnCurrentPage();
+            GameEventManager.INSTANCE.OnEvent(typeof(WriteHandState));
+        };
+        
+       
+        public Action<LedgerManager> pointActionLedgerManager = lm => {
+            if (!LedgerMovement.INSTANCE.IsFlipPageCoroutineRunning())
+            {
+                GameEventManager.INSTANCE.OnEvent(typeof(PointHandState));
+            }
+        };
+        public Action<PageAnimations> disableleftHandPage = pa => {
+            Debug.LogError("disable left hand page has not been set :/ ");
+        };
         public Action<LedgerManager> runOpenLedgerAndCutscene = lm =>
         {
             CutsceneManager.INSTANCE?.LedgerDialog();
-            GameEventManager.INSTANCE.OnEvent(typeof(OpenLedgerState));   
+            GameEventManager.INSTANCE.OnEvent(typeof(OpenLedgerState));
         }; //check trigger action manager
 
-        public Action<LedgerManager> runInterviewScene;
-
-        public override void OnEnable()
+        public override void m_OnEnable()
         {
-
-            runInterviewScene = lm =>
-            {
-                if (!LedgerImageManager.INSTANCE.IsIndexInLedgerImageListRange(pageObjectsIndex))
-                {
-                    Debug.LogError("ledger image is not in range!");
-                    return;
-                }
-                int currentClueId = LedgerImageManager.INSTANCE.GetQuestionIDFromPage(pageObjectsIndex);
-                DialogueData.INSTANCE.currentQuestionID = currentClueId;
-                GameEventManager.INSTANCE.OnEvent(typeof(ClueConversationState));
-
-            };
-
-            runClueDialogueOnSelectPage = lm =>
-            {
-
-                if (LedgerImageManager.INSTANCE.IsIndexInLedgerImageListRange(pageObjectsIndex))
-                {
-                    int currentClueBodyId = LedgerImageManager.INSTANCE.GetClueBodyIDFromPage(pageObjectsIndex);
-                    int currentCludId = LedgerImageManager.INSTANCE.GetClueQuestionIDFromPage(pageObjectsIndex);
-                    DialogueData.INSTANCE.currentCharacterID = currentClueBodyId;
-                    DialogueData.INSTANCE.currentQuestionID = currentCludId;
-
-                    GameEventManager.INSTANCE.OnEvent(typeof(ClueConversationState));
-                    GameEventManager.INSTANCE.OnEvent(typeof(InspectClueLedgerState));
-                }
-
-            };
 
             disableleftHandPage = pa =>
             {
@@ -109,11 +64,11 @@ public class LedgerData : StaticInstanceData<LedgerData>
                 HandAnimations.INSTANCE.PlayHandAnimation(HandAnimation.LLastFlip, 1);
             };
             var temp = FindObjectsOfType<PencilSketchPostEffect>();
-            if(temp.Length >= 2)
+            if (temp.Length >= 2)
             {
                 pencilSketchPostEffect = FindObjectsOfType<PencilSketchPostEffect>()[1]?.GetComponent<PencilSketchPostEffect>();
             }
-            if(temp.Length > 0)
+            if (temp.Length > 0)
             {
                 pencilSketchPostEffectScreenShot = FindObjectsOfType<PencilSketchPostEffect>()[0]?.GetComponent<PencilSketchPostEffect>();
             }
@@ -121,9 +76,6 @@ public class LedgerData : StaticInstanceData<LedgerData>
             {
                 Debug.LogError("PENCIL SKETCH NOT FOUND!");
             }
-            
-
-
             DrawingManager.onStartDrawingManager.AddAction(dM =>
             {
                 if (pencilSketchPostEffect == null || pencilSketchPostEffectScreenShot == null)
@@ -137,61 +89,33 @@ public class LedgerData : StaticInstanceData<LedgerData>
             });
 
 
-            LedgerManager.onStartLedgerData.AddAction((LedgerManager lm) => { });
-            LedgerManager.onActiveLedger.AddAction((LedgerManager lm) => { ledgerImages = LedgerImageManager.INSTANCE.GetLedgerImageList(); lm.ledgerImages = ledgerImages; });
-
-
-
+  
             LedgerImageManager.onStartLedgerData.AddAction((LedgerImageManager lm) => { lm.ledgerImages = ledgerImages; lm.MaxLedgerImageLength = 15; /*change this to a proper variable*/ });
 
-
-            LedgerManager.onActiveLedger.AddAction((LedgerManager lm) => { lm.isLedgerCreated = isLedgerCreated; });
-
             UI.LedgerUIManager.onFlipPage.AddAction((LedgerUIManager luim) => { luim.flipPageSpeed = this.flipPageTime; luim.isLeft = this.isLeft; });
+
             LedgerUIManager.onBorderCheck.AddAction((LedgerUIManager ledgerManagerUI) => { ledgerManagerUI.isLeft = this.isLeft; });
 
-         
             PageAnimations.onDrawImageOnCurrentPage.AddAction(lia =>
             {
                 lia.currentPageOverlayImage = LedgerUIManager.INSTANCE.GetPageOverlayRenderer(pageObjectsIndex);
             });
 
-
             LedgerMovement.onEnableHand.AddAction((LedgerMovement ledgerAnimationsManager) =>
             {
-
+                /*
                 ledgerAnimationsManager.flipPageAnimationTime = this.flipPageTime;
                 ledgerAnimationsManager.isLeft = this.isLeft;
+                */
 
             });
-
 
             LedgerMovement.onPointHand.AddAction((LedgerMovement ledgerAnimationsManager) =>
             {
-
                 ledgerAnimationsManager.isLeft = this.isLeft;
                 ledgerAnimationsManager.pageObjectIndex = this.pageObjectsIndex;
                 ledgerAnimationsManager.flipPageAnimationTime = flipPageTime;
-
                 HandAnimations.INSTANCE.PlayHandAnimation(HandAnimation.PointAnim, flipPageTime * 0.5f);
-            });
-
-
-            LedgerMovement.onMove.AddAction((LedgerMovement ledgerAnimationsManager) =>
-            {
-
-                ledgerAnimationsManager.isLeft = isLeft;
-                ledgerAnimationsManager.pageObjectIndex = pageObjectsIndex;
-                ledgerAnimationsManager.flipPageAnimationTime = flipPageTime;
-                if (flipPageTime >= 1)
-                {
-                    HandAnimations.INSTANCE.PlayHandAnimation(HandAnimation.FlipAnim, flipPageTime);
-                }
-                else
-                {
-                    HandAnimations.INSTANCE.PlayHandAnimation(HandAnimation.FlipAnim, flipPageTime * 10);
-                }
-
             });
 
             LedgerMovement.onWritingHand.AddAction((LedgerMovement lm) =>
@@ -202,30 +126,99 @@ public class LedgerData : StaticInstanceData<LedgerData>
 
             });
 
-            LedgerMovement.onAfterFlipAwait.AddAction(
-            pointActionLedgerMovement
-            );
-            LedgerManager.onMovePageLeft.AddAction(
-            pointActionLedgerManager
-            );
-            LedgerManager.onMovePageRight.AddAction(
-            pointActionLedgerManager
-            );
             LedgerMovement.onAfterWritingHand.AddAction((LedgerMovement lm) =>
             {
                 GameEventManager.INSTANCE.OnEvent(typeof(OpenLedgerState)); //after writing animation is done, we return to new states
                 GameEventManager.INSTANCE.OnEvent(typeof(PointHandState));
             }
             );
-            LedgerMovement.onAfterWritingHand.AddAction(
-            pointActionLedgerMovement //after writing animation is done, we return to new states
-            );
 
-
-            Debug.Log("hello from ledger on enable!");
-            base.OnEnable();
+            LedgerManager.INSTANCE.subject.AddObserver(this);
+            LedgerMovement.INSTANCE.subject.AddObserver(this);
+            base.m_OnEnable();
         }
 
-}
-}
+        public void OnNotify(LedgerActions data)
+        {
+            if (data == LedgerActions.activeLedger)
+            {
+                LedgerManager.INSTANCE.isLedgerCreated = isLedgerCreated;
+            }
+            else if (data == LedgerActions.createLedger)
+            {
+                ledgerImages = LedgerImageManager.INSTANCE.GetLedgerImageList();
+                LedgerManager.INSTANCE.ledgerImages = ledgerImages;
+            }
+            else if (data == LedgerActions.movePageLeft)
+            {
+                pointActionLedgerManager(LedgerManager.INSTANCE);
+            }
+            else if (data == LedgerActions.movePageRight)
+            {
+                pointActionLedgerManager(LedgerManager.INSTANCE);
+            }
+            else if (data == LedgerActions.onAddImagesToLedger)
+            {
+                LedgerManager.INSTANCE.ledgerImages = ledgerImages;
+            }
+            else if (data == LedgerActions.onAfterMovePageFurthestLeft)
+            {
+                LedgerManager.INSTANCE.MovePagesToFurthestLedgerImage();
+               // LedgerMovement.INSTANCE.subject.AddObserver(this);
+                ActionController.AFTERPAGEFLIP_LEDGER += ActionController.INSTANCE.afterFlipBehaviour.writeActionLedgerMovement;
+            }
+            else if (data == LedgerActions.onSelectPage)
+            {
+                //NOTE: I've made is so that 'onselectpage', is instead used as a static action on ActionController
+            }
+           
+
+            
+            
+            //throw new NotImplementedException();
+        }
+
+        public void OnNotify(ObserverAction.LedgerMovementActions data)
+        {
+            if (data == LedgerMovementActions.onEnableHand)
+            {
+                LedgerMovement.INSTANCE.flipPageAnimationTime = flipPageTime;
+                LedgerMovement.INSTANCE.isLeft = isLeft;
+            }
+            else if (data == LedgerMovementActions.onMoveHand)
+            {
+                LedgerMovement.INSTANCE.isLeft = isLeft;
+                LedgerMovement.INSTANCE.pageObjectIndex = pageObjectsIndex;
+                LedgerMovement.INSTANCE.flipPageAnimationTime = flipPageTime;
+
+                if (flipPageTime >= 1)
+                {
+                    HandAnimations.INSTANCE.PlayHandAnimation(HandAnimation.FlipAnim, flipPageTime);
+                }
+                else
+                {
+                    HandAnimations.INSTANCE.PlayHandAnimation(HandAnimation.FlipAnim, flipPageTime * 10);
+                }
+
+            }
+            else
+            {
+
+            }
+            Debug.Log("CONTINUE THIS =!");
+            /*
+            else if(data == LedgerMovementActions)
+            else
+            {
+
+            }
+            */
+
+
+        }
+    }
+        
+
+
+    }
 

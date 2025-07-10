@@ -12,7 +12,7 @@ public class ImmediateConversationState : DialogueState
 
         if (DialogueManager.INSTANCE != null)
         {
-           DialogueManager.onEndDialogue.AddAction(DialogueData.INSTANCE.runEndDialogConversation); //switchstate
+           DialogueManager.onEndDialogue.AddAction(ActionController.INSTANCE.actionEndDialogue.runEndDialogConversation); //switchstate
 
            DialogueManager.INSTANCE.StartConversation(DialogueData.INSTANCE);
            DialogueManager.INSTANCE.RunDialogueNoInput();
@@ -31,7 +31,7 @@ public class ImmediateConversationState : DialogueState
     {
         if(DialogueManager.INSTANCE != null)
         {
-            DialogueManager.onEndDialogue.RemoveAction(DialogueData.INSTANCE.runEndDialogConversation); //switchstate
+            DialogueManager.onEndDialogue.RemoveAction(ActionController.INSTANCE.actionEndDialogue.runEndDialogConversation); //switchstate
         }
     }
 }

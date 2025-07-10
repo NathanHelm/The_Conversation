@@ -1,19 +1,19 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UIElements;
-public class TransitionManager : StaticInstance<TransitionManager>{
+public class TransitionManager : StaticInstance<TransitionManager>, IExecution{
 
     public static SystemActionCall<TransitionManager> actionOnStartConversation = new SystemActionCall<TransitionManager>();
     public Camera cam {get; set;}
 
     public Vector3 direction;
 
-    public override void OnEnable()
+    public override void m_OnEnable()
     {
-        MManager.onStartManagersAction.AddAction(
+        MManager.INSTANCE.onStartManagersAction.AddAction(
             (MManager e) => {e.transitionManager = this;}
         );
-        base.OnEnable();
+        base.m_OnEnable();
     }
     public override void m_Start()
     {
@@ -28,5 +28,5 @@ public class TransitionManager : StaticInstance<TransitionManager>{
     {
       dimensionScriptableObject.cinemachineVirtualCamera.Priority = 0;
     }
- 
+
 }

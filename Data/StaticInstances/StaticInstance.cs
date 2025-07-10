@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
-public class StaticInstance<T> : MonoBehaviour where T : MonoBehaviour
+public class StaticInstance<T> : MonoBehaviour where T : MonoBehaviour, IExecution
 {
 	public static T INSTANCE { get; set; }
+
 	public SystemActionCall<T> actionCall = new SystemActionCall<T>();
 
-	public virtual void Awake()
+	public virtual void m_Awake()
 	{
 		INSTANCE = GetComponent<T>();
-
 	}
 	public virtual void OnDisable()
 	{
@@ -20,12 +20,15 @@ public class StaticInstance<T> : MonoBehaviour where T : MonoBehaviour
 		
 		actionCall.RunAction(INSTANCE);
 	}
-
-	public virtual void OnEnable()
+	public virtual void m_GameExecute()
 	{
-		Debug.Log("data hello from on enable!");
-        //adds static values to the event hashmap.
-		// MManager.onStartManagersAction.AddAction((MManager m) => { m_Start(); /*add m_start action*/ });
+		
+	}
+
+	public virtual void m_OnEnable()
+	{
+		//adds static values to the event hashmap.
+		// MManager.INSTANCE.onStartManagersAction.AddAction((MManager m) => { m_Start(); /*add m_start action*/ });
 		// GameEventManager.INSTANCE.AddEventFunc(typeof(T).ToString().ToLower(),ReturnStaticType);
 
 	}
