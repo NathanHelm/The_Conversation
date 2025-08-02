@@ -6,18 +6,21 @@ public class LedgerImage
 {
 	public string imageDescription  {get;set;} = "";  //TODO maybe change this? 
 	public int questionID {get;set;} //certain images unlocks questions that vet can ask to others.
-    public Texture ledgerImage { get; private set; }
+    public Texture ledgerImage { get; set; }
 
     public Texture[] ledgerOverlays;
 
     public int clueQuestionID;
+
+    public int clueID; 
     
     public int clueBodyID = 31; //set value to whatever you desire
 
     
 
-    public LedgerImage(string imageDescription, int questionID, int clueQuestionID, Texture ledgerImg, Texture[] ledgerOverlays, int clueBodyID)
+    public LedgerImage(int clueID, string imageDescription, int questionID, int clueQuestionID, Texture ledgerImg, Texture[] ledgerOverlays, int clueBodyID)
     {
+        this.clueID = clueID;
         this.imageDescription = imageDescription;
         this.questionID = questionID;
         this.clueQuestionID = clueQuestionID;

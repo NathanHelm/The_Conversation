@@ -73,6 +73,20 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>, IExe
             }
             }
         });
+        conversationKeyToDialogActions.Add(21, new Dictionary<int, Dictionary<int, Action>>()
+        {
+            {
+                46,//qid
+                new(){
+                    {
+                        0, ()=> {
+                            Debug.Log("unlock dialog");
+                            MemoryManager.INSTANCE.UnlockMemory(21, 1);
+                         }
+                    }
+                }
+            }
+        });
         conversationKeyToDialogActions.Add(33, new Dictionary<int, Dictionary<int, Action>>()
         {
             {
@@ -142,6 +156,7 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>, IExe
             }
             }
         });
+        
 
 
     }

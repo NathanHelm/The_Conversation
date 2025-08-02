@@ -13,23 +13,11 @@ public class WriteToPageLedgerState : LedgerState
         Debug.Log("write to ledger");
 
         ActionController.AFTERPAGEFLIP_LEDGER -= ActionController.INSTANCE.afterFlipBehaviour.pointActionLedgerMovement;
+        ActionController.AFTERPAGEFLIP_LEDGER += ActionController.INSTANCE.afterFlipBehaviour.writeActionLedgerMovement;
 
-        
-        /*
-        LedgerManager.INSTANCE.movePageLeft.RemoveAction(
-        LedgerData.INSTANCE.pointActionLedgerManager
-        );
-        LedgerManager.INSTANCE.movePageRight.RemoveAction(
-        LedgerData.INSTANCE.pointActionLedgerManager
-        );
-        */
-
-        LedgerManager.INSTANCE.subject.RemoveObserver(LedgerData.INSTANCE);
         LedgerManager.INSTANCE.subject.RemoveObserver(LedgerData.INSTANCE);
 
         GameEventManager.INSTANCE.OnEvent(typeof(EnableHandState));
-        
-
         /* TODO add if needed
          LedgerMovement.onAfterFlipAwait.AddAction(
             LedgerData.INSTANCE.writeActionLedgerMovement
@@ -83,7 +71,6 @@ public class WriteToPageLedgerState : LedgerState
         ActionController.AFTERPAGEFLIP_LEDGER += ActionController.INSTANCE.afterFlipBehaviour.pointActionLedgerMovement;
 
         
-        LedgerManager.INSTANCE.subject.AddObserver(LedgerData.INSTANCE);
         LedgerManager.INSTANCE.subject.AddObserver(LedgerData.INSTANCE);
 
     }

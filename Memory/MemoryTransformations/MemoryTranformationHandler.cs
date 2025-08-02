@@ -28,9 +28,17 @@ public class MemoryTransformationHandler : MonoBehaviour, IObserver<ObserverActi
 
     private readonly int uniqueStageMovementAmount = 6;
 
+    /*
+    memory transform handler-- providing memory gameobject movement based on unlocked memory ids. 
+    
+    PopulateTransformDictionary: adds transforms (both enable and update) to specific memory id. 
+    
+    */
 
     private void PopulateTransformDictionary()
     {
+
+
         //for on enable
         memoryTransformOnEnable = new Dictionary<int, Dictionary<int, MemoryTransformEnableAction>>()
         {
@@ -51,6 +59,31 @@ public class MemoryTransformationHandler : MonoBehaviour, IObserver<ObserverActi
                 }
             },
         };
+        //dummy
+        memoryTransformOnEnable = new()
+        {
+            {
+                100, new()
+                {
+                    {
+                        100, MemoryTransformEnableAction.circleEnable
+                    },
+                }
+            },
+        };
+        memoryTransformOnUpdate = new()
+        {
+            {
+                100, new()
+                {
+                    {
+                        100, MemoryTransformUpdateAction.circleUpdate
+                    },
+                }
+            },
+        };
+        
+        
     }
 
 
@@ -61,6 +94,8 @@ public class MemoryTransformationHandler : MonoBehaviour, IObserver<ObserverActi
         MemorySpawnObject currentMemory = spawnedStages[0];
 
         randomUpdateMovementStages = GetStageMovementAtRandomUpdate();
+
+        //the random transformation that will run on update.
         randomUpdateStageActions = GetRandomUpdateAction(randomUpdateMovementStages.Count);
 
         if (!memoryTransformOnEnable.ContainsKey(currentMemoryID))
@@ -72,7 +107,7 @@ public class MemoryTransformationHandler : MonoBehaviour, IObserver<ObserverActi
             //based on current memory id, get on enable tranformation
             ObserverAction.MemoryTransformEnableAction memorySpawnerAction = memoryTransformOnEnable[currentMemory.characterId][currentMemoryID];
 
-            subjectEnable.NotifyObservers(memorySpawnerAction);
+            subjectEnable.NotifyObservers(memorySpawnerAction); //run on enable transformation(s).
         }
     }
     public void MemoriesTransformOnUpdate()
@@ -97,16 +132,6 @@ public class MemoryTransformationHandler : MonoBehaviour, IObserver<ObserverActi
         List<MemorySpawnObject> stagesUpdateTransformation = new(); //our object that will undergo update transformations. 
         while (i > 0 && temp.Count > 0)
         {
-            //5 - 5 = 0 < count  run
-            //5 - 4 = 1 = count dont run
-            /*
-            if uniqueStage > stages 
-            if (uniqueStageMovementAmount - i > temp.Count)
-            {
-                Debug.Log("breaking because " + i + " is > than temp count " + temp.Count);
-                break;
-            }
-            */
             int random = UnityEngine.Random.Range(0, temp.Count - 1);
             stagesUpdateTransformation.Add(temp[random]);
             temp.RemoveAt(random);
@@ -115,33 +140,50 @@ public class MemoryTransformationHandler : MonoBehaviour, IObserver<ObserverActi
         return stagesUpdateTransformation;
 
     }
-     private List<MemoryTransformUpdateAction> GetRandomUpdateAction(int maxSpawnStage) //(2) get random action for randomly selected stage.
+     private List<MemoryTransformUpdateAction> GetRandomUpdateAction(int maxSpawnStage) //(2) get random action from randomly selected stage.
     {
         int currentCharacterID = spawnedStages[0].characterId;
 
         List<ObserverAction.MemoryTransformUpdateAction> randomUpdateStageActionsTemp = new(); //randomly update observer actions
 
-        ObserverAction.MemoryTransformUpdateAction[] allMemoryTransformUpdateActions =
-        memoryTransformOnUpdate[currentCharacterID].Values.ToArray(); 
+        ObserverAction.MemoryTransformUpdateAction[] allMemoryTransformUpdateActions = new MemoryTransformUpdateAction[0];
+
+        if (!memoryTransformOnUpdate.ContainsKey(currentCharacterID))
+        {
+            Debug.LogError("it does appear that characterID " + currentCharacterID + " is found, therefore we will be using character ID 100");
+            allMemoryTransformUpdateActions =
+            memoryTransformOnUpdate[100].Values.ToArray();
+        }
+        else
+        {
+
+            allMemoryTransformUpdateActions =
+            memoryTransformOnUpdate[currentCharacterID].Values.ToArray();
+        }
 
 
        
         for (int i = 0; i < maxSpawnStage; i++)
-        {
-
-            int memoryID = randomUpdateMovementStages[i].memoryId;
-        
-            if (memoryTransformOnUpdate[currentCharacterID].ContainsKey(memoryID)) //if memory id already has an action, use it
             {
-                var observerAction = memoryTransformOnUpdate[currentCharacterID][memoryID];
-                randomUpdateStageActionsTemp.Add(observerAction);
-            }
-            else
+
+                int memoryID = randomUpdateMovementStages[i].memoryId;
+
+            if (!memoryTransformOnUpdate.ContainsKey(currentCharacterID))
             {
                 int random = UnityEngine.Random.Range(0, allMemoryTransformUpdateActions.Length);
                 randomUpdateStageActionsTemp.Add(allMemoryTransformUpdateActions[random]);
             }
-        }
+            else if (!memoryTransformOnUpdate[currentCharacterID].ContainsKey(memoryID)) //if memory id already has an action, use it
+            {
+                int random = UnityEngine.Random.Range(0, allMemoryTransformUpdateActions.Length);
+                randomUpdateStageActionsTemp.Add(allMemoryTransformUpdateActions[random]);
+            }
+            else
+            {
+                var observerAction = memoryTransformOnUpdate[currentCharacterID][memoryID];
+                randomUpdateStageActionsTemp.Add(observerAction);
+            }
+            }
         
 
         return randomUpdateStageActionsTemp;
@@ -149,9 +191,28 @@ public class MemoryTransformationHandler : MonoBehaviour, IObserver<ObserverActi
     
     private void SetStageMovementAtRandomEnable()
     {
-        MemoryTransformEnableAction[] onEnableTranformEnums = memoryTransformOnEnable[currentCharacterID].Values.ToArray();
+        int checkCurrentCharacterID = currentCharacterID;
+        if (!memoryTransformOnEnable.ContainsKey(checkCurrentCharacterID))
+        {
+            checkCurrentCharacterID = 100;
+        }
+        MemoryTransformEnableAction[] onEnableTranformEnums = memoryTransformOnEnable[checkCurrentCharacterID].Values.ToArray();
         int random = UnityEngine.Random.Range(0, onEnableTranformEnums.Length - 1);
         subjectEnable.NotifyObservers(onEnableTranformEnums[random]); //will play a random onenable observer action.
+    }
+
+    //run this after onEnable transformation!
+    public void MoveNoUpdateTransToNewParent(ref GameObject memoryStage)
+    {
+        //This solves the issue of have a stage that moves, but the clues/objects that don't
+        int maxChild = memoryStage.transform.childCount;
+        for (int i = 0; i < maxChild; i++)
+        {
+            if (memoryStage.transform.GetChild(i).CompareTag("NoUpdateTrans"))
+            {
+                memoryStage.transform.SetParent(GameObject.FindWithTag("NoUpdateParent").transform);
+            }
+        }
     }
 
     public void OnNotify(MemorySpawnerAction data)
@@ -161,13 +222,18 @@ public class MemoryTransformationHandler : MonoBehaviour, IObserver<ObserverActi
             onEnableTransformations.RunAction(this);
             PopulateTransformDictionary();
             MemoriesTransformOnEnable();
+
+            foreach (var single in spawnedStages) //change children to new object to avoid update transformation.
+            {
+                MoveNoUpdateTransToNewParent(ref single.memoryGameObject);
+            }
         }
 
         if (data == MemorySpawnerAction.onTransformObjectUpdate)
         {
             MemoriesTransformOnUpdate();
         }
-       
+
     }
     public void m_Awake()
     {

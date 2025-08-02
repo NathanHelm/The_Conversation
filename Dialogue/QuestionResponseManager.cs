@@ -68,12 +68,12 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>, 
 		});
 
 
-		npcToQuestionDialogueNpc.Add(24, new Dictionary<int, DialogueConversation>());
+		npcToQuestionDialogueNpc.Add(21, new Dictionary<int, DialogueConversation>());
 
-		npcToQuestionDialogueNpc[24] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[]{
+		npcToQuestionDialogueNpc[21] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[]{
 
-			new (new int[] { 0,5,2 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(24, 2)),
-			new(new int[] { 46 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(24, 46))
+			new (new int[] { 0,5,2 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(21, 2)),
+			new(new int[] { 46 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(21, 46))
 
 		});
 

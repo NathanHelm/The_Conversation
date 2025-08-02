@@ -23,7 +23,8 @@ public class Tester_Memory : MonoBehaviour, IExecution
 
     public void m_OnEnable()
     {
-       characterId = 42;
+       characterId = 21
+       ;
     }
     private void Update()
     {

@@ -6,7 +6,7 @@ using Persistence;
 using UnityEngine;
 
 
-public enum FileNames { myfile, mydialogfile, DialogueConversationFile, InterviewFile, LedgerImageFile, PlayerFile, SpawnFile, MemoryFile, UnlockedMemoryFile }; //enter all filenames here
+public enum FileNames { myfile, mydialogfile, DialogueConversationFile, InterviewFile, LedgerImageFile, PlayerFile, SpawnFile, MemoryFile, UnlockedMemoryFile, ClueCameraFile }; //enter all filenames here
 
 /*
 so you want to save somethings
@@ -87,8 +87,9 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>, IE
 
         FileHandler<JsonMemoryObject> fileHandler8 = new FileHandler<JsonMemoryObject>(Path.Combine(GetPath(), FileNames.MemoryFile + ".json"));
         fileHandlerNameTofileHandler.Add(FileNames.MemoryFile, fileHandler8);
-        
 
+        FileHandler<JsonClueCamerasObject> fileHandler9 =  new FileHandler<JsonClueCamerasObject>(Path.Combine(GetPath(), FileNames.ClueCameraFile + ".json"));
+        fileHandlerNameTofileHandler.Add(FileNames.ClueCameraFile, fileHandler9);
          //dont touch this.
         foreach (FileNames fileHandlerKey in fileHandlerNameTofileHandler.Keys)
         {
@@ -116,6 +117,11 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>, IE
             if (jsonObjects[i] is JsonObject)
             {
                 T jsonObject = (T)jsonObjects[i];
+                if (fileNameToJsonIDToObject[key].ContainsKey(jsonObject.Id))
+                {
+                    Debug.LogError("JSON ID " + jsonObject.Id + " already exists!");
+                    continue;
+                }
                 fileNameToJsonIDToObject[key].Add(jsonObject.Id, jsonObject);
             }
             else
@@ -168,6 +174,10 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>, IE
             else if (jsonObject is FileHandler<JsonSpawnObject>)
             {
                 PopulatePersistenceDictionary<JsonSpawnObject>(fileHandlerKey);
+            }
+            else if (jsonObject is FileHandler<JsonClueCamerasObject>)
+            {
+                PopulatePersistenceDictionary<JsonClueCamerasObject>(fileHandlerKey);
             }
             else if (jsonObject is FileHandler<JsonObject>) //run last
             {
@@ -314,7 +324,7 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>, IE
             }
             else if (saveObj.Item2 is JsonMemoryObject[])
             {
-                SaveToFileName(currentFile, (JsonMemoryObject[])saveObj.Item2);
+                ReplaceFileName(currentFile, (JsonMemoryObject[])saveObj.Item2);
             }
             else if (saveObj.Item2 is JsonQuestionObject[])
             {
@@ -325,6 +335,10 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>, IE
                 //note you can only have one json interview object...
                 //update: we will make an array on size one...
                 ReplaceFileName(currentFile, (JsonInterviewObject[])saveObj.Item2);
+            }
+            else if (saveObj.Item2 is JsonClueCamerasObject[])
+            {
+                ReplaceFileName(currentFile, (JsonClueCamerasObject[])saveObj.Item2);
             }
             else if (saveObj.Item2 is JsonLedgerImagesObject[])
             {

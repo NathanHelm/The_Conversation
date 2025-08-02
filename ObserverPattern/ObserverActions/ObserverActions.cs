@@ -11,7 +11,7 @@ namespace ObserverAction
         createLedger,
         movePageLeft,
         movePageRight,
-        onAddImagesToLedger,
+        onSetTextureToPageImage,
         onAfterMovePageFurthestLeft,
         onSelectPage
         /*
@@ -37,10 +37,19 @@ namespace ObserverAction
 
     }
 
+    public enum PlayerActions
+    {
+        onOmitRay,
+    }
+    public enum ClueCameraActions
+    {
+        onSpawnCamera, //add ledger image because we have our texture (our render texture)..
+    }
+    
     public enum MemorySpawnerAction
     {
         onAfterStageObjectsSpawn,
-        onTransformObjectUpdate, 
+        onTransformObjectUpdate,
 
     }
     public enum MemoryTransformEnableAction

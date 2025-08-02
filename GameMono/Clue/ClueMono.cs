@@ -12,9 +12,10 @@ public class ClueMono : BodyMono
     public Texture ledgerImage;
     public Texture[] ledgerOverlays;
 
-    public int clueQuestionID = 0;
+    public int clueQuestionID = 0; //dialogue id that describes the clue on the page.
+    public int clueID = 0; 
 
-    public static int clueBodyID {get; set;} = 31; //as things stand this should really stay as 31
+    public static int clueBodyID { get; set; } = 31; //as things stand this should really stay as 31
 
     public DialogueConversation dialogueConversation;
 
@@ -31,6 +32,7 @@ public class ClueMono : BodyMono
             questionID = clueScriptableObject.questionID;
             dialogueConversation = clueScriptableObject.dialogConversation;
             clueQuestionID = clueScriptableObject.clueQuestionID;
+            clueID = clueScriptableObject.clueID;
             gameObject.layer = LayerMask.NameToLayer("cluecollider");
             bodyID = clueBodyID;
             base.OnEnable();

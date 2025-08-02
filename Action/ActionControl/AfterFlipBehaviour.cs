@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace ActionControl
 {
@@ -6,6 +7,7 @@ namespace ActionControl
     {
         public Action<LedgerMovement> writeActionLedgerMovement = lm =>
         {
+            Debug.Log("AFTERPAGEFLIP: playing the writing action!");
             PageAnimations.INSTANCE.DrawImageOnCurrentPage();
             GameEventManager.INSTANCE.OnEvent(typeof(WriteHandState));
         };

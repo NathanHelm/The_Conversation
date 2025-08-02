@@ -27,6 +27,9 @@ public class InterviewSceneState : SceneState{
     public override void OnExit(SceneData data)
     {
         MManager.INSTANCE.onStartManagersAction.RemoveAllActions();
+
+        SavePersistenceManager.INSTANCE.SaveInterfaceData(MemoryManager.INSTANCE);
+
         ActionController.PRESSRETURN_LEDGER -= ActionController.INSTANCE.actionOpenLedgerSelectPage.runDialogOnSelectPageInterviewScene;
         ActionController.PRESSTAB_LEDGER = lm => { UnityEngine.Debug.Log("exit interview log!"); };
         base.OnExit(data);

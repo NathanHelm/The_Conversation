@@ -16,6 +16,12 @@ public class ActionController : StaticInstance<ActionController>, IExecution
         AFTERPAGEFLIP_LEDGER += afterFlipBehaviour.pointActionLedgerMovement;
         base.m_Start();
     }
+
+    /*
+
+    Action controls are a list of organized actions that can be subscribed to our static actions
+    
+    */
     //Dialogue Actions============================================================================================================================================
     //end dialogue
 
@@ -26,12 +32,15 @@ public class ActionController : StaticInstance<ActionController>, IExecution
     public ActionControl.ActionRunDialogue actionRunDialogue = new();
     public ActionControl.AfterFlipBehaviour afterFlipBehaviour = new();
 
+    public ActionControl.FragAction<LedgerMovement> fragActionLedgerManager = new();
+
     //=============================================================================================================================================================
 
     public static Action<LedgerManager> PRESSTAB_LEDGER;
     public static Action<LedgerManager> PRESSRETURN_LEDGER;
     public static Action<LedgerMovement> AFTERPAGEFLIP_LEDGER;
-   
+    public static Action<LedgerManager> AFTERPAGEFLIPFURTHESTLEFT_LEDGER;
+
 
     public void Update()
     {
@@ -44,11 +53,13 @@ public class ActionController : StaticInstance<ActionController>, IExecution
     }
     public void PressReturn()
     {
+       
         if (InputBuffer.INSTANCE.IsPressCharacter(KeyCode.Return))
         {
             //TODO add this to conversation state.
             PRESSRETURN_LEDGER(LedgerManager.INSTANCE);
         }
     }
+    
 
 }

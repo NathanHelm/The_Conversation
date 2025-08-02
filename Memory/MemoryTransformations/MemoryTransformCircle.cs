@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using MemorySpawn;
 using ObserverAction;
 using UnityEngine;
@@ -20,6 +22,7 @@ public class MemoryTransformCircle : MemoryTransformations
     float angleEnable = 0;
 
     private Vector3 enableOffset;
+    private List<float> randomValues = new();
    
     
 
@@ -30,19 +33,23 @@ public class MemoryTransformCircle : MemoryTransformations
         {
             Transform transform = spawnedMemoryObjects[i].memoryGameObject.transform;
 
-            angleEnable += Time.deltaTime * freqEnable;
+            angleEnable += freqEnable * Mathf.Deg2Rad;
+            randomValues.Add(UnityEngine.Random.Range(1, 2));
 
             transform.position = new Vector3(Mathf.Cos(angleEnable), Mathf.Sin(angleEnable)) * ampEnable;
 
             spawnedMemoryObjects[i].enableOffsetPostion = transform.position;
+           
         }
     }
 
     public override void TransformOnUpdate(ref MemorySpawnObject spawnedMemoryObject)
     {
         Debug.Log("circle transformation on update");
+       
         Transform trans = spawnedMemoryObject.memoryGameObject.transform;
-        angle += Time.deltaTime * freq;
+        float random =  randomValues[spawnedMemoryObject.positionIndex];
+        angle += Time.deltaTime * freq * random;
         trans.position = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle)) * amp + spawnedMemoryObject.enableOffsetPostion;
     }
     public override void OnNotify(MemoryTransformEnableAction data)

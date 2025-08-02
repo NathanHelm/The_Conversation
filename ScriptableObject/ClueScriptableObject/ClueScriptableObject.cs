@@ -7,9 +7,11 @@ using UnityEngine;
 public class ClueScriptableObject : ScriptableObject
 {
    	public string imageDescription;
+    [Header("The unlocked conversation ID that can be asked to characters")]
 	public int questionID; //certain images unlock a question that vet can ask to others.
     public Texture ledgerImage;
-
+    [Header("official id for the clue.")]
+    public int clueID;
     public int clueQuestionID;
 
     public Texture[] ledgerOverlays;

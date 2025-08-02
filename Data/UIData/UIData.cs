@@ -21,7 +21,7 @@ namespace Data
         {
             transitionAnimator = GetComponentInChildren<Animator>();
             dialogText = FindObjectOfType<UIDialogText>().GetComponent<TextMeshProUGUI>();
-            dialogBlock = GameObject.FindGameObjectWithTag("UI")?.transform.GetChild(0).GetComponent<Image>();
+            dialogBlock = GameObject.FindGameObjectWithTag("DialogueBox").GetComponent<Image>();
             var buttons = FindObjectsOfType<DialogueButton>();
 
             ledgerUIImage = GameObject.FindGameObjectWithTag("LedgerImage")?.GetComponent<Renderer>();

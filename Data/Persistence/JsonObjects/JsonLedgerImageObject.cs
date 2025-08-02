@@ -10,10 +10,19 @@ public class JsonLedgerImageObject
 
     public int clueQuestionID;
 
-    public int clueBodyID = 31; //set value to whatever you desire
+    public int clueID;
 
-    public JsonLedgerImageObject(string imageDescription, int questionID, int clueQuestionID, Texture ledgerImg, Texture[] ledgerOverlays, int clueBodyID)
+    public int clueBodyID = 31; //set value to whatever you desire
+    
+    //Alternate key==============================
+    public SceneNames sceneName;
+    public int clueCameraID; 
+    //============================================
+
+
+    public JsonLedgerImageObject(int clueID, string imageDescription, int questionID, int clueQuestionID, Texture ledgerImg, Texture[] ledgerOverlays, int clueBodyID)
     {
+        this.clueID = clueID;
         this.imageDescription = imageDescription;
         this.questionID = questionID;
         this.clueQuestionID = clueQuestionID;

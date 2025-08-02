@@ -107,7 +107,7 @@ public class FileHandler<T> where T : JsonObject
     }
     public void ReplaceFile()
     {
-         Wrapper<T> wrapper = new Wrapper<T>();
+        Wrapper<T> wrapper = new Wrapper<T>();
         wrapper.Items = addToJsonList.ToArray();
         string json = JsonUtility.ToJson(wrapper, true);
         CreateFile(Path, json); //add to json file...

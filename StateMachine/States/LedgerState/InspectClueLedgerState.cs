@@ -13,7 +13,7 @@ public class InspectClueLedgerState : LedgerState
     var ledgerUIImage = UIData.INSTANCE.ledgerUIImage.gameObject;
     var renderer = UIData.INSTANCE.ledgerUIImage;
     UIManager.INSTANCE.EnableUIObject(ref ledgerUIImage);
-    LedgerImageManager.INSTANCE.SetRenderTextureToLedgerImage(ref renderer, data.pageObjectsIndex);
+    LedgerImageManager.INSTANCE.SetRenderTextureToLedgerImage(ref renderer, data.pageIndex);
     ImageUIAnimations.INSTANCE.DrawLedgerImageUI();
 
     ActionController.PRESSTAB_LEDGER += ActionController.INSTANCE.actionOpenLedgerTab.pressTabDisableLedger;

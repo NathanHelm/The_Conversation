@@ -9,10 +9,10 @@ using UnityEngine;
 public class MemoryManager : StaticInstance<MemoryManager>, ISaveLoad, IExecution
 {
   //characterID---memoryID---submemoryID
-  private Dictionary<int, Dictionary<int, MemoryObject>> characterIDToMemory = new();
-  private Dictionary<int, Dictionary<int, SubMemoryObject>> memoryIdToSubMemory = new();
+  private Dictionary<int, Dictionary<int, MemoryObject>> characterIdToMemory = new();
+  private Dictionary<int,Dictionary<int, Dictionary<int, SubMemoryObject>>> characterMemoryToMemoryIdToSubMemory = new();
 
-  private Dictionary<int, Dictionary<int, SubMemoryObject>> UNLOCKEDMemoryIdToSubMemory = new();
+  private Dictionary<int,Dictionary<int, Dictionary<int, SubMemoryObject>>> UNLOCKEDCharacterMemoryToMemoryToSubMemory = new();
   private Dictionary<int, Dictionary<int, MemoryObject>> UNLOCKEDCharacterIdToMemory = new();
 
   public override void m_OnEnable()
@@ -23,17 +23,27 @@ public class MemoryManager : StaticInstance<MemoryManager>, ISaveLoad, IExecutio
 
   public void UnlockMemory(int characterID, int memoryID)
   {
-    if (!characterIDToMemory.ContainsKey(characterID))
+    if (!characterIdToMemory.ContainsKey(characterID))
     {
-      Debug.LogError("memory not found for character id" + characterID);
+      Debug.LogError("memory not found for character id " + characterID);
       return;
     }
-    if (!characterIDToMemory[characterID].ContainsKey(memoryID))
+    if (!characterIdToMemory[characterID].ContainsKey(memoryID))
     {
-      Debug.LogError("memory not found for memory id" + memoryID + "in character " + characterID);
+      Debug.LogError("memory not found for memory id " + memoryID + "in character " + characterID);
       return;
     }
-    MemoryObject m = characterIDToMemory[characterID][memoryID];
+    //condition: if character exists in dictionary, has the memory already been unlocked?
+    if (UNLOCKEDCharacterIdToMemory.ContainsKey(characterID))
+    {
+      if (UNLOCKEDCharacterIdToMemory[characterID].ContainsKey(memoryID))
+      {
+        Debug.LogError("memory has already been unlocked! for memory id " + memoryID + " in character " + characterID);
+        return;
+      }
+    }
+
+    MemoryObject m = characterIdToMemory[characterID][memoryID];
 
     if (!UNLOCKEDCharacterIdToMemory.ContainsKey(characterID))
     {
@@ -49,65 +59,99 @@ public class MemoryManager : StaticInstance<MemoryManager>, ISaveLoad, IExecutio
   public void UnlockSubMemory(int characterID, int memoryID, int submemoryID)
   {
     //first, check if there is a character
-    if (!UNLOCKEDCharacterIdToMemory.ContainsKey(characterID))
-    {
-      Debug.LogError("submemory not found for unlocked character id" + characterID);
-      return;
-    }
-    if (!UNLOCKEDCharacterIdToMemory[characterID].ContainsKey(memoryID))
+    if (!characterMemoryToMemoryIdToSubMemory.ContainsKey(memoryID))
     {
       Debug.LogError("submemory not found for unlocked memory id" + memoryID + "in character " + characterID);
       return;
     }
 
     //second, check if there is a sub memory in the memory
-    if (!memoryIdToSubMemory.ContainsKey(memoryID))
+    if (!characterMemoryToMemoryIdToSubMemory[characterID].ContainsKey(memoryID))
     {
       Debug.LogError("SUBmemory not found for because unlocked memoryID " + memoryID + " doesn't exist");
       return;
     }
-    if (!memoryIdToSubMemory[memoryID].ContainsKey(submemoryID))
+    if (!characterMemoryToMemoryIdToSubMemory[characterID][memoryID].ContainsKey(submemoryID))
     {
       Debug.LogError("SUBmemory not found because unlocked submemoryID" + submemoryID + " doesn't exist");
       return;
     }
+    //is submemory already unlocked? 
+    if (UNLOCKEDCharacterMemoryToMemoryToSubMemory.ContainsKey(characterID))
+    {
+      if (UNLOCKEDCharacterMemoryToMemoryToSubMemory[characterID].ContainsKey(memoryID))
+      {
+        if (UNLOCKEDCharacterMemoryToMemoryToSubMemory[characterID][memoryID].ContainsKey(submemoryID))
+        {
+          Debug.LogError("sub memory is already unlocked!");
+          return;
+        }
+      } 
+    }
 
-    SubMemoryObject subM = memoryIdToSubMemory[memoryID][submemoryID];
+    SubMemoryObject subM = characterMemoryToMemoryIdToSubMemory[characterID][memoryID][submemoryID];
     //finally, add sub memory to unlocked memory dict 
-    if (!UNLOCKEDMemoryIdToSubMemory.ContainsKey(memoryID))
-    {
-      UNLOCKEDMemoryIdToSubMemory.Add(memoryID, new Dictionary<int, SubMemoryObject>() { { submemoryID, subM } });
-    }
-    else
-    {
-      UNLOCKEDMemoryIdToSubMemory[memoryID].Add(submemoryID, subM);
-    }
+      if (!UNLOCKEDCharacterMemoryToMemoryToSubMemory.ContainsKey(characterID))
+      {
+        UNLOCKEDCharacterMemoryToMemoryToSubMemory.Add(characterID, new Dictionary<int, Dictionary<int, SubMemoryObject>>());
+      }
+      if (!UNLOCKEDCharacterMemoryToMemoryToSubMemory[characterID].ContainsKey(memoryID))
+      {
+        UNLOCKEDCharacterMemoryToMemoryToSubMemory[characterID].Add(memoryID, new Dictionary<int, SubMemoryObject>() { { submemoryID, subM } });
+      }
+      else
+      {
+        UNLOCKEDCharacterMemoryToMemoryToSubMemory[characterID][memoryID].Add(submemoryID, subM);
+      }
     Debug.Log("LOG: UNLOCKED SUB MEMORY " + submemoryID);
 
   }
   public void AddMemory(int bodyID, MemoryObject memoryStage)
   {
-    if (!characterIDToMemory.ContainsKey(bodyID))
+    if (!characterIdToMemory.ContainsKey(bodyID))
     {
-      characterIDToMemory.Add(bodyID, new Dictionary<int, MemoryObject>());
+      characterIdToMemory.Add(bodyID, new Dictionary<int, MemoryObject>());
     }
-    characterIDToMemory[bodyID].Add(memoryStage.ID, memoryStage);
+    if(characterIdToMemory[bodyID].ContainsKey(memoryStage.ID))
+    {
+      Debug.LogError("memory " + memoryStage.ID + " already exist for character" + bodyID);
+      return;
+    }
+    characterIdToMemory[bodyID].Add(memoryStage.ID, memoryStage);
     Debug.Log("LOG: added memory to memory dictionary. \n   You'll have to unlocked the memory first!");
 
 
     foreach (SubMemoryObject single in memoryStage.subMemoryIds)
     {
-      AddSubMemory(single.ID, single);
+      AddSubMemory(bodyID,single.ID, single);
     }
 
   }
-  public void AddSubMemory(int memoryID, SubMemoryObject subMemoryObject)
+  public void AddSubMemory(int bodyId, int memoryID, SubMemoryObject subMemoryObject)
   {
-    if (!memoryIdToSubMemory.ContainsKey(memoryID))
+    //duplicate sub memory? 
+    if (characterMemoryToMemoryIdToSubMemory.ContainsKey(bodyId))
     {
-      memoryIdToSubMemory.Add(memoryID, new Dictionary<int, SubMemoryObject>());
+      if (characterMemoryToMemoryIdToSubMemory[bodyId].ContainsKey(memoryID))
+      {
+        if (characterMemoryToMemoryIdToSubMemory[bodyId][memoryID].ContainsKey(subMemoryObject.ID))
+        {
+          Debug.LogError("sub memory is already added!");
+          return;
+        }
+      }
     }
-    memoryIdToSubMemory[memoryID].Add(subMemoryObject.ID, subMemoryObject);
+
+
+    if (!characterMemoryToMemoryIdToSubMemory.ContainsKey(bodyId))
+    {
+      characterMemoryToMemoryIdToSubMemory.Add(bodyId, new());
+    }
+    if (!characterMemoryToMemoryIdToSubMemory[bodyId].ContainsKey(memoryID))
+      {
+        characterMemoryToMemoryIdToSubMemory[bodyId].Add(memoryID, new Dictionary<int, SubMemoryObject>());
+      }
+    characterMemoryToMemoryIdToSubMemory[bodyId][memoryID].Add(subMemoryObject.ID, subMemoryObject);
     Debug.Log("LOG: added sub-memory to sub-memory dictionary. \nYou'll have to unlocked it first!");
   }
 
@@ -116,19 +160,19 @@ public class MemoryManager : StaticInstance<MemoryManager>, ISaveLoad, IExecutio
   {
     //=memory files=======================================================================================================================
     JsonMemoryObject jsonMemoryObject = new(0, null);
-    int[] characterkeys = characterIDToMemory.Keys.ToArray();
+    int[] characterkeys = characterIdToMemory.Keys.ToArray();
 
     foreach (int character in characterkeys)
     {
-      Dictionary<int, MemoryObject> m = UNLOCKEDCharacterIdToMemory[character];
+      Dictionary<int, MemoryObject> m = characterIdToMemory[character];
       int[] keys = m.Keys.ToArray();
       List<MemoryObject> memoryObjects1 = new();
       for (int i = 0; i < keys.Length; i++)
       {
         MemoryObject memoryObject = m[keys[i]];
-        if (memoryIdToSubMemory.ContainsKey(memoryObject.ID))
+        if (characterMemoryToMemoryIdToSubMemory.ContainsKey(memoryObject.ID))
         {
-          Dictionary<int, SubMemoryObject> subMemoryObject = memoryIdToSubMemory[memoryObject.ID];
+          Dictionary<int, SubMemoryObject> subMemoryObject = characterMemoryToMemoryIdToSubMemory[character][memoryObject.ID];
           SubMemoryObject[] sub = subMemoryObject.Values.ToArray();
           memoryObject.subMemoryIds = sub;
         }
@@ -136,7 +180,7 @@ public class MemoryManager : StaticInstance<MemoryManager>, ISaveLoad, IExecutio
         {
           Debug.Log("no sub memories to be found");
         }
-
+        memoryObjects1.Add(memoryObject);
 
       }
        jsonMemoryObject = new JsonMemoryObject(character, memoryObjects1.ToArray());
@@ -156,9 +200,9 @@ public class MemoryManager : StaticInstance<MemoryManager>, ISaveLoad, IExecutio
       for (int i = 0; i < keys.Length; i++)
       {
         MemoryObject memoryObject = unlockedM[keys[i]];
-        if (memoryIdToSubMemory.ContainsKey(memoryObject.ID))
+        if (characterMemoryToMemoryIdToSubMemory.ContainsKey(memoryObject.ID))
         {
-          Dictionary<int, SubMemoryObject> subMemoryObject = UNLOCKEDMemoryIdToSubMemory[memoryObject.ID];
+          Dictionary<int, SubMemoryObject> subMemoryObject = UNLOCKEDCharacterMemoryToMemoryToSubMemory[character][memoryObject.ID];
           var sub = subMemoryObject.Values.ToArray();
           memoryObject.subMemoryIds = sub;
         }
@@ -179,8 +223,34 @@ public class MemoryManager : StaticInstance<MemoryManager>, ISaveLoad, IExecutio
     };
   }
 
-    public void Load()
+  public void Load()
   {
-    throw new System.NotImplementedException();
+    List<JsonMemoryObject> jsonMemoryObjects = SavePersistenceManager.INSTANCE.LoadDataFromFile<JsonMemoryObject>(FileNames.MemoryFile);
+    jsonMemoryObjects.ForEach(characterMemory =>
+    {
+
+      foreach (var memory in characterMemory.memoryObject)
+      {
+        AddMemory(characterMemory.characterID, memory);
+        foreach (var submemory in memory.subMemoryIds)
+        {
+          AddSubMemory(characterMemory.characterID, memory.ID, submemory);
+        }
+      }
+
+    });
+    List<JsonUnlockMemoryObject> jsonUnlockMemoryObjects = SavePersistenceManager.INSTANCE.LoadDataFromFile<JsonUnlockMemoryObject>(FileNames.UnlockedMemoryFile);
+    jsonUnlockMemoryObjects.ForEach(characterMemory =>
+    {
+      foreach (var memory in characterMemory.memoryObjects)
+      {
+        UnlockMemory(characterMemory.characterID, memory.ID);
+        foreach (var submemory in memory.subMemoryIds)
+        {
+          UnlockSubMemory(characterMemory.characterID, memory.ID, submemory.ID);
+        }
+      }
+    });
+    
   }
 }

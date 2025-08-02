@@ -20,9 +20,12 @@ public class VetHouseSceneState : SceneState{
         GameEventManager.INSTANCE.OnEvent(typeof(DisableLedgerState));
         GameEventManager.INSTANCE.OnEvent(typeof(EndConversationState));
 
+        ClueCameraManager.INSTANCE?.Load();
         LedgerImageManager.INSTANCE?.Load();
 
         QuestionResponseManager.INSTANCE?.Load();
+
+        MemoryManager.INSTANCE?.Load();
 
 
         //when we select the page when its open... 
@@ -53,6 +56,8 @@ public class VetHouseSceneState : SceneState{
             SavePersistenceManager.INSTANCE.SaveInterfaceData(CharacterManager.INSTANCE);
             SavePersistenceManager.INSTANCE.SaveInterfaceData(LedgerImageManager.INSTANCE);
 
+            SavePersistenceManager.INSTANCE.SaveInterfaceData(MemoryManager.INSTANCE); //save memory dictionary
+          
         }
         else
         {

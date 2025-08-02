@@ -39,22 +39,11 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>, IExecu
 		 */
 
 
-		characterIDToTriggerAction.Add(21, () => {
-
-        
-            GameEventManager.INSTANCE.OnEvent(typeof(ConversationState));
-
-
-			
-		});
         characterIDToTriggerAction.Add(20, () => {
 
             //note that 'trigger default' runs characterIDToTriggerAction[22] to start conversation
             Debug.Log("this character has no action-- running default conversation state. Attach some character ID functionality @ triggeraction manager");
-
             GameEventManager.INSTANCE.OnEvent(typeof(ConversationState));
-
-
 
         });
 		characterIDToTriggerAction.Add(22, ()=>{

@@ -9,7 +9,7 @@ namespace ActionControl
     {
         public Action<LedgerManager> runDialogOnSelectPageInterviewScene = lm =>
         {
-            int pageObjectsIndex = Data.LedgerData.INSTANCE.pageObjectsIndex;
+            int pageObjectsIndex = Data.LedgerData.INSTANCE.pageIndex;
             if (!LedgerImageManager.INSTANCE.IsIndexInLedgerImageListRange(pageObjectsIndex))
             {
                 Debug.LogError("ledger image is not in range!");
@@ -22,7 +22,7 @@ namespace ActionControl
         };
         public Action<LedgerManager> runClueDialogueOnSelectPage = lm =>
         {
-            int pageObjectsIndex = Data.LedgerData.INSTANCE.pageObjectsIndex;
+            int pageObjectsIndex = Data.LedgerData.INSTANCE.pageIndex;
             if (LedgerImageManager.INSTANCE.IsIndexInLedgerImageListRange(pageObjectsIndex))
             {
                 int currentClueBodyId = LedgerImageManager.INSTANCE.GetClueBodyIDFromPage(pageObjectsIndex);

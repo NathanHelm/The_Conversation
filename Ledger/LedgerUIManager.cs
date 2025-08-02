@@ -119,7 +119,7 @@ namespace UI
                // page.GetComponent<RectTransform>().localPosition = new Vector3(0, 0, .1f);
                 return;
             }
-             if(index == max)
+            if(index == max)
             {
                 page = CreatePage();
                 mat = lastPageMat;
@@ -130,6 +130,7 @@ namespace UI
             }
        
                 page = CreateDoubleSidedPage();
+
                 frontPage = page.transform.GetChild(0).gameObject;
                 backPage = page.transform.GetChild(1).gameObject;
                 
@@ -138,22 +139,13 @@ namespace UI
                 pageObjects.Add(frontPage);
                 pageObjects.Add(backPage);
 
-                var frontPageImage = frontPage.transform.GetChild(frontPage.transform.childCount - 1).gameObject; //get 
-                var backPageImage = backPage.transform.GetChild(backPage.transform.childCount - 1).gameObject;
+                var frontPageImage = frontPage.transform.GetChild(0).gameObject; //get 
+                var backPageImage = backPage.transform.GetChild(0).gameObject;
 
                 imageObjects.Add(frontPageImage);
                 imageObjects.Add(backPageImage);
 
                 rotatePageObjects.Add(page);
-        }
-        public void MakePageColor(int index, Color c){
-            pageObjects[index].GetComponentInChildren<Renderer>().material.SetColor("_Color", c);
-        }
-
-        public void DestroyLedger()
-        {
-            GameObject pages = GetLedger().transform.GetComponentInChildren<Transform>().gameObject;
-            
         }
 
         private GameObject CreatePage()
@@ -195,7 +187,7 @@ namespace UI
         public void ChangeLayerUp(int index, int nextImageQueue)
         {
            var image = imageObjects[index].GetComponent<Renderer>();
-           ChangeRenderQueue(ref image, 3100, Color.red);
+           ChangeRenderQueue(ref image, 3100, Color.cyan);
            var page = pageObjects[index].GetComponent<Renderer>();
            ChangeRenderQueue(ref page, 3000, Color.white);
 
@@ -316,13 +308,16 @@ namespace UI
             StartCoroutine(FlipPageAnimation(isLeft,pindex, index, 0, 180));
             LedgerMovement.INSTANCE.MoveHandAwaitPoint();
         }
-        public Renderer GetPageOverlayRenderer(int index)
+        public Renderer GetImageObjectRenderer(int imageObjectIndex)
         {
-           var temp =  pageObjects[index].GetComponentsInChildren<Renderer>()[1];
-           return temp;
+            if (imageObjectIndex > imageObjects.Count || imageObjectIndex < 0)
+            {
+                return null;
+            }
+           return imageObjects[imageObjectIndex].GetComponent<Renderer>();
         }
 
-    
+
         public void ChangeRenderQueue(ref Renderer renderer, int r, Color c)
         {
             renderer.material.renderQueue = r; 

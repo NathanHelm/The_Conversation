@@ -20,7 +20,9 @@ namespace Data
 
         public float flipPageTime { get; set; } = 1f;
 
-        public int pageObjectsIndex { get; set; } = 0;
+        public int pageIndex { get; set; } = 0;
+
+        public int ledgerLength { get; set; } = 0;
 
         public Animator leftHandAnim { get; set; }
         public Animator rightHandAnim { get; set; }
@@ -98,7 +100,7 @@ namespace Data
 
             PageAnimations.onDrawImageOnCurrentPage.AddAction(lia =>
             {
-                lia.currentPageOverlayImage = LedgerUIManager.INSTANCE.GetPageOverlayRenderer(pageObjectsIndex);
+                lia.currentPageOverlayImage = LedgerUIManager.INSTANCE.GetImageObjectRenderer(pageIndex);
             });
 
             LedgerMovement.onEnableHand.AddAction((LedgerMovement ledgerAnimationsManager) =>
@@ -113,7 +115,7 @@ namespace Data
             LedgerMovement.onPointHand.AddAction((LedgerMovement ledgerAnimationsManager) =>
             {
                 ledgerAnimationsManager.isLeft = this.isLeft;
-                ledgerAnimationsManager.pageObjectIndex = this.pageObjectsIndex;
+                ledgerAnimationsManager.pageObjectIndex = this.pageIndex;
                 ledgerAnimationsManager.flipPageAnimationTime = flipPageTime;
                 HandAnimations.INSTANCE.PlayHandAnimation(HandAnimation.PointAnim, flipPageTime * 0.5f);
             });
@@ -121,7 +123,7 @@ namespace Data
             LedgerMovement.onWritingHand.AddAction((LedgerMovement lm) =>
             {
                 lm.flipPageAnimationTime = flipPageTime;
-                lm.pageObjectIndex = this.pageObjectsIndex;
+                lm.pageObjectIndex = this.pageIndex;
                 HandAnimations.INSTANCE.PlayHandAnimation(HandAnimation.WriteAnim, flipPageTime);
 
             });
@@ -157,13 +159,13 @@ namespace Data
             {
                 pointActionLedgerManager(LedgerManager.INSTANCE);
             }
-            else if (data == LedgerActions.onAddImagesToLedger)
+            else if (data == LedgerActions.onSetTextureToPageImage)
             {
                 LedgerManager.INSTANCE.ledgerImages = ledgerImages;
             }
             else if (data == LedgerActions.onAfterMovePageFurthestLeft)
             {
-                LedgerManager.INSTANCE.MovePagesToFurthestLedgerImage();
+                LedgerManager.INSTANCE.MovePagesToFurthestRight();
                // LedgerMovement.INSTANCE.subject.AddObserver(this);
                 ActionController.AFTERPAGEFLIP_LEDGER += ActionController.INSTANCE.afterFlipBehaviour.writeActionLedgerMovement;
             }
@@ -188,7 +190,7 @@ namespace Data
             else if (data == LedgerMovementActions.onMoveHand)
             {
                 LedgerMovement.INSTANCE.isLeft = isLeft;
-                LedgerMovement.INSTANCE.pageObjectIndex = pageObjectsIndex;
+                LedgerMovement.INSTANCE.pageObjectIndex = pageIndex;
                 LedgerMovement.INSTANCE.flipPageAnimationTime = flipPageTime;
 
                 if (flipPageTime >= 1)

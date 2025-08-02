@@ -52,6 +52,7 @@ public class MemorySpawnerManager : StaticInstance<MemorySpawnerManager>, ISaveL
                 }
                 foreach (var single1 in single.memorySpawnObjects)
                 {
+                    single1.characterId = single.characterId; //setting memoryobject id to character memoryid
                     idToMemorySpawnGameobject[single.characterId].Add(single1.memoryId, single1);
 
                     idToMemorySpawnSubGameobject[single.characterId].Add(single1.memoryId, new());
@@ -75,14 +76,16 @@ public class MemorySpawnerManager : StaticInstance<MemorySpawnerManager>, ISaveL
         {
             Debug.LogError("character Id " + characterID +
             " not found for spawn stages.");
-            
+
         }
-        
+
         var memoryDict = idToMemorySpawnGameobject[characterID];
 
         MemorySpawnObject memoryStageObject = memoryDict[memoryID];
 
-        spawnedMemoryStageObject.Add(new MemorySpawnObject(Vector2.zero,memoryStageObject.characterId,memoryStageObject.memoryId, CreateMemoryStage(memoryStageObject.memoryGameObject), memoryStageObject.memoryPos, memoryStageObject.subMemories));
+        int spawnPostionIndex = spawnedMemoryStageObject.Count;
+
+        spawnedMemoryStageObject.Add(new MemorySpawnObject(spawnPostionIndex, Vector2.zero, memoryStageObject.characterId, memoryStageObject.memoryId, CreateMemoryStage(memoryStageObject.memoryGameObject), memoryStageObject.memoryPos, memoryStageObject.subMemories));
 
     }
     //TODO add this method with correct logic. 

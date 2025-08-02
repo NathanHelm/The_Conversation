@@ -53,7 +53,9 @@ public class MManager : StaticInstance<MManager>, IExecution
 
     public TransitionManager transitionManager { get; set; } = null;
 
-    public StateManager stateManager {get; set;} = null; //this one stays last
+    public ClueCameraManager clueCameraManager { get; set; } = null;
+
+    public StateManager stateManager { get; set; } = null; //this one stays last
 
     public void StartData()
     {}
@@ -82,6 +84,8 @@ public class MManager : StaticInstance<MManager>, IExecution
         uIManager?.m_Start();
 
         buttonDialogueManager?.m_Start();
+
+        clueCameraManager?.m_Start();
 
         movementManager?.m_Start();
 
