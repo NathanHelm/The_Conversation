@@ -26,19 +26,19 @@ public class MemoryTransformCircle : MemoryTransformations
    
     
 
-    public override void TransformOnEnable(ref MemorySpawnObject[] spawnedMemoryObjects)
+    public override void TransformOnEnable(ref (MemorySpawnObject,GameObject)[] spawnedMemoryObjects)
     {
         Debug.Log("circle transformation on enable");
         for (int i = 0; i < spawnedMemoryObjects.Length; i++)
         {
-            Transform transform = spawnedMemoryObjects[i].memoryGameObject.transform;
+            Transform transform = spawnedMemoryObjects[i].Item2.transform;
 
             angleEnable += freqEnable * Mathf.Deg2Rad;
             randomValues.Add(UnityEngine.Random.Range(1, 2));
 
             transform.position = new Vector3(Mathf.Cos(angleEnable), Mathf.Sin(angleEnable)) * ampEnable;
 
-            spawnedMemoryObjects[i].enableOffsetPostion = transform.position;
+            spawnedMemoryObjects[i].Item1.enableOffsetPostion = transform.position;
            
         }
     }
@@ -56,7 +56,8 @@ public class MemoryTransformCircle : MemoryTransformations
     {
         if (data == MemoryTransformEnableAction.circleEnable)
         {
-            spawnedMemoryObjects = Data.MemoryData.INSTANCE.memorySpawnObjects;
+            var spawnedMemoryObjects = Data.MemoryData.INSTANCE.spawnedMemoryStageObject;
+           
             TransformOnEnable(ref spawnedMemoryObjects);
         }
     }

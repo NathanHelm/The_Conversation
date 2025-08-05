@@ -8,4 +8,5 @@ public class MemoryObject
     public int ID; //memoryId
     public SubMemoryObject[] subMemoryIds;
     
+    
 }

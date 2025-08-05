@@ -7,28 +7,45 @@ using JetBrains.Annotations;
 using System.Linq;
 using MemorySpawn;
 using Data;
+using ObserverAction;
 
 
-public class MemorySpawnerManager : StaticInstance<MemorySpawnerManager>, ISaveLoad, IExecution
+
+public class MemorySpawnerManager : StaticInstance<MemorySpawnerManager>, ISaveLoad, IExecution, IObserver<ObserverAction.MemoryTransform>
 {
     public Subject<ObserverAction.MemorySpawnerAction> subject { get; set; } = new(); 
-    public List<MemorySpawnObject> spawnedMemoryStageObject { get; set; } = new();
+    public List<(MemorySpawnObject,GameObject)> spawnedMemoryStageObject { get; set; } = new();
+    public List<(SubMemorySpawnObject, GameObject, GameObject)> spawnedMemorySubStageObject { get; set; } = new();
     public List<int> spawnedMemoryID { get; set; } = new();
 
-    private Dictionary<int, Dictionary<int, Dictionary<int, GameObject>>> idToMemorySpawnSubGameobject = new();
+
+    private Dictionary<int, Dictionary<int, Dictionary<int, SubMemorySpawnObject>>> idToMemorySpawnSubGameobject = new();
     private Dictionary<int, Dictionary<int, MemorySpawnObject>> idToMemorySpawnGameobject = new();
+    //default gameobject prefabs
+    private GameObject subMemory3dPrefab;
+    private GameObject subMemory2dPrefab;
+
+    private readonly Vector3 subMemory3dOffset = new Vector3(250, 0 , 0); 
+
 
     [Header("add all clues here")]
     [SerializeField]
     private MemorySpawnScriptableObject[] memoryScriptableObjects;
+    [SerializeField]
+    private MemorySpawnerScriptableObject memorySpawnerScriptableObject;
 
     public override void m_Start()
     {
+
+        subMemory2dPrefab = memorySpawnerScriptableObject.subMemory2dPrefab;
+        subMemory3dPrefab = memorySpawnerScriptableObject.subMemory3dPrefab;
         base.m_Start();
+        
     }
     public override void m_OnEnable()
     {
-         MManager.INSTANCE.onStartManagersAction.AddAction(mm => { mm.memorySpawnerManager = this; });
+        MManager.INSTANCE.onStartManagersAction.AddAction(mm => { mm.memorySpawnerManager = this; });
+        MemoryData.INSTANCE?.memoryTransformationHandler.subject.AddObserver(this);
     }
     public void Update()
     {
@@ -59,17 +76,25 @@ public class MemorySpawnerManager : StaticInstance<MemorySpawnerManager>, ISaveL
 
                     foreach (var single2 in single1.subMemories)
                     {
-                        idToMemorySpawnSubGameobject[single.characterId][single1.memoryId].Add(single2.id, single2.subMemoryObject);
+                        idToMemorySpawnSubGameobject[single.characterId][single1.memoryId].Add(single2.id, single2);
                     }
 
                 }
             }
     }
 
+    //==Instantiate Memory==================================================================================
     public GameObject CreateMemoryStage(GameObject memoryStage)
     {
         return Instantiate(memoryStage, GameObject.FindGameObjectWithTag("MemoryParent").transform);
     }
+    public GameObject CreateMemoryStage(GameObject memoryStage, GameObject stageParent) //USES LOCAL POSITION
+    {
+        GameObject g = Instantiate(memoryStage, stageParent.transform);
+        return g;
+    }
+    //====================================================================================
+
     public void SpawnStageOnID(int characterID, int memoryID)
     {
         if (!idToMemorySpawnGameobject.ContainsKey(characterID))
@@ -85,17 +110,53 @@ public class MemorySpawnerManager : StaticInstance<MemorySpawnerManager>, ISaveL
 
         int spawnPostionIndex = spawnedMemoryStageObject.Count;
 
-        spawnedMemoryStageObject.Add(new MemorySpawnObject(spawnPostionIndex, Vector2.zero, memoryStageObject.characterId, memoryStageObject.memoryId, CreateMemoryStage(memoryStageObject.memoryGameObject), memoryStageObject.memoryPos, memoryStageObject.subMemories));
+        spawnedMemoryStageObject.Add((memoryStageObject,CreateMemoryStage(memoryStageObject.memoryGameObject)));
 
     }
     //TODO add this method with correct logic. 
-    public void SpawnSubStageOnID(int characterID, int memoryID, int subMemoryId)
+    public void SpawnSubStageOnID(int characterID, int memoryID, int subMemoryId, GameObject parent)
     {
-        var subMemoryDict = idToMemorySpawnSubGameobject[characterID][memoryID];
+        SubMemorySpawnObject subMemory = idToMemorySpawnSubGameobject[characterID][memoryID][subMemoryId];
 
-        GameObject subMemoryStage = subMemoryDict[subMemoryId];
+        //spawn the 2d submemory 
+        GameObject subMemoryStageGameObject2D = CreateMemoryStage(subMemory2dPrefab, parent);
+        subMemoryStageGameObject2D.GetComponent<SpriteRenderer>().sprite = subMemory.sprite;
+        subMemoryStageGameObject2D.transform.localScale *= subMemory.scalar2d;
 
-        CreateMemoryStage(subMemoryStage);
+        //spawn the 3d submemory
+        GameObject subMemoryStageGameObject3D = CreateMemoryStage(subMemory3dPrefab, parent);
+        subMemoryStageGameObject3D.GetComponent<MeshFilter>().mesh = subMemory.mesh;
+        subMemoryStageGameObject3D.transform.localScale *= subMemory.scalar3d;
+        spawnedMemorySubStageObject.Add(new (subMemory,subMemoryStageGameObject2D, subMemoryStageGameObject3D));
+        
+
+        
+       
+    }
+    //here we are 
+    public void SetTransformStagePos()
+    {
+
+        foreach (var single in spawnedMemorySubStageObject)
+        {
+            //2d object
+            PhysicsGameObject2d physicsGameObject2D = single.Item2.GetComponent<PhysicsGameObject2d>();
+            //3d object
+            TwoTo3dPositions twoTo3DPositions = single.Item3.GetComponent<TwoTo3dPositions>();
+
+
+            twoTo3DPositions.physicsGameObject2D = physicsGameObject2D; //making sure 2d position aligns with 3d position. 
+            Vector3 offset = physicsGameObject2D.transform.position + subMemory3dOffset;
+            //change y position to zero
+            offset = new Vector3(offset.x, 0, offset.z);
+            
+            twoTo3DPositions.SetPosition(offset);
+            
+
+
+
+        }
+       
     }
 
     public void Load()
@@ -107,9 +168,18 @@ public class MemorySpawnerManager : StaticInstance<MemorySpawnerManager>, ISaveL
         {
             foreach (var memoryObject in character.memoryObjects)
             {
+                //spawning memory on load.
                 SpawnStageOnID(character.characterID, memoryObject.ID);
+
+                foreach (var subMemoryObject in memoryObject.subMemoryIds)
+                {
+                    //spawning sub memory on load.
+                    var stageObj = spawnedMemoryStageObject[^1].Item2; //getting the memoryobject object.
+                    SpawnSubStageOnID(character.characterID, memoryObject.ID, subMemoryObject.ID, stageObj);
+                }
             }
-            MemoryData.INSTANCE.memorySpawnObjects = spawnedMemoryStageObject.ToArray();
+
+            MemoryData.INSTANCE.spawnedMemoryStageObject = spawnedMemoryStageObject.ToArray();
             MemoryData.INSTANCE.currentCharacterID = character.characterID;
         });
 
@@ -121,7 +191,12 @@ public class MemorySpawnerManager : StaticInstance<MemorySpawnerManager>, ISaveL
     {
         throw new System.NotImplementedException();
     }
-   
 
-  
+    public void OnNotify(MemoryTransform data)
+    {
+        if (data == MemoryTransform.onAfterTransformation)
+        {
+            SetTransformStagePos();
+        }
+    }
 }

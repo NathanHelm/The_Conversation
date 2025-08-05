@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class MemoryTransformations : MonoBehaviour, IMemoryTransforms, IExecution, IObserver<ObserverAction.MemoryTransformEnableAction>, IObserverData<ObserverAction.MemoryTransformUpdateAction, MemorySpawnObject>
 {
-    protected MemorySpawnObject[] spawnedMemoryObjects;
+    protected (MemorySpawnObject[], GameObject) spawnedMemoryObjects;
 
     public virtual void m_Awake()
     {
@@ -27,7 +27,7 @@ public class MemoryTransformations : MonoBehaviour, IMemoryTransforms, IExecutio
     {
     }
 
-    public virtual void TransformOnEnable(ref MemorySpawnObject[] memoryObject)
+    public virtual void TransformOnEnable(ref (MemorySpawnObject,GameObject)[] memoryObject)
     {
     }
 

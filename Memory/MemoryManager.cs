@@ -25,12 +25,12 @@ public class MemoryManager : StaticInstance<MemoryManager>, ISaveLoad, IExecutio
   {
     if (!characterIdToMemory.ContainsKey(characterID))
     {
-      Debug.LogError("memory not found for character id " + characterID);
+      Debug.LogError("memory not found for character id " + characterID + "\n has the memory been added to character scriptable object? SEE character manager");
       return;
     }
     if (!characterIdToMemory[characterID].ContainsKey(memoryID))
     {
-      Debug.LogError("memory not found for memory id " + memoryID + "in character " + characterID);
+      Debug.LogError("memory not found for memory id " + memoryID + "in character " + characterID + "\nhas the memory been added to character scriptable object? SEE character manager");
       return;
     }
     //condition: if character exists in dictionary, has the memory already been unlocked?
@@ -61,7 +61,7 @@ public class MemoryManager : StaticInstance<MemoryManager>, ISaveLoad, IExecutio
     //first, check if there is a character
     if (!characterMemoryToMemoryIdToSubMemory.ContainsKey(memoryID))
     {
-      Debug.LogError("submemory not found for unlocked memory id" + memoryID + "in character " + characterID);
+      Debug.LogError("submemory not found for unlocked memory id " + memoryID + "in character " + characterID + "has the memory been added to character scriptable object? SEE character manager");
       return;
     }
 

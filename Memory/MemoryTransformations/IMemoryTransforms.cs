@@ -4,5 +4,5 @@ using UnityEngine;
 public interface IMemoryTransforms
 {
     public void TransformOnUpdate(ref MemorySpawnObject memoryObjects);
-    public void TransformOnEnable(ref MemorySpawnObject[] memoryObject);
+    public void TransformOnEnable(ref (MemorySpawnObject,GameObject)[] memoryObject);
 }

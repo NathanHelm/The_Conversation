@@ -8,7 +8,11 @@ namespace MemorySpawn
     public class SubMemorySpawnObject
     {
         public int id;
-        Vector3 memoryPos;
-        public GameObject subMemoryObject;
+        public Vector3 subMemoryPos;
+        public float scalar2d;
+        public float scalar3d;
+
+        public Mesh mesh;
+        public Sprite sprite;
     }
 }

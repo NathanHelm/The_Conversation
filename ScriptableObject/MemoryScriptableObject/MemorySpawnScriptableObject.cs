@@ -5,5 +5,8 @@ public class MemorySpawnScriptableObject : ScriptableObject
 {
     public int characterId;
     public MemorySpawnObject[] memorySpawnObjects;
+
+
+    
  
 }

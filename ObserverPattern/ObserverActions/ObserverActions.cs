@@ -45,7 +45,7 @@ namespace ObserverAction
     {
         onSpawnCamera, //add ledger image because we have our texture (our render texture)..
     }
-    
+
     public enum MemorySpawnerAction
     {
         onAfterStageObjectsSpawn,
@@ -62,6 +62,10 @@ namespace ObserverAction
     {
         waveUpdate,
         circleUpdate,
+    }
+    public enum MemoryTransform
+    {
+        onAfterTransformation
     }
 
 }

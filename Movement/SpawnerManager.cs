@@ -10,7 +10,7 @@ public class SpawnerManager : StaticInstance<SpawnerManager>, IExecution
     {
         MManager.INSTANCE.onStartManagersAction.AddAction(mm =>
         {
-            mm.spawnerManager = this;
+          // mm.spawnerManager = this;
         });
         base.m_OnEnable();
     }

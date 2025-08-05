@@ -25,8 +25,6 @@ public class MManager : StaticInstance<MManager>, IExecution
     public ButtonDialogueManager buttonDialogueManager { get; set; } = null;
     public MovementManager movementManager { get; set; } = null;
 
-    public SpawnerManager spawnerManager { get; set; } = null;
-
 //================================================================================================================================================================
     public LedgerManager ledgerManager { get; set; } = null;
     public LedgerUIManager ledgerUIManager { get; set; } = null;
@@ -67,7 +65,7 @@ public class MManager : StaticInstance<MManager>, IExecution
 
         memoryManager?.m_Start();
 
-        spawnerManager?.m_Start();
+        memorySpawnerManager?.m_Start();
 
         characterManager?.m_Start();
 
@@ -89,7 +87,7 @@ public class MManager : StaticInstance<MManager>, IExecution
 
         movementManager?.m_Start();
 
-        spawnerManager?.m_Start();
+       
 
         ledgerManager?.m_Start();
 
