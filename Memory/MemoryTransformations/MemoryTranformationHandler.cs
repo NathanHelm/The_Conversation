@@ -11,20 +11,20 @@ public class MemoryTransformationHandler : MonoBehaviour, IObserver<ObserverActi
 {
     public SystemActionCall<MemoryTransformationHandler> onEnableTransformations = new();
     public SystemActionCall<MemoryTransformationHandler> onMemoryTransformGameExecute = new();
-    public List<(MemorySpawnObject,GameObject)> spawnedStages { get; set; } = new(); //get from memorydata on start.
+    public List<MemoryStageCreatedObject> spawnedStages { get; set; } = new(); //get from memorydata on start.
     public int currentCharacterID { get; set; }
 
     public Subject<ObserverAction.MemoryTransform> subject { get; set;} = new();
 
     //========================================================================================================================================================================
 
-    private List<MemorySpawnObject> randomUpdateMovementStages = new(); //"randomly picked" objects that will undergo random transforms on update
+    private List<MemoryStageCreatedObject> randomUpdateMovementStages = new(); //"randomly picked" objects that will undergo random transforms on update
     private List<ObserverAction.MemoryTransformUpdateAction> randomUpdateStageActions = new(); //"randomly picked" update actions that will be added to associated spawnUpdateMovement.
 
     //========================================================================================================================================================================
 
     public Subject<ObserverAction.MemoryTransformEnableAction> subjectEnable { get; set; } = new();
-    public SubjectActionData<ObserverAction.MemoryTransformUpdateAction, MemorySpawnObject> subjectUpdate { get; set; } = new();
+    public SubjectActionData<ObserverAction.MemoryTransformUpdateAction, MemoryStageCreatedObject> subjectUpdate { get; set; } = new();
     Dictionary<int,Dictionary<int, ObserverAction.MemoryTransformEnableAction>> memoryTransformOnEnable = new();
     Dictionary<int,Dictionary<int, ObserverAction.MemoryTransformUpdateAction>>  memoryTransformOnUpdate = new();
 
@@ -93,7 +93,7 @@ public class MemoryTransformationHandler : MonoBehaviour, IObserver<ObserverActi
     {
         //based on the memory ID that is being used, alter the movement
         int currentMemoryID = MemoryData.INSTANCE.recentUnlockedMemoryId;
-        MemorySpawnObject currentMemory = spawnedStages[0].Item1;
+        MemorySpawnObject currentMemory = spawnedStages[0].memorySpawnObject;
 
         randomUpdateMovementStages = GetStageMovementAtRandomUpdate();
 
@@ -127,15 +127,16 @@ public class MemoryTransformationHandler : MonoBehaviour, IObserver<ObserverActi
     }
 
 
-    private List<MemorySpawnObject> GetStageMovementAtRandomUpdate() //(1) get random stage
+
+    private List<MemoryStageCreatedObject> GetStageMovementAtRandomUpdate() //(1) get random stage
     {
         int i = uniqueStageMovementAmount;
-        List<(MemorySpawnObject,GameObject)> temp = spawnedStages.GetRange(0,spawnedStages.Count);
-        List<MemorySpawnObject> stagesUpdateTransformation = new(); //our object that will undergo update transformations. 
+        List<MemoryStageCreatedObject> temp = spawnedStages.GetRange(0, spawnedStages.Count);
+        List<MemoryStageCreatedObject> stagesUpdateTransformation = new(); //our object that will undergo update transformations. 
         while (i > 0 && temp.Count > 0)
         {
             int random = UnityEngine.Random.Range(0, temp.Count - 1);
-            stagesUpdateTransformation.Add(temp[random].Item1);
+            stagesUpdateTransformation.Add(temp[random]);
             temp.RemoveAt(random);
             --i;
         }
@@ -144,11 +145,11 @@ public class MemoryTransformationHandler : MonoBehaviour, IObserver<ObserverActi
     }
      private List<MemoryTransformUpdateAction> GetRandomUpdateAction(int maxSpawnStage) //(2) get random action from randomly selected stage.
     {
-        int currentCharacterID = spawnedStages[0].Item1.characterId;
+        int currentCharacterID = spawnedStages[0].memorySpawnObject.characterId;
 
         List<ObserverAction.MemoryTransformUpdateAction> randomUpdateStageActionsTemp = new(); //randomly update observer actions
 
-        ObserverAction.MemoryTransformUpdateAction[] allMemoryTransformUpdateActions = new MemoryTransformUpdateAction[0];
+        ObserverAction.MemoryTransformUpdateAction[] allMemoryTransformUpdateActions;
 
         if (!memoryTransformOnUpdate.ContainsKey(currentCharacterID))
         {
@@ -164,11 +165,11 @@ public class MemoryTransformationHandler : MonoBehaviour, IObserver<ObserverActi
         }
 
 
-       
-        for (int i = 0; i < maxSpawnStage; i++)
-            {
 
-                int memoryID = randomUpdateMovementStages[i].memoryId;
+        for (int i = 0; i < maxSpawnStage; i++)
+        {
+
+            int memoryID = randomUpdateMovementStages[i].memorySpawnObject.memoryId;
 
             if (!memoryTransformOnUpdate.ContainsKey(currentCharacterID))
             {
@@ -185,8 +186,8 @@ public class MemoryTransformationHandler : MonoBehaviour, IObserver<ObserverActi
                 var observerAction = memoryTransformOnUpdate[currentCharacterID][memoryID];
                 randomUpdateStageActionsTemp.Add(observerAction);
             }
-            }
-        
+        }
+
 
         return randomUpdateStageActionsTemp;
     }
@@ -204,13 +205,13 @@ public class MemoryTransformationHandler : MonoBehaviour, IObserver<ObserverActi
     }
 
     //run this after onEnable transformation!
-    public void MoveNoUpdateTransToNewParent(ref GameObject memoryStage)
+    public void MoveNoUpdateTransToNewParent(ref GameObject spawnedMemoryStage)
     {
         //This solves the issue of have a stage that moves, but the clues/objects that don't
         int i = 0;
-        while (i < memoryStage.transform.childCount)
+        while (i < spawnedMemoryStage.transform.childCount)
         {
-            Transform child = memoryStage.transform.GetChild(i);
+            Transform child = spawnedMemoryStage.transform.GetChild(i);
 
             if (child.CompareTag("NoUpdateTrans"))
             {
@@ -235,11 +236,11 @@ public class MemoryTransformationHandler : MonoBehaviour, IObserver<ObserverActi
 
             foreach (var single in spawnedStages) //change children to new object to avoid update transformation.
             {
-                var memoryStage = single.Item2;
-                MoveNoUpdateTransToNewParent(ref memoryStage);
+                var spawnedMemoryStage = single.spawnedMemoryStage;
+                MoveNoUpdateTransToNewParent(ref spawnedMemoryStage);
 
             }
-            subject.NotifyObservers(MemoryTransform.onAfterTransformation);
+            subject.NotifyObservers(MemoryTransform.onAfterEnableTransformation);
 
         }
 

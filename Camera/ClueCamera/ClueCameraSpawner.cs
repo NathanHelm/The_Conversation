@@ -10,7 +10,7 @@ public class ClueCameraSpawner : MonoBehaviour//, IObserverData<ObserverAction.P
     public GameObject clueCameraPrefab { get; set; }
 
 
-    public GameObject SpawnClueCamera(Vector3 postion, Vector3 eulerRotation, SceneNames sceneID, int cameraID)
+    public GameObject SpawnClueCamera(Vector3 postion, Vector3 eulerRotation)
     {
         GameObject spawnedCam = Instantiate(clueCameraPrefab, GameObject.FindGameObjectWithTag("ClueCameraParent").transform);
         spawnedCam.transform.position = postion;

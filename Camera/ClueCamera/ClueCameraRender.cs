@@ -27,7 +27,7 @@ public class ClueCameraRender : MonoBehaviour, IExecution, IObserver<LedgerImage
 
     public void m_OnEnable()
     {
-        throw new System.NotImplementedException();
+        //throw new System.NotImplementedException();
     }
 
     public void CreateClueCameraRender(int width, int height, int depth)

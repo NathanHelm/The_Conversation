@@ -25,7 +25,7 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>, 
 
 	public override void m_Start()
 	{
-
+		dialogueData = DialogueData.INSTANCE;
 		SetUpQuestionResponseManager();
 		//injecting 'set question' via quesetion and characterID
 		DialogueManager.actionOnStartConversation.AddAction(
@@ -94,8 +94,87 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>, 
 		npcToQuestionDialogueNpc[31] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[]{
 			new (new int[] { 1 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(31, 1))
 		});
+		npcToQuestionDialogueNpc.Add(200, new Dictionary<int, DialogueConversation>());
 
+		//HERBIE
+		npcToQuestionDialogueNpc[200] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[] {
 
+		//key pair value code goes here.
+		//question id							
+			new (new int[] { 0 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(200,1)), //based on character & conversation id, return conversation
+			new (new int[] {46}, CharacterManager.INSTANCE.GetConversationOnCharacterID(200,46)),
+			/*
+			 here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
+			 */
+		});
+		//WERTZ
+		npcToQuestionDialogueNpc.Add(201, new Dictionary<int, DialogueConversation>());
+		npcToQuestionDialogueNpc[201] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[] {
+
+		//key pair value code goes here.
+		//question id							
+			new (new int[] { 0 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(201,1)), //based on character & conversation id, return conversation
+			new (new int[] {46}, CharacterManager.INSTANCE.GetConversationOnCharacterID(201,46)),
+			/*
+			 here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
+			 */
+		});
+		npcToQuestionDialogueNpc.Add(202, new Dictionary<int, DialogueConversation>());
+		npcToQuestionDialogueNpc[202] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[] {
+
+		//key pair value code goes here.
+		//question id							
+			new (new int[] { 0 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(202,1)), //based on character & conversation id, return conversation
+			new (new int[] {46}, CharacterManager.INSTANCE.GetConversationOnCharacterID(202,46)),
+			/*
+			 here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
+			 */
+		});
+		npcToQuestionDialogueNpc.Add(203, new Dictionary<int, DialogueConversation>());
+		npcToQuestionDialogueNpc[203] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[] {
+
+		//key pair value code goes here.
+		//question id							
+			new (new int[] { 0 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(203,1)), //based on character & conversation id, return conversation
+			
+			/*
+			 here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
+			 */
+		});
+		npcToQuestionDialogueNpc.Add(204, new Dictionary<int, DialogueConversation>());
+		npcToQuestionDialogueNpc[204] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[] {
+
+		//key pair value code goes here.
+		//question id							
+			new (new int[] { 0 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(204,1)), //based on character & conversation id, return conversation
+			
+			/*
+			 here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
+			 */
+		});
+		npcToQuestionDialogueNpc.Add(205, new Dictionary<int, DialogueConversation>());
+		npcToQuestionDialogueNpc[205] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[] {
+
+		//key pair value code goes here.
+		//question id							
+			new (new int[] { 0 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(205,1)), //based on character & conversation id, return conversation
+	
+			/*
+			 here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
+			 */
+		});
+		npcToQuestionDialogueNpc.Add(206, new Dictionary<int, DialogueConversation>());
+		npcToQuestionDialogueNpc[206] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[] {
+
+		//key pair value code goes here.
+		//question id							
+			new (new int[] { 0 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(206,1)), //based on character & conversation id, return conversation
+			
+			/*
+			 here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
+			 */
+		});
+	
 
 
 		/*

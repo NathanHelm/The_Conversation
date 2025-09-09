@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using Data;
-using Codice.Client.Common;
-using PlasticPipe.PlasticProtocol.Messages;
+using System.Linq;
+
 public class TriggerActionManager : StaticInstance<TriggerActionManager>, IExecution
 {
 	public static SystemActionCall<TriggerActionManager> onTriggerActionTriggerActionManager = new SystemActionCall<TriggerActionManager>();
@@ -27,7 +27,7 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>, IExecu
         base.OnDisable();
     }
 
-    public void SetUpTriggerActionManager()
+	public void SetUpTriggerActionManager()
 	{
 		//recall that IDs can be anything it doesn't nessecarily have to pertain to a character
 		//imagine a door. A door isn't nessecary a character but with a unique id (say door ids starts with a 3) it can be used like a door.
@@ -39,42 +39,74 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>, IExecu
 		 */
 
 
-        characterIDToTriggerAction.Add(20, () => {
+		characterIDToTriggerAction.Add(20, () =>
+		{
 
-            //note that 'trigger default' runs characterIDToTriggerAction[22] to start conversation
-            Debug.Log("this character has no action-- running default conversation state. Attach some character ID functionality @ triggeraction manager");
-            GameEventManager.INSTANCE.OnEvent(typeof(ConversationState));
-
-        });
-		characterIDToTriggerAction.Add(22, ()=>{
-
+			//note that 'trigger default' runs characterIDToTriggerAction[22] to start conversation
+			Debug.Log("this character has no action-- running default conversation state. Attach some character ID functionality @ triggeraction manager");
 			GameEventManager.INSTANCE.OnEvent(typeof(ConversationState));
+
+		});
+
+		characterIDToTriggerAction.Add(2000, () =>
+		{
+			Debug.Log("SELECT-ENTERED2TRIGGERS");
+			//edge case: checks whether runenddialogueselection exists to prevent stacking of actions if trigger hits objects > 2
+			if (!ActionController.INSTANCE.DoesActionExist(ActionController.AFTERDIALOGUE, ActionController.INSTANCE.actionEndDialogue.runEndDialogueSelectionAgain))
+			{
+				ActionController.AFTERDIALOGUE += ActionController.INSTANCE.actionEndDialogue.runEndDialogueSelectionAgain;
+			}
+			GameEventManager.INSTANCE.OnEvent(typeof(StartSelectionConversationState));
+
+		});
+		characterIDToTriggerAction.Add(2001, () =>
+		{
+			//immediate dialogue!
+			GameEventManager.INSTANCE.OnEvent(typeof(ImmediateConversationState));
 
 
 		});
+
+
 		//NOTE: EVERY CHARACTER- or characterID with the id 2 - will run the action below, use with caution!
-		characterIDToTriggerAction.Add(2, ()=>
+		characterIDToTriggerAction.Add(2, () =>
 		{
 			Debug.Log("hey hey, its me number 2!");
+			//above, if user pressed tab on a character they are taken to the character's interview state.
 			GameEventManager.INSTANCE.OnEvent(typeof(InterviewLedgerState));
 			GameEventManager.INSTANCE.OnEvent(typeof(ConversationState));
 
 			//one change that will effect all chracters 
 
 		});
+		characterIDToTriggerAction.Add(12, () =>
+	   {
+
+		   //Game
+	   });
+
+		//exit trigger========================================================================================
 		characterIDToTriggerExitAction.Add(2, () =>
 		{
 			DialogueManager.INSTANCE.NoDialogue();
-            GameEventManager.INSTANCE.OnEvent(typeof(NoConversationState));
+			GameEventManager.INSTANCE.OnEvent(typeof(NoConversationState));
 			GameEventManager.INSTANCE.OnEvent(typeof(DisableLedgerState));
-			
-		});
 
-        characterIDToTriggerAction.Add(12, () =>
-		{
-			
-			//Game
 		});
+		characterIDToTriggerExitAction.Add(2000, () =>
+		{
+			Debug.Log("SELECT-EXITED2TRIGGERS");
+			if (ActionController.INSTANCE.DoesActionExist(ActionController.AFTERDIALOGUE, ActionController.INSTANCE.actionEndDialogue.runEndDialogueSelectionAgain))
+			{
+				ActionController.AFTERDIALOGUE -= ActionController.INSTANCE.actionEndDialogue.runEndDialogueSelectionAgain;
+			}
+			DialogueManager.INSTANCE.NoDialogue();
+			GameEventManager.INSTANCE.OnEvent(typeof(NoConversationState));
+			GameEventManager.INSTANCE.OnEvent(typeof(DisableLedgerState));
+		});
+ 
+
+       
 
 		
 		/*
@@ -87,7 +119,7 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>, IExecu
 		*/
 
 	}
-	public void PlayAction(int actionId)
+	public void PlayTriggerAction(int actionId)
 	{
 		if(!characterIDToTriggerAction.ContainsKey(actionId))
 		{
@@ -102,6 +134,57 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>, IExecu
 	I think I made the mistake on over relying on integer ids which suck if you want multiple paticular events to kick off because of you id... 
 	
 	*/
+
+	public Action GetTriggerActionMultipleTriggers(int[] charactersInTrigger)
+	{
+
+		foreach (var characterID in charactersInTrigger)
+		{
+			//first check if any trigger is unique to the 2 -- conversation state
+			if (characterIDToTriggerAction.ContainsKey(characterID))
+			{
+				return () => { Debug.LogError("There are two triggers. However one is a unique trigger so we will run the first unique trigger."); };
+			}
+			if (GetFirstVal(characterID) != 2)
+			{
+				return () => { Debug.LogWarning("multiple triggers are not characters"); };
+			}
+		}
+		return characterIDToTriggerAction[2000];
+
+	}
+	public Action GetTriggerExitActionMultipleTriggers(int[] charactersInTrigger, CharacterMono characterNotOnTrigger)
+	{
+
+		foreach (var characterID in charactersInTrigger)
+		{
+			//first check if any trigger is unique to the 2 -- conversation state
+			if (characterIDToTriggerExitAction.ContainsKey(characterID))
+			{
+				return () => { Debug.LogError("There are two exit triggers. However one is a unique trigger so we will run the first unique trigger exit."); };
+			}
+			if (charactersInTrigger.Length == 2)
+			{
+				//bullshit
+				var dialogueData = DialogueData.INSTANCE;
+				dialogueData.currentCharacterID = characterNotOnTrigger.bodyID;
+				dialogueData.currentPersistentConversationID = characterNotOnTrigger.persistentConversationQuestionId;
+				return characterIDToTriggerAction[2];
+			}
+
+			if (charactersInTrigger.Length > 2)
+				{
+					return () => { Debug.LogError("not running exit because characters in trigger > 0 length is" + charactersInTrigger.Length); };
+				}
+			if (GetFirstVal(characterID) != 2)
+				{
+					return () => { Debug.LogWarning("multiple triggers are not characters"); };
+				}
+		}
+		
+		return characterIDToTriggerExitAction[2000];
+
+	}
  
 
 
@@ -114,7 +197,7 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>, IExecu
 
 		if (!characterIDToTriggerAction.ContainsKey(characterID)) //if there is no character id found the warrant a trigger event (see characterIDToTriggerAction dictionary)
 		{
-			Debug.LogError("could not find id " + characterID +" in trigger action");
+			Debug.LogError("could not find id " + characterID + " in trigger action");
 		}
 		if (getFirstVal == 2)
 		{

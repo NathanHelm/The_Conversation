@@ -7,7 +7,7 @@ public class OpenLedgerState : LedgerState
     public override void OnEnter(LedgerData data)
     {
         Debug.Log("Active ledger state");
-        GameEventManager.INSTANCE.OnEvent(typeof(EnableHandState));
+            GameEventManager.INSTANCE.OnEvent(typeof(EnableHandState));
         
         LedgerManager.INSTANCE.OpenLedger();
 

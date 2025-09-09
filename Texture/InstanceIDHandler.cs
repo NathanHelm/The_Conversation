@@ -1,29 +1,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InstanceIDHandler<T> where T : Object{
+public class InstanceIDHandler<T>: MonoBehaviour where T : Object{
    
     public Dictionary<int, T> dictionaryT = new Dictionary<int, T>();
-     public void AddInstanceIDObject(T texture)
+     public void AddObjectToDict(int key,T value)
         {
-            int instanceID = texture.GetInstanceID();
-            if(dictionaryT.ContainsKey(instanceID))
+            if(dictionaryT.ContainsKey(key))
             {
-                dictionaryT[instanceID] = texture;
+                dictionaryT[key] = value;
                 return;
             }
-            dictionaryT.Add(instanceID,texture);
+            dictionaryT.Add(key,value);
         }
 
-        public T GetInstanceIDObject(int instanceID)
+        public T GetKeyToObject(int key)
         {
-            if (dictionaryT.ContainsKey(instanceID))
+            if (dictionaryT.ContainsKey(key))
             {
-                return dictionaryT[instanceID];
+                return dictionaryT[key];
             }
             else
             {
-                Debug.LogError($"Texture with Instance ID {instanceID} not found.");
+                Debug.LogError($"key {key} not found.");
                 return null;
             }
         }

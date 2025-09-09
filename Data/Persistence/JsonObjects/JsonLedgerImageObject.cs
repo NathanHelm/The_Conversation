@@ -14,20 +14,27 @@ public class JsonLedgerImageObject
 
     public int clueBodyID = 31; //set value to whatever you desire
     
-    //Alternate key==============================
+    //clue camera data==============================
     public SceneNames sceneName;
-    public int clueCameraID; 
+
+    public int clueCameraForeignKey;
     //============================================
-
-
-    public JsonLedgerImageObject(int clueID, string imageDescription, int questionID, int clueQuestionID, Texture ledgerImg, Texture[] ledgerOverlays, int clueBodyID)
+    // public LedgerImage(int clueID, string imageDescription, int questionID, int clueQuestionID, Texture ledgerImg, Texture[] ledgerOverlays, int clueBodyID, int ledgerImageKey)
+   
+    public JsonLedgerImageObject(string imageDescription, int questionID, Texture ledgerImage, Texture[] ledgerOverlays, int clueQuestionID, int clueID, int clueBodyID, SceneNames sceneName, int clueCameraForeignKey)
     {
-        this.clueID = clueID;
         this.imageDescription = imageDescription;
         this.questionID = questionID;
-        this.clueQuestionID = clueQuestionID;
-        this.clueBodyID = clueBodyID;
-        this.ledgerImage = ledgerImg;
+        this.ledgerImage = ledgerImage;
         this.ledgerOverlays = ledgerOverlays;
+        this.clueQuestionID = clueQuestionID;
+        this.clueID = clueID;
+        this.clueBodyID = clueBodyID;
+        this.sceneName = sceneName;
+        this.clueCameraForeignKey = clueCameraForeignKey;
     }
+    
+
+
+
 }

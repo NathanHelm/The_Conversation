@@ -36,7 +36,7 @@ namespace Data
         public PencilSketchPostEffect pencilSketchPostEffectScreenShot { get; set; }
         public Action<LedgerManager> writeActionLedgerManager = lm => {
             //TODO change to hand state, not function 
-            PageAnimations.INSTANCE.DrawImageOnCurrentPage();
+            ImageUIAnimations.INSTANCE.DrawImageOnCurrentPage();
             GameEventManager.INSTANCE.OnEvent(typeof(WriteHandState));
         };
         
@@ -47,7 +47,7 @@ namespace Data
                 GameEventManager.INSTANCE.OnEvent(typeof(PointHandState));
             }
         };
-        public Action<PageAnimations> disableleftHandPage = pa => {
+        public Action<ImageUIAnimations> disableleftHandPage = pa => {
             Debug.LogError("disable left hand page has not been set :/ ");
         };
         public Action<LedgerManager> runOpenLedgerAndCutscene = lm =>
@@ -62,7 +62,7 @@ namespace Data
             disableleftHandPage = pa =>
             {
                 HandAnimations.INSTANCE.DisableLeftHandPage();
-                PageAnimations.onAfterEraseImage.RemoveAction(disableleftHandPage);
+                ImageUIAnimations.onAfterEraseImage.RemoveAction(disableleftHandPage);
                 HandAnimations.INSTANCE.PlayHandAnimation(HandAnimation.LLastFlip, 1);
             };
             var temp = FindObjectsOfType<PencilSketchPostEffect>();
@@ -98,7 +98,7 @@ namespace Data
 
             LedgerUIManager.onBorderCheck.AddAction((LedgerUIManager ledgerManagerUI) => { ledgerManagerUI.isLeft = this.isLeft; });
 
-            PageAnimations.onDrawImageOnCurrentPage.AddAction(lia =>
+            ImageUIAnimations.onDrawImageOnCurrentPage.AddAction(lia =>
             {
                 lia.currentPageOverlayImage = LedgerUIManager.INSTANCE.GetImageObjectRenderer(pageIndex);
             });

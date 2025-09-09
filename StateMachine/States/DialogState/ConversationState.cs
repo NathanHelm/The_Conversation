@@ -9,16 +9,19 @@ public class ConversationState : DialogueState
     {
         if (DialogueManager.INSTANCE != null)
         {
-            DialogueManager.onEndDialogue.AddAction(ActionController.INSTANCE.actionEndDialogue.runEndDialogConversation); //switchstate
-
+           // DialogueManager.INSTANCE.onEndDialogue.AddAction(ActionController.INSTANCE.actionEndDialogue.runEndDialogConversation); //switchstate
+            ActionController.AFTERDIALOGUE += ActionController.INSTANCE.actionEndDialogue.runEndDialogConversation;//run clue!
+        
             DialogueManager.INSTANCE.StartConversation(data);
         }
 
     }
     public override void OnExit(DialogueData data)
     {
-       DialogueManager.onEndDialogue.RemoveAction(ActionController.INSTANCE.actionEndDialogue.runEndDialogConversation); //switchstate
-      
+        ActionController.AFTERDIALOGUE -= ActionController.INSTANCE.actionEndDialogue.runEndDialogConversation;//run clue!
+        
+      // DialogueManager.INSTANCE.onEndDialogue.RemoveAction(ActionController.INSTANCE.actionEndDialogue.runEndDialogConversation); //switchstate
+
     }
     public override void OnUpdate(DialogueData data)
     {

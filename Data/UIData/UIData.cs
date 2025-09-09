@@ -39,7 +39,7 @@ namespace Data
 
 
            
-            ImageUIAnimations.onStartImageUIAnimations.AddAction(iuia => { iuia.LedgerImageUIRenderer = ledgerUIImage; iuia.InterviewImageUI = interviewIcon; });
+            IconUIAnimations.onStartImageUIAnimations.AddAction(iuia => { iuia.drawLedgerUIPageIndexRenderer = ledgerUIImage;});
 
             ButtonDialogueManager.onActionStart.AddAction((ButtonDialogueManager e)=>{e.button1 = dialogueButton; e.button2 = dialogueButton1;});
             

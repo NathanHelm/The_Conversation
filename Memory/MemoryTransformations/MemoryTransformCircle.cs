@@ -1,11 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Net.WebSockets;
 using MemorySpawn;
 using ObserverAction;
 using UnityEngine;
  
 public class MemoryTransformCircle : MemoryTransformations
 {
+    [Header("options")]
+    [Header("\n number determines how many random amplitudes\n there will be for all spawned memory stages")]
+    [SerializeField]
+    private float amountOfRandomnessForStages = 4;
 
     [Header("on update")]
     [SerializeField]
@@ -26,31 +31,35 @@ public class MemoryTransformCircle : MemoryTransformations
    
     
 
-    public override void TransformOnEnable(ref (MemorySpawnObject,GameObject)[] spawnedMemoryObjects)
+    public override void TransformOnEnable(ref MemoryStageCreatedObject[] memoryStageCreatedObjects)
     {
         Debug.Log("circle transformation on enable");
-        for (int i = 0; i < spawnedMemoryObjects.Length; i++)
+        foreach (var memoryStageCreatedObject in memoryStageCreatedObjects)
         {
-            Transform transform = spawnedMemoryObjects[i].Item2.transform;
+            var spawnedStage = memoryStageCreatedObject.memorySpawnObject;
 
+            Transform trans = spawnedStage.memoryGameObject.transform;
             angleEnable += freqEnable * Mathf.Deg2Rad;
-            randomValues.Add(UnityEngine.Random.Range(1, 2));
-
-            transform.position = new Vector3(Mathf.Cos(angleEnable), Mathf.Sin(angleEnable)) * ampEnable;
-
-            spawnedMemoryObjects[i].Item1.enableOffsetPostion = transform.position;
-           
+            trans.position = new Vector3(Mathf.Cos(angleEnable), Mathf.Sin(angleEnable)) * ampEnable;
+            memoryStageCreatedObject.enableOffsetPostion = trans.position;
+            foreach (var submemory2d in memoryStageCreatedObject.spawnedSubMemory)
+            {
+                submemory2d.subStage2d.transform.position = trans.position;
+            }
         }
     }
 
-    public override void TransformOnUpdate(ref MemorySpawnObject spawnedMemoryObject)
+    public override void TransformOnUpdate(ref MemoryStageCreatedObject spawnedMemoryObject)
     {
         Debug.Log("circle transformation on update");
-       
-        Transform trans = spawnedMemoryObject.memoryGameObject.transform;
-        float random =  randomValues[spawnedMemoryObject.positionIndex];
-        angle += Time.deltaTime * freq * random;
-        trans.position = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle)) * amp + spawnedMemoryObject.enableOffsetPostion;
+
+        
+            Transform trans = spawnedMemoryObject.spawnedMemoryStage.transform;
+            // float random = randomValues[spawnedMemoryObject.positionIndex];
+            float random = spawnedMemoryObject.memorySpawnObject.memoryId % amountOfRandomnessForStages;
+            angle += Time.deltaTime * freq * Mathf.InverseLerp(0,amountOfRandomnessForStages,random);
+            trans.position = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle)) * amp + spawnedMemoryObject.enableOffsetPostion;
+        
     }
     public override void OnNotify(MemoryTransformEnableAction data)
     {
@@ -61,11 +70,11 @@ public class MemoryTransformCircle : MemoryTransformations
             TransformOnEnable(ref spawnedMemoryObjects);
         }
     }
-    public override void OnNotify(MemoryTransformUpdateAction data, MemorySpawnObject memoryObject)
+    public override void OnNotify(MemoryTransformUpdateAction data, MemoryStageCreatedObject memoryStageCreatedObject)
     {
         if (data == MemoryTransformUpdateAction.circleUpdate)
         {
-            TransformOnUpdate(ref memoryObject);
+            TransformOnUpdate(ref memoryStageCreatedObject);
         }
        // base.OnNotify(data);
     }

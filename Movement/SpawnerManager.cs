@@ -23,7 +23,7 @@ public class SpawnerManager : StaticInstance<SpawnerManager>, IExecution
     {
         if (sceneToSpawnPositions.Count == 0)
         {
-            sceneToSpawnPositions.Add(SceneNames.VetHouseScene, new Vector2[] {
+            sceneToSpawnPositions.Add(SceneNames.SampleScene, new Vector2[] {
                 new Vector2(-.9f, 1.6f) });
 
 

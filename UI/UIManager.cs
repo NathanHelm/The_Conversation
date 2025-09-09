@@ -79,11 +79,11 @@ public class UIManager : StaticInstance<UIManager>, IExecution
         var rectTransform = uiObject.GetComponent<RectTransform>();
         rectTransform.localPosition = uiObjectPos;
     }
-    public void ChangeTexture(ref Renderer renderer, Texture texture)
+    public void ChangeTexture(ref Material material, Texture texture)
     {
-        if(renderer.material.HasTexture("_MainTex"))
+        if(material.HasTexture("_MainTex"))
         {
-        renderer.material.SetTexture("_MainTex", texture);
+        material.SetTexture("_MainTex", texture);
         }
         else
         {

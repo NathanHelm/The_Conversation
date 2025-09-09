@@ -12,6 +12,8 @@ public class WriteToPageLedgerState : LedgerState
         //NOTE--> ledger image data has already BEEN added with omit raycast call. 
         Debug.Log("write to ledger");
 
+       
+
         ActionController.AFTERPAGEFLIP_LEDGER -= ActionController.INSTANCE.afterFlipBehaviour.pointActionLedgerMovement;
         ActionController.AFTERPAGEFLIP_LEDGER += ActionController.INSTANCE.afterFlipBehaviour.writeActionLedgerMovement;
 

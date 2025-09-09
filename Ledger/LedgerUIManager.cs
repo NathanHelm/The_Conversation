@@ -234,7 +234,7 @@ namespace UI
                 Renderer imagePrev = imageObjects[index + 1].GetComponent<Renderer>();
 
                 ChangeRenderQueue(ref pagePrev, prevIndexTwoQueue, Color.white);
-                ChangeRenderQueue(ref imagePrev, prevIndexTwoQueue + 1, Color.magenta);
+                ChangeRenderQueue(ref imagePrev, prevIndexTwoQueue + 1, Color.clear);
                 }
               if(index + 2 <= max)
               {
@@ -242,7 +242,7 @@ namespace UI
                     Renderer imagePrev = imageObjects[index + 2].GetComponent<Renderer>();
 
                     ChangeRenderQueue(ref pagePrev, prevIndexOneQueue, Color.white);
-                    ChangeRenderQueue(ref imagePrev, prevIndexOneQueue + 1, Color.blue);
+                    ChangeRenderQueue(ref imagePrev, prevIndexOneQueue + 1, Color.clear);
               }
               if(index + 3 <= max)
               {
@@ -250,7 +250,7 @@ namespace UI
                    Renderer imagePrev = imageObjects[index + 3].GetComponent<Renderer>();
 
                     ChangeRenderQueue(ref pagePrev, prevIndexTwoQueue, Color.white);
-                    ChangeRenderQueue(ref imagePrev, prevIndexTwoQueue + 1, Color.magenta);
+                    ChangeRenderQueue(ref imagePrev, prevIndexTwoQueue + 1, Color.clear);
               }
            }
            else //is right
@@ -270,7 +270,7 @@ namespace UI
                     Renderer imagePrev = imageObjects[index - 2].GetComponent<Renderer>();
 
                     ChangeRenderQueue(ref pagePrev, prevIndexOneQueue, Color.white);
-                    ChangeRenderQueue(ref imagePrev, prevIndexOneQueue + 1, Color.blue);
+                    ChangeRenderQueue(ref imagePrev, prevIndexOneQueue + 1, Color.clear);
               }
               if(index - 3 >= 0)
               {
@@ -278,7 +278,7 @@ namespace UI
                    Renderer imagePrev = imageObjects[index - 3].GetComponent<Renderer>();
 
                     ChangeRenderQueue(ref pagePrev, prevIndexTwoQueue, Color.white);
-                    ChangeRenderQueue(ref imagePrev, prevIndexTwoQueue + 1, Color.magenta);
+                    ChangeRenderQueue(ref imagePrev, prevIndexTwoQueue + 1, Color.clear);
               }
            }
 
@@ -355,7 +355,7 @@ namespace UI
         }
         public void SetTextureToPage(int index, Texture tex)
         {
-            Renderer overlayImage = imageObjects[index].GetComponent<Renderer>();
+            Material overlayImage = imageObjects[index].GetComponent<Renderer>().material;
             UIManager.INSTANCE.ChangeTexture(ref overlayImage, tex);
         }
 

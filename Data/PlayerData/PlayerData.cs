@@ -38,7 +38,8 @@ namespace Data
                 p.playerRigidBody3d = rb3D;
                 p.playerRigidBody2d = rb2D;
                 p.playerMovementAnim = playerAnimator;
-                p.moveSpeed = playerSO.speed;
+                p.moveSpeed = playerSO.moveSpeed;
+                p.velocityThreshold = playerSO.velocityThreshold;
                 p.playerLook = this.playerLook;
                 p.startPosition = start2dPos;
                 p.start3dPosition = start3dPos;

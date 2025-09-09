@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 [CreateAssetMenu(fileName = "ImageSO", menuName = "ScriptableObjects/ImageSO", order = 13)]
 
-public class ImageUIScriptableObject : ScriptableObject
+public class UIScriptableObject : ScriptableObject
 {
-    public Texture interviewUIIcon;
-    public Material interviewUIMaterial;
+    public IconObject[] icons;
+    public float leftIconShift;
+    public GameObject iconPrefab;
     public Texture ledgerImageUI;
     public Material ledgerImageUIMaterial;
+
+    [Header("UI dialogue object")]
+    public DialogueSelectionObject dialogueSelectionObject;
 }

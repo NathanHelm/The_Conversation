@@ -10,7 +10,7 @@ public class DialogueManager : StaticInstance<DialogueManager>, IExecution
     public static SystemActionCall<DialogueManager> actionOnStartConversation = new SystemActionCall<DialogueManager>();
     public static SystemActionCall<DialogueManager> actionOnAfterRunDialog = new SystemActionCall<DialogueManager>();
 
-    public static SystemActionCall<DialogueManager> onEndDialogue = new SystemActionCall<DialogueManager>();
+    public SystemActionCall<DialogueManager> onEndDialogue = new SystemActionCall<DialogueManager>();
     public static SystemActionCall<DialogueManager> onPressTabConversation = new SystemActionCall<DialogueManager>();
 
     private int dialogueIndex = 0;
@@ -70,7 +70,9 @@ public class DialogueManager : StaticInstance<DialogueManager>, IExecution
         
         if (dialogueIndex > dialogueObjects.Length - 1)
         {
-            onEndDialogue.RunAction(this);
+            // onEndDialogue.RunAction(this);
+            //run after dialogue code! 
+            ActionController.AFTERDIALOGUE(this); 
             return;
         }
         StartCoroutine(dialogScroll = DialogueScroll(dialogueObjects[dialogueIndex]));

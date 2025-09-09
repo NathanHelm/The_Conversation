@@ -16,8 +16,12 @@ public class MManager : StaticInstance<MManager>, IExecution
     public CharacterManager characterManager { get; set; } = null;
     public TriggerActionManager triggerActionManager { get; set; } = null;
     public TriggerManager triggerManager { get; set; } = null;
+    //================================================================================================================================================
     public DialogueManager dialogueManager { get; set; } = null;
     public DialogueActionManager dialogueActionManager { get; set; } = null;
+
+    public DialogueSelectionManager dialogueSelectionManager { get; set; } = null;
+    //================================================================================================================================================
     public QuestionResponseManager questionResponseManager { get; set; } = null; 
     public UIManager uIManager { get; set; } = null;
 
@@ -33,9 +37,9 @@ public class MManager : StaticInstance<MManager>, IExecution
 
     public HandAnimations handAnimations {get; set;} = null;
 
-    public PageAnimations pageAnimations {get; set;} = null;
+    public ImageUIAnimations pageAnimations {get; set;} = null;
     
-    public ImageUIAnimations imageUIAnimations { get; set;} = null;
+    public IconUIAnimations imageUIAnimations { get; set;} = null;
 
     public DrawingManager drawingManager { get; set; } = null;
 
@@ -74,6 +78,8 @@ public class MManager : StaticInstance<MManager>, IExecution
         triggerManager?.m_Start(); //empty
 
         dialogueManager?.m_Start(); //empty
+
+        dialogueSelectionManager?.m_Start();
 
         questionResponseManager?.m_Start();
 
@@ -126,8 +132,7 @@ public class MManager : StaticInstance<MManager>, IExecution
     public void Start()
     {
         StartManagers();
-       // UnityEngine.SceneManagement.SceneManager.sceneLoaded += (Scene, LoadSceneMode) => {
-       //     StartManagers(); };
+ 
     }
 }
 

@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 namespace Data
 {
     public class ClueCameraData : StaticInstanceData<ClueCameraData>, IExecution
     {
         [SerializeField]
         public List<GameObject> spawnedCamera = new();
+        
 
         [SerializeField]
         private ClueCameraScriptableObject clueCameraScriptableObject;
@@ -20,7 +22,22 @@ namespace Data
         {
             clueCameraSpawner ??= FindObjectOfType<ClueCameraSpawner>();
 
-            sobelMachine ??= FindObjectOfType<SobelMachine>();
+            var sobelMachines = FindObjectsOfType<SobelMachine>();
+
+            foreach (SobelMachine single in sobelMachines)
+            {
+                if (single.sobelMat.name == "SOBELPAPER")
+                {
+                    sobelMachine = single;
+                }
+            }
+
+            if (sobelMachine == null)
+            {
+                Debug.LogError("sobel paper material nowhere to be found: check name and shader script");
+            }
+            
+            
 
             var RTwidth = clueCameraScriptableObject.width;
             var RTheight = clueCameraScriptableObject.height;

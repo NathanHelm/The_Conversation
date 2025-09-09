@@ -4,6 +4,8 @@ public class MemorySceneState : SceneState
 {
     public override void OnEnter(SceneData data)
     {
+        SceneData.CURRENTSCENE = SceneNames.MemoryScene;
+       
         CharacterManager.INSTANCE?.Load();
 
         GameEventManager.INSTANCE.OnEvent(typeof(DisableHandState));
@@ -11,20 +13,29 @@ public class MemorySceneState : SceneState
         GameEventManager.INSTANCE.OnEvent(typeof(EndConversationState));
 
 
-
+        
         ActionController.PRESSRETURN_LEDGER += ActionController.INSTANCE.actionOpenLedgerSelectPage.runClueDialogueOnSelectPage;
 
 
         LedgerImageManager.INSTANCE?.Load();
         QuestionResponseManager.INSTANCE?.Load();
-
-        MemorySpawnerManager.INSTANCE.Load(); //spawns stage objects... 
+        MemoryManager.INSTANCE.Load();
+        MemorySpawnerManager.INSTANCE?.Load(); //spawns stage objects... 
     }
     public override void OnExit(SceneData data)
     {
         MManager.INSTANCE.onStartManagersAction.RemoveAllActions();
         ActionController.PRESSRETURN_LEDGER -= ActionController.INSTANCE.actionOpenLedgerSelectPage.runClueDialogueOnSelectPage;
         ActionController.PRESSTAB_LEDGER = lm => { };
+
+        if (data.nextScene == SceneNames.SampleScene)
+        {
+            SavePersistenceManager.INSTANCE.SaveInterfaceData(CharacterManager.INSTANCE);
+            SavePersistenceManager.INSTANCE.SaveInterfaceData(ClueCameraManager.INSTANCE);
+            SavePersistenceManager.INSTANCE.SaveInterfaceData(LedgerImageManager.INSTANCE);
+            SavePersistenceManager.INSTANCE.SaveInterfaceData(MemoryManager.INSTANCE); //save memory dictionary
+        }
+
         //SavePersistenceManager.INSTANCE.Save(); //save every implemented object in any other scenario.
         base.OnExit(data);
     }

@@ -10,5 +10,6 @@ public class DimensionScriptableObject : ScriptableObject
 	public string playanimationclip;
 	//spawn hands? 
 	public bool isOrthographic;
+	public float cameraSize;
 }
 

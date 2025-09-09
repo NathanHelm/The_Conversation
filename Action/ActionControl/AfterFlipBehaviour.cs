@@ -8,7 +8,7 @@ namespace ActionControl
         public Action<LedgerMovement> writeActionLedgerMovement = lm =>
         {
             Debug.Log("AFTERPAGEFLIP: playing the writing action!");
-            PageAnimations.INSTANCE.DrawImageOnCurrentPage();
+            ImageUIAnimations.INSTANCE.DrawImageOnCurrentPage();
             GameEventManager.INSTANCE.OnEvent(typeof(WriteHandState));
         };
         public Action<LedgerMovement> pointActionLedgerMovement = lm => {

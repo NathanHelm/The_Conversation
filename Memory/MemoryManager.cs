@@ -59,7 +59,7 @@ public class MemoryManager : StaticInstance<MemoryManager>, ISaveLoad, IExecutio
   public void UnlockSubMemory(int characterID, int memoryID, int submemoryID)
   {
     //first, check if there is a character
-    if (!characterMemoryToMemoryIdToSubMemory.ContainsKey(memoryID))
+    if (!characterMemoryToMemoryIdToSubMemory.ContainsKey(characterID))
     {
       Debug.LogError("submemory not found for unlocked memory id " + memoryID + "in character " + characterID + "has the memory been added to character scriptable object? SEE character manager");
       return;
@@ -106,13 +106,23 @@ public class MemoryManager : StaticInstance<MemoryManager>, ISaveLoad, IExecutio
     Debug.Log("LOG: UNLOCKED SUB MEMORY " + submemoryID);
 
   }
+
+  public void UnlockSubMemory(int characterID, int memoryID)
+  {
+    SubMemoryObject[] submemoryIDs = characterMemoryToMemoryIdToSubMemory[characterID][memoryID].Values.ToArray();
+    foreach (var submemoryID in submemoryIDs)
+    {
+      UnlockSubMemory(characterID, memoryID, submemoryID.ID);
+    }
+  }
+
   public void AddMemory(int bodyID, MemoryObject memoryStage)
   {
     if (!characterIdToMemory.ContainsKey(bodyID))
     {
       characterIdToMemory.Add(bodyID, new Dictionary<int, MemoryObject>());
     }
-    if(characterIdToMemory[bodyID].ContainsKey(memoryStage.ID))
+    if (characterIdToMemory[bodyID].ContainsKey(memoryStage.ID))
     {
       Debug.LogError("memory " + memoryStage.ID + " already exist for character" + bodyID);
       return;
@@ -123,7 +133,7 @@ public class MemoryManager : StaticInstance<MemoryManager>, ISaveLoad, IExecutio
 
     foreach (SubMemoryObject single in memoryStage.subMemoryIds)
     {
-      AddSubMemory(bodyID,single.ID, single);
+      AddSubMemory(bodyID, single.ID, single);
     }
 
   }

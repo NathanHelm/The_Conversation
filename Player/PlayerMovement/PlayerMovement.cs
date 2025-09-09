@@ -5,6 +5,7 @@ using Data;
 
 public class PlayerMovement : MonoBehaviour
 {
+
     public static SystemActionCall<PlayerMovement> playerMovementActionCallOnStart = new SystemActionCall<PlayerMovement>();
     public static SystemActionCall<PlayerMovement> playerMovementActionCallOnUpdate = new SystemActionCall<PlayerMovement>();
 
@@ -12,8 +13,8 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed { get; set; } = 15;
     private Vector2 movement;
     private bool isWalking = true;
-    [SerializeField]
-    private float velocityThreshold = 0;
+
+    public float velocityThreshold { get; set; } = 0;
 
 
     public Rigidbody2D playerRigidBody2d;
@@ -37,9 +38,7 @@ public class PlayerMovement : MonoBehaviour
     {
 
         playerMovementActionCallOnStart.RunAction(this);
-       
-
-
+        
     }
 
 
@@ -48,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
     public void SetRigidbodyAttributes()
     {
 
-        playerRigidBody3d.drag = playerRigidBody2d.drag = 1;
+        playerRigidBody3d.linearDamping = playerRigidBody2d.linearDamping = 1;
         playerRigidBody3d.mass = playerRigidBody2d.mass = 2;
     }
 
@@ -59,7 +58,7 @@ public class PlayerMovement : MonoBehaviour
         if (isWalking)
         {
 
-            playerRigidBody2d.velocity = movement * moveSpeed;
+            playerRigidBody2d.linearVelocity = movement * moveSpeed;
             
            
 
@@ -92,7 +91,7 @@ public class PlayerMovement : MonoBehaviour
                 playerMovementAnim.SetFloat("Last Vertical", Input.GetAxisRaw("Vertical"));
             }
 
-            if (playerRigidBody2d.velocity.magnitude < velocityThreshold && playerRigidBody2d.velocity.magnitude < velocityThreshold)
+            if (playerRigidBody2d.linearVelocity.magnitude < velocityThreshold && playerRigidBody2d.linearVelocity.magnitude < velocityThreshold)
             {
 
                 //todo add data here
@@ -119,7 +118,7 @@ public class PlayerMovement : MonoBehaviour
         if(playerRigidBody2d != null)
         {
             Debug.Log("stop movement is going!");
-        playerRigidBody2d.velocity = Vector2.zero;
+        playerRigidBody2d.linearVelocity = Vector2.zero;
         playerMovementAnim.SetFloat("Speed", 0);
         playerMovementAnim.SetFloat("Last Horizontal", direction.x);
         playerMovementAnim.SetFloat("Last Vertical", direction.y);

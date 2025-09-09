@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 namespace Data
 {
 	public class TriggerData : StaticInstance<TriggerData>, IExecution
@@ -7,6 +8,8 @@ namespace Data
        
 
 		public Trigger[] triggers { get; set; }
+
+        public List<CharacterMono> characterMonosInTrigger = new(); //using for selection conversation state.
         public Trigger triggerOnTrigger { get; set; }
         public DialogueData dialogueData;
 

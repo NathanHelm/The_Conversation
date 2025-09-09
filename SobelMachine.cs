@@ -7,7 +7,7 @@ using UnityEngine;
 public class SobelMachine : MonoBehaviour
 {
     [SerializeField]
-    Material sobelMat;
+    public Material sobelMat;
     [SerializeField]
     SobelSetting sobelSetting;
 
@@ -32,7 +32,7 @@ public class SobelMachine : MonoBehaviour
     }
     public void Start()
     {
-        Camera.main.depthTextureMode |= DepthTextureMode.DepthNormals;
+       // Camera.main.depthTextureMode |= DepthTextureMode.DepthNormals;
     }
     public void SetSobelFilter(ref Material mat)
     {

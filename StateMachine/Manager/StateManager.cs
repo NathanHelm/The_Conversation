@@ -6,6 +6,8 @@ using UnityEditor.Build.Reporting;
 
 public class StateManager: StaticInstance<StateManager>, IExecution
 {
+    public Subject<ObserverAction.StateMachineAction> subject { get; set; } = new();
+
     /*
       add monobehaviour states here
      */
@@ -25,6 +27,7 @@ public class StateManager: StaticInstance<StateManager>, IExecution
     public TransitionTo3d transitionTo3D = new TransitionTo3d();
     public PlayerMove2dState playerMove2DState = new PlayerMove2dState();
     public PlayerLook3dState playerLook3DState = new PlayerLook3dState();
+    public Playerlook3dNoCursorWrap playerlook3DNoCursorWrap = new();
     public PlayerClickOnClueState playerClickOnClueState = new PlayerClickOnClueState();
     public PlayerIdleState playerIdleState = new PlayerIdleState();
 
@@ -35,8 +38,8 @@ public class StateManager: StaticInstance<StateManager>, IExecution
     public ButtonOptionDialogState buttonOptionDialogState = new();
     public ClueConversationState clueConversationState = new();
     public EndConversationState endConversationState = new();
-
-
+    public SelectionConversationState selectionConversationState = new();
+    public StartSelectionConversationState startSelectionConversationState = new();
 
     public PlayCutsceneState playCutsceneState = new();
     public StopCutsceneState stopCutsceneState = new();
@@ -73,9 +76,10 @@ public class StateManager: StaticInstance<StateManager>, IExecution
     public HoldPageState holdPageState = new();
 
     //scene states below========================================================================================
-
     public VetHouseSceneState vetHouseSceneState = new();
+    public SampleSceneState sampleSceneState = new();
     public InterviewSceneState interviewSceneState = new();
+    public MemorySceneState memorySceneState = new();
     public IdleSceneState idleSceneState = new();
 
     //=============================================================================================================
@@ -124,6 +128,8 @@ public class StateManager: StaticInstance<StateManager>, IExecution
         if (PlayerData.INSTANCE != null)
         {
             GameEventManager.INSTANCE.AddEvent(typeof(PlayerLook3dState), () => { playerDataState.SwitchState(playerLook3DState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(Playerlook3dNoCursorWrap), () => { playerDataState.SwitchState(playerLook3DState); });
+
             GameEventManager.INSTANCE.AddEvent(typeof(PlayerMove2dState), () => { playerDataState.SwitchState(playerMove2DState); });
             GameEventManager.INSTANCE.AddEvent(typeof(PlayerClickOnClueState), () => { playerDataState.SwitchState(playerClickOnClueState); });
             GameEventManager.INSTANCE.AddEvent(typeof(PlayerIdleState), () => { playerDataState.SwitchState(playerIdleState); });
@@ -138,7 +144,9 @@ public class StateManager: StaticInstance<StateManager>, IExecution
             GameEventManager.INSTANCE.AddEvent(typeof(ButtonOptionDialogState), ()=>{dialogueState.SwitchState(buttonOptionDialogState);});
             GameEventManager.INSTANCE.AddEvent(typeof(ClueConversationState), ()=> {dialogueState.SwitchState(clueConversationState); });
             GameEventManager.INSTANCE.AddEvent(typeof(EndConversationState), () => { dialogueState.SwitchState(endConversationState); });
-
+            GameEventManager.INSTANCE.AddEvent(typeof(SelectionConversationState), () => { dialogueState.SwitchState(selectionConversationState); });
+            GameEventManager.INSTANCE.AddEvent(typeof(StartSelectionConversationState), () => { dialogueState.SwitchState(startSelectionConversationState); });
+           
             dialogueState.SwitchState(noConversationState);
         }
         if (TriggerData.INSTANCE != null)
@@ -146,7 +154,6 @@ public class StateManager: StaticInstance<StateManager>, IExecution
             GameEventManager.INSTANCE.AddEvent(typeof(TriggerConversationState), () => { triggerState.SwitchState(triggerConversationState); });
             GameEventManager.INSTANCE.AddEvent(typeof(DefaultTriggerState), () => { triggerState.SwitchState(defaultTriggerState); });
             GameEventManager.INSTANCE.AddEvent(typeof(NoTriggerState), () => { triggerState.SwitchState(noTriggerState); });
-
             triggerState.SwitchState(defaultTriggerState);
         }
         if (CutsceneData.INSTANCE != null)
@@ -185,17 +192,20 @@ public class StateManager: StaticInstance<StateManager>, IExecution
         //this comes last-- scene states have to potential to change other states!
         if(SceneData.INSTANCE != null)
         {
-            GameEventManager.INSTANCE.AddEvent(typeof(VetHouseSceneState), ()=> { sceneStateMono.SwitchScene(vetHouseSceneState, SceneNames.VetHouseScene);});
+            GameEventManager.INSTANCE.AddEvent(typeof(SampleSceneState), ()=> { sceneStateMono.SwitchScene(vetHouseSceneState, SceneNames.SampleScene);});
             GameEventManager.INSTANCE.AddEvent(typeof(InterviewSceneState),()=>{ sceneStateMono.SwitchScene(interviewSceneState, SceneNames.InterviewScene);} );
+            GameEventManager.INSTANCE.AddEvent(typeof(MemorySceneState),()=>{ sceneStateMono.SwitchScene(memorySceneState, SceneNames.MemoryScene);} );
+            GameEventManager.INSTANCE.AddEvent(typeof(VetHouseSceneState),()=>{ sceneStateMono.SwitchScene(vetHouseSceneState, SceneNames.VetHouseScene);} );
+        
             GameEventManager.INSTANCE.AddEvent(typeof(IdleSceneState), ()=> {
             sceneStateMono.SwitchState(idleSceneState);});
 
 
 
-            if (SceneStateMono.currentSceneState == null)
+            if (SceneData.CURRENTSCENE == SceneNames.None)
             {
                 Debug.LogError("Assigning state vet house because current scene is null!");
-                SceneStateMono.currentSceneState = vetHouseSceneState;
+               // SceneStateMono.currentSceneState = vetHouseSceneState;
                 sceneStateMono.SwitchState(vetHouseSceneState);
                 //sceneStateMono.SwitchState(idleHandState);
             }

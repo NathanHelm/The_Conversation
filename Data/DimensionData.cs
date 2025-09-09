@@ -11,6 +11,9 @@ namespace Data
 		[SerializeField]
 		public DimensionScriptableObject TransitionTo3dSo;
 		public Camera cam;
+		public Cinemachine.CinemachineBrain cinemachineBrain;
+		public CinemachineVirtualCamera cinemachineVirtualCamera2D { get; set; }
+		public CinemachineVirtualCamera cinemachineVirtualCamera3D { get; set; }
 		public UIData uIData;
 		public UIManager uIManager;
 
@@ -19,10 +22,10 @@ namespace Data
 		{
 			try
 			{
-				cam = FindObjectOfType<Camera>().GetComponent<Camera>();
-
-				CinemachineVirtualCamera cinemachineVirtualCamera2D = GameObject.FindWithTag("vcam2D").GetComponent<CinemachineVirtualCamera>();
-				CinemachineVirtualCamera cinemachineVirtualCamera3D = GameObject.FindWithTag("vcam3D").GetComponent<CinemachineVirtualCamera>();
+				cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+				cinemachineBrain = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Cinemachine.CinemachineBrain>();
+				cinemachineVirtualCamera2D = GameObject.FindWithTag("vcam2D").GetComponent<CinemachineVirtualCamera>();
+				cinemachineVirtualCamera3D = GameObject.FindWithTag("vcam3D").GetComponent<CinemachineVirtualCamera>();
 				TransitionTo2dSo.cinemachineVirtualCamera = cinemachineVirtualCamera2D;
 				TransitionTo3dSo.cinemachineVirtualCamera = cinemachineVirtualCamera3D;
 			}
@@ -38,7 +41,7 @@ namespace Data
 		public override void m_OnEnable()
 		{
 
-			TransitionManager.actionOnStartConversation.AddAction((TransitionManager e) => { e.cam = this.cam; });
+			TransitionManager.actionOnStartConversation.AddAction((TransitionManager e) => { e.cam = this.cam; e.cinemachineBrain = cinemachineBrain; });
 			base.m_OnEnable();
 		}
 		private void Start()

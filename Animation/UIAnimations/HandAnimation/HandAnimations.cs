@@ -68,6 +68,7 @@ public class HandAnimations : StaticInstance<HandAnimations>, IExecution, IObser
         }
         else if(handAnimation == HandAnimation.LHoldPage)
         {
+      Debug.Log("l hold page is here? ");
             AnimationManager.INSTANCE.PlayAnimation(ref handAnim, "hold_page");
             AnimationManager.INSTANCE.ChangeAnimationSpeed(ref handAnim,speed);
         }
@@ -96,15 +97,14 @@ public class HandAnimations : StaticInstance<HandAnimations>, IExecution, IObser
       GameObject leftHandPage = leftHand.transform.GetChild(0).gameObject;
       GameObject leftHandThumb = leftHand.transform.GetChild(1).gameObject;
 
-      Texture[] overlayTextures = ledgerImage.ledgerOverlays;
       Texture image = ledgerImage.ledgerImage;
 
-      leftHandPageShader = SetPageToTexture(ref leftHand, image, overlayTextures); //obtaining the renderer from the left hand enabled page...
+      leftHandPageShader = SetPageToTexture(ref leftHand, image); //obtaining the renderer from the left hand enabled page...
 
       leftHandPage.SetActive(true);
       leftHandThumb.SetActive(true);
     }
-    private Renderer SetPageToTexture(ref GameObject page,Texture image, Texture[] imageOverlays)
+    private Renderer SetPageToTexture(ref GameObject page,Texture image)
     {
       var test = page.GetComponentsInChildren<Renderer>();
       //this code sucks... so many children I aint even pregnent ha... hah ahaha.
@@ -126,20 +126,25 @@ public class HandAnimations : StaticInstance<HandAnimations>, IExecution, IObser
     }
     public void EraseImageAnimationLeftHandPage()
     {
-      PageAnimations.INSTANCE.EraseImage(leftHandPageShader);
+      ImageUIAnimations.INSTANCE.EraseImage(leftHandPageShader.material);
     }
     public void DrawImageAnimationLeftHandPage()
     {
-     PageAnimations.INSTANCE.DrawImage(leftHandPageShader);
+     ImageUIAnimations.INSTANCE.DrawImage(leftHandPageShader.material);
     }
 
   public void OnNotify(LedgerMovementActions data)
   {
     if (data == LedgerMovementActions.onCreatedHands)
     {
-        rightHandAnim = LedgerData.INSTANCE.rightHandAnim;
-        leftHandAnim = LedgerData.INSTANCE.leftHandAnim;
-        leftHand = LedgerData.INSTANCE.leftHandObj;
+      rightHandAnim = LedgerData.INSTANCE.rightHandAnim;
+      leftHandAnim = LedgerData.INSTANCE.leftHandAnim;
+      leftHand = LedgerData.INSTANCE.leftHandObj;
+
+      //default animations.
+      DisableLeftHandPage();
+     // PlayHandAnimation(HandAnimation.LLastFlip, 1f);
+      PlayHandAnimation(HandAnimation.PointAnim, 1f);
     }
   }
 }

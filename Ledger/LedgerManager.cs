@@ -105,6 +105,7 @@ public class LedgerManager : StaticInstance<LedgerManager>, IExecution
         ActionController.AFTERPAGEFLIPFURTHESTLEFT_LEDGER += lm =>
         {
             MovePagesToFurthestRight();
+            //an action the removes itself after running.
             ActionController.INSTANCE.fragActionLedgerManager.FragOut(ActionController.AFTERPAGEFLIP_LEDGER, ActionController.INSTANCE.afterFlipBehaviour.writeActionLedgerMovement);
         };
 
@@ -279,11 +280,11 @@ public class LedgerManager : StaticInstance<LedgerManager>, IExecution
 
          LedgerImageManager.INSTANCE.SetTemporaryImageToNull();
         //disable left hand after the erase animation:
-         PageAnimations.onAfterEraseImage.AddAction(LedgerData.INSTANCE.disableleftHandPage);
+         ImageUIAnimations.onAfterEraseImage.AddAction(LedgerData.INSTANCE.disableleftHandPage);
          HandAnimations.INSTANCE.EraseImageAnimationLeftHandPage();
 
         //page that is being replaced get an animation
-        PageAnimations.INSTANCE.DrawImageOnCurrentPage();
+        ImageUIAnimations.INSTANCE.DrawImageOnCurrentPage();
 
         GameEventManager.INSTANCE.OnEvent(typeof(OpenLedgerState));
          

@@ -11,7 +11,7 @@ public class InterviewLedgerState : LedgerState
         GameEventManager.INSTANCE.OnEvent(typeof(DisableHandState));
 
         //TODO apply variation
-        ImageUIAnimations.INSTANCE.DrawInterviewIcon();
+        IconUIAnimations.INSTANCE.FadeInIconRenderer(IconUIAnimations.INSTANCE.GetIconRenderer(Icon.enterInterviewSceneIcon));
 
         ActionController.PRESSTAB_LEDGER += ActionController.INSTANCE.actionOpenLedgerTab.pressTabEnterInterviewScene;
 
@@ -21,7 +21,7 @@ public class InterviewLedgerState : LedgerState
     public override void OnExit(LedgerData data)
     {
         ActionController.PRESSTAB_LEDGER -= ActionController.INSTANCE.actionOpenLedgerTab.pressTabEnterInterviewScene;
-        ImageUIAnimations.INSTANCE.EraseInterviewIcon();
+        IconUIAnimations.INSTANCE.FadeOutIconRenderer(IconUIAnimations.INSTANCE.GetIconRenderer(Icon.enterInterviewSceneIcon));
 
     
     }

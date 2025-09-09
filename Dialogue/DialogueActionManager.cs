@@ -82,8 +82,11 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>, IExe
                         0, ()=> {
                             Debug.Log("unlock dialog");
                             MemoryManager.INSTANCE.UnlockMemory(21, 1);
-                         }
+                            MemoryManager.INSTANCE.UnlockSubMemory(21, 1);
+
+
                     }
+                }
                 }
             }
         });
@@ -171,11 +174,7 @@ public class DialogueActionManager : StaticInstance<DialogueActionManager>, IExe
         //based on character id, question dictionary.
         //based on the question id, get the 
 
-        if(questionID.Equals(""))
-        {
-            throw new KeyNotFoundException("key is nothing");
-        }
-
+      
         if (!conversationKeyToDialogActions.ContainsKey(characterID))
         {
             Debug.Log("no character action found for id" + characterID);

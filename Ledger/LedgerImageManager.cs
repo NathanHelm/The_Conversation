@@ -11,9 +11,10 @@ using UnityEngine;
 using System.Collections;
 using UnityEditor.Graphs;
 using System.Numerics;
+using UnityEditor;
 
 
-public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad, IExecution, IObserverData<ObserverAction.ClueCameraActions, ClueMono>, IObserver<ObserverAction.LedgerActions>
+public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad, IExecution, IObserverData<ObserverAction.ClueCameraActions,(ClueCameraObject,ClueMono)>, IObserver<ObserverAction.LedgerActions>
 {
 
     public LedgerImage temporaryImage { get; set; } = null;
@@ -24,11 +25,14 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad,
     [SerializeField]
     private float speed;
     public static SystemActionCall<LedgerImageManager> onStartLedgerData = new SystemActionCall<LedgerImageManager>();
+
+    public Dictionary<int, LedgerImage> keyToLedgerImage = new Dictionary<int, LedgerImage>();
     [SerializeField]
     public List<LedgerImage> ledgerImages { get; set; } = new();
     public int MaxLedgerImageLength { get; set; }
     private List<RenderTexture> postProcessingRenderTextures = new(); //renderTexture which will undergo graphics PP blit
 
+    public Subject<ObserverAction.LedgerActions> subject = new();
     public override void m_OnEnable()
     {
 
@@ -57,6 +61,19 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad,
     {
         ledgerImages.Add(ledgerImage);
 
+    }
+    public void PopulatePkKeyToLedgerImage(int ClueCameraSpawnPK, LedgerImage pairImage)
+    {
+        if (keyToLedgerImage.ContainsKey(ClueCameraSpawnPK))
+        {
+            Debug.LogError("duplicate Hash primary keys. This should honest be impossible.");
+            return;
+        }
+        keyToLedgerImage.Add(ClueCameraSpawnPK, pairImage);
+    }
+    public bool DoesClueCameraExist(int ClueCameraSpawnPK)
+    {
+        return keyToLedgerImage.ContainsKey(ClueCameraSpawnPK);
     }
     public void RemoveLedgerImage(int index)
     {
@@ -94,10 +111,6 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad,
     {
         return ledgerImages[index].questionID;
     }
-    public int GetClueQuestionIDFromPage(int index)
-    {
-        return ledgerImages[index].clueQuestionID;
-    }
     public int GetClueBodyIDFromPage(int index)
     {
         return ledgerImages[index].clueBodyID;
@@ -125,9 +138,9 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad,
         renderer.material.SetTexture("_MainTex", currentLedgerimage);
     }
 
-    public void AddRayInfoToLedgerImage(int clueID, string imageDescription, int questionID, int clueQuestionID, Texture ledgerImg, Texture[] ledgerOverlays, int clueBodyID) //converts ray information to ledger image object
+    public void AddRayInfoToLedgerImage(int clueID, string imageDescription, int questionID, Texture ledgerImg, int clueBodyID, SceneNames sceneName, int clueCameraForeignKey) //converts ray information to ledger image object
     {
-        LedgerImage ledgerImage = new(clueID, imageDescription, questionID, clueQuestionID, ledgerImg, ledgerOverlays, clueBodyID);
+        LedgerImage ledgerImage = new(clueID, imageDescription, questionID, ledgerImg, clueBodyID, sceneName, clueCameraForeignKey);
 
         if (ledgerImages.Count >= MaxLedgerImageLength)
         {
@@ -137,6 +150,7 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad,
         }
 
         AddLedgerImage(ledgerImage);
+        PopulatePkKeyToLedgerImage(clueCameraForeignKey, ledgerImage);
 
         //TODO --> interesting.... I want to change the page's material BASED on the image drawn. (some function called image drawn sprite)
         //an idea: make drawing sprite THEN overlay it.
@@ -156,13 +170,17 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad,
         {
 
             ledgerImageObjects.ledgerImages[i] = new(
-            ledgerImages[i].clueID,
+       
             ledgerImages[i].imageDescription,
             ledgerImages[i].questionID,
-            ledgerImages[i].clueQuestionID,
             ledgerImages[i].ledgerImage,
-            ledgerImages[i].ledgerOverlays,
-            ledgerImages[i].clueBodyID
+            null,
+            -1,
+            ledgerImages[i].clueID,
+            ledgerImages[i].clueBodyID,
+            ledgerImages[i].sceneName,
+            ledgerImages[i].clueCameraForiegnKey
+
 
             );
         }
@@ -176,7 +194,11 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad,
 
     public void Load()
     {
-
+        if (SavePersistenceManager.INSTANCE.LoadDataFromFile<JsonLedgerImagesObject>(FileNames.LedgerImageFile).Count == 0)
+        {
+            Debug.LogWarning("there is no ledger image data");
+            return;
+        }
         JsonLedgerImagesObject jsonLedgerImageObjects = SavePersistenceManager.INSTANCE.LoadDataFromFile<JsonLedgerImagesObject>(FileNames.LedgerImageFile)[0];
         //here, we are getting the image objects from the persistent file and getting its ledger images array.
 
@@ -184,36 +206,51 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad,
 
         JsonLedgerImageObject[] jsonLedgerImageObjects1 = jsonLedgerImageObjects.ledgerImages;
 
+        Texture dummy = null; //TODO add some image so we can easily identify that the clue camera object has not been loaded correctly...
+
+        for (int i = 0; i < n; i++)
+        {
+            LedgerImage ledgerImage = new(
+
+            jsonLedgerImageObjects1[i].clueID,
+            jsonLedgerImageObjects1[i].imageDescription,
+            jsonLedgerImageObjects1[i].questionID,
+
+            dummy,
+            jsonLedgerImageObjects1[i].clueBodyID,
+            jsonLedgerImageObjects1[i].sceneName,
+            jsonLedgerImageObjects1[i].clueCameraForeignKey
+
+            );
+            AddLedgerImage(ledgerImage);
+            PopulatePkKeyToLedgerImage(jsonLedgerImageObjects1[i].clueCameraForeignKey, ledgerImage);
+            
+        }
+        //notify observer (load clue camera manager)... 
+        subject.NotifyObservers(LedgerActions.onAddedPrimaryKeyToLedgerImage);
+
         for (int i = 0; i < n; i++)
         {
 
-            ClueCameraObject clueCameraObject = ClueCameraManager.INSTANCE.GetClueCameraObject(jsonLedgerImageObjects1[i].sceneName, jsonLedgerImageObjects1[i].clueCameraID);
+            ClueCameraObject clueCameraObject = ClueCameraManager.INSTANCE.GetClueCameraObjectOnPK(jsonLedgerImageObjects1[i].clueCameraForeignKey);
+
             if (clueCameraObject == null)
             {
                 Debug.LogError("clueCameraObject not found so we are removing image " + jsonLedgerImageObjects1[i].clueID);
+                ledgerImages.RemoveAt(i);
                 continue;
             }
 
             Texture tex = clueCameraObject.clueCameraTexture;
+            ledgerImages[i].ledgerImage = tex;
 
-            AddLedgerImage(new(
-            jsonLedgerImageObjects1[i].clueID,
-            jsonLedgerImageObjects1[i].imageDescription,
-            jsonLedgerImageObjects1[i].questionID,
-            jsonLedgerImageObjects1[i].clueQuestionID,
-            tex,
-            jsonLedgerImageObjects1[i].ledgerOverlays,
-            jsonLedgerImageObjects1[i].clueBodyID
-            ));
-
-            LedgerData.INSTANCE.ledgerImages = ledgerImages;
         }
 
-
+        LedgerData.INSTANCE.ledgerImages = ledgerImages;
         SetTexturesToLedgerUIPages();
         for (int i = 0; i < ledgerImages.Count; i++)
         {
-            AddPostProcessingRenderTextures(ledgerImages[i]);
+          //  AddPostProcessingRenderTextures(ledgerImages[i]);
             SetImageValueToOne(i);
         }
     }
@@ -228,25 +265,25 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad,
         ren.material.SetFloat("_Val", 1);
     }
 
-    public void OnNotify(ClueCameraActions actionData, ClueMono myObject)
+    public void OnNotify(ClueCameraActions actionData, (ClueCameraObject,ClueMono) myObject)
     {
         if (actionData == ClueCameraActions.onSpawnCamera)
         {
-            var currentScene = SceneData.INSTANCE.currentScene;
+            var currentScene = SceneData.CURRENTSCENE;
             //get clue ID from spawned camera
-            int clueID = ClueCameraManager.INSTANCE.GetSceneIndexLength(currentScene);
+            int primaryKey = myObject.Item1.clueCameraPrimaryKey;
             //get camera texture from spawned camera
-            var CLUECAMERATEXTURE = ClueCameraManager.INSTANCE.GetClueCameraObject(currentScene, clueID).clueCameraTexture;
-
+            var CLUECAMERATEXTURE = ClueCameraManager.INSTANCE.GetClueCameraObjectOnScene(currentScene, primaryKey).clueCameraTexture;
             AddRayInfoToLedgerImage(
 
-            clueID,
-            myObject.imageDescription,
-            myObject.questionID,
-            myObject.clueQuestionID,
+            primaryKey,
+            myObject.Item2.imageDescription,
+            myObject.Item2.questionID,
             CLUECAMERATEXTURE,
-            myObject.ledgerOverlays,
-            ClueMono.clueBodyID
+            ClueMono.clueBodyID,
+            currentScene,
+            primaryKey
+            
             
             );
 
@@ -259,7 +296,6 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad,
         if (data == LedgerActions.onSetTextureToPageImage)
         {
             SetTexturesToLedgerUIPages();
-          //  AddPostProcessingRenderTextures(ledgerImages[^1]);
         }
     }
 

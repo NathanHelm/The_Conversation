@@ -2,16 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Codice.CM.Common;
 using Data;
+using DictionaryHandler;
 using ObserverAction;
 using Persistence;
 using UnityEditor.SearchService;
 using UnityEngine;
 
-public class ClueCameraManager : StaticInstance<ClueCameraManager>, IExecution, ISaveLoad, IObserverData<ObserverAction.PlayerActions, ClueMono>
+public class ClueCameraManager : StaticInstance<ClueCameraManager>, IExecution, ISaveLoad, IObserverData<ObserverAction.PlayerActions, ClueMono>, IObserver<ObserverAction.LedgerActions>
 {
+    private ClueHandler clueHandler;
     //scenename--cluecameraobject
-    public Dictionary<SceneNames, List<ClueCameraObject>> sceneNameToClueIDToCameraObject = new();
+    public Dictionary<SceneNames, Dictionary<int, ClueCameraObject>> sceneNameToLedgerImageKeyToClueIDToCameraObject = new();
+    public Dictionary<int,ClueCameraObject> ledgerImageKeyToClueIDToCameraObject = new();
 
     public Dictionary<int, RenderTexture> instanceIdToRenderTexture = new();
     public ClueCameraSpawner clueCameraSpawner { get; set; } //TODO
@@ -24,13 +28,16 @@ public class ClueCameraManager : StaticInstance<ClueCameraManager>, IExecution, 
 
     public int clueCamerasMax { get; set; }
 
-    public SubjectActionData<ObserverAction.ClueCameraActions, ClueMono> subject = new();
+    public SubjectActionData<ObserverAction.ClueCameraActions, (ClueCameraObject,ClueMono)> subject = new();
     //note
     public override void m_OnEnable()
     {
-        PlayerData.INSTANCE?.playerRaycast.subject.AddObserver(this);
+        PlayerData.INSTANCE?.playerRaycast.subjectClue.AddObserver(this);
+        LedgerImageManager.INSTANCE.subject.AddObserver(this);
         MManager.INSTANCE?.onStartManagersAction.AddAction((MManager mm) => { mm.clueCameraManager = this; });
-       
+
+        clueHandler = gameObject.GetComponent<ClueHandler>();
+        clueHandler ??= gameObject.AddComponent<ClueHandler>();
     }
     public override void m_Start()
     {
@@ -38,33 +45,38 @@ public class ClueCameraManager : StaticInstance<ClueCameraManager>, IExecution, 
         onStartClueCameraManager.RunAction(this);
         base.m_Start();
     }
-    public void AddCameraObject(SceneNames sceneNames, ClueCameraObject clueCameraObject)
+    public void AddCameraObject(SceneNames sceneNames, int ledgerImageKey, ClueCameraObject clueCameraObject)
     {
-        if (!sceneNameToClueIDToCameraObject.ContainsKey(sceneNames))
+        if (!sceneNameToLedgerImageKeyToClueIDToCameraObject.ContainsKey(sceneNames))
         {
-            sceneNameToClueIDToCameraObject.Add(sceneNames, new());
+            sceneNameToLedgerImageKeyToClueIDToCameraObject.Add(sceneNames, new());
         }
-        sceneNameToClueIDToCameraObject[sceneNames].Add(clueCameraObject);
+        if (!ledgerImageKeyToClueIDToCameraObject.ContainsKey(ledgerImageKey))
+        {
+           ledgerImageKeyToClueIDToCameraObject.Add(ledgerImageKey, clueCameraObject);
+        }
+        sceneNameToLedgerImageKeyToClueIDToCameraObject[sceneNames].Add(ledgerImageKey, clueCameraObject);
+ 
     }
-    public ClueCameraObject GetClueCameraObject(SceneNames sceneName, int clueIndex)
+    public ClueCameraObject GetClueCameraObjectOnScene(SceneNames sceneName, int cluePK)
     {
-        if (!sceneNameToClueIDToCameraObject.ContainsKey(sceneName))
+        if (!sceneNameToLedgerImageKeyToClueIDToCameraObject.ContainsKey(sceneName))
         {
             Debug.LogError("cant find scene at" + sceneName);
             return null;
         }
-        return sceneNameToClueIDToCameraObject[sceneName][clueIndex];
+        return sceneNameToLedgerImageKeyToClueIDToCameraObject[sceneName][cluePK];
     }
-    public int GetSceneIndexLength(SceneNames sceneName)
+     public ClueCameraObject GetClueCameraObjectOnPK(int cluePK)
     {
-        if (!sceneNameToClueIDToCameraObject.ContainsKey(sceneName))
+        if (!ledgerImageKeyToClueIDToCameraObject.ContainsKey(cluePK))
         {
-            Debug.LogError("cant find scene at" + sceneName);
-            return -1;
+            Debug.LogError("cant find clue primary key at" + cluePK);
+            return null;
         }
-        return sceneNameToClueIDToCameraObject[sceneName].Count - 1;
+        return ledgerImageKeyToClueIDToCameraObject[cluePK];
     }
-    public RenderTexture AddClueCameraFromOmit() //returns the render texture (what the camera is seeing) from spawned clue camera.
+    public ClueCameraObject AddClueCameraFromOmit(ClueMono clueMono) //returns the render texture (what the camera is seeing) from spawned clue camera.
     {
         if (10 < clueCamerasMax)
         {
@@ -74,52 +86,84 @@ public class ClueCameraManager : StaticInstance<ClueCameraManager>, IExecution, 
         Vector3 rotation = PlayerData.INSTANCE.trans3d.eulerAngles;
         //scene 1 -- cam 1, 2 ,3
         //scene 2 -- cam 4,5
-        var currentScene = SceneData.INSTANCE.currentScene;
+        var currentScene = SceneData.CURRENTSCENE;
 
-        GameObject g = clueCameraSpawner.SpawnClueCamera(position, rotation, currentScene, 0);
+        GameObject g = clueCameraSpawner.SpawnClueCamera(position, rotation);
 
 
         //TODO might want to change this...
 
         var camRender = g.GetComponent<ClueCameraRender>();
+        //add transform to camera look
+         var camLook = g.GetComponent<ClueCameraLook>();
+
+        if (clueHandler.GetClueByClueID(clueMono.clueID) == null)
+        {
+                Debug.LogError("no clue camera object to be found based on clue camera json file. id is ==>" + clueMono.clueID);
+        }
+
+        camLook.clueTrans = clueHandler.GetClueByClueID(clueMono.clueID)?.transform;
+       // clueCameraLook.
+        
 
         camRender.CreateClueCameraRender(RTwidth, RTheight, RTDEPTH);
 
         RenderTexture rt = camRender.renderTexture; //copy be reference, important!
 
-        ClueCameraObject clueCameraObject = new(position, rotation, (int)currentScene, rt);
+        int hash = rt.GetHashCode();
 
-        AddCameraObject(SceneData.INSTANCE.currentScene, clueCameraObject);
+        ClueCameraObject clueCameraObject = new(position, rotation, (int)currentScene, hash, clueMono.clueID , rt);
 
-        return rt;
+        AddCameraObject(SceneData.CURRENTSCENE, hash, clueCameraObject);
+
+
+        return clueCameraObject;
     }
-    //load clue camera before ledger images
+    //load clue camera AFFFTTTEERRR ledger images
     //IMPORTANT --> ledger image will get render texture  
-    public void AddClueCameraFromLoad(/*json object params*/Vector3 position, Vector3 eulerRot, SceneNames sceneName, /*get it from path*/ Texture texture, int clueId)
+    public void AddClueCameraFromLoad(/*json object params*/Vector3 position, Vector3 eulerRot, SceneNames sceneName, int PK,/*get it from path*/ Texture texture, int clueId)
     {
         //1-this code determines whether the json data scene number is our current scene number...
-        //if yes, we will spawn the camera 
+        //if yes, we will spawn the camera unless the primary key doesn't exist otherwise destroy it.
+
         //otherwise get the texture. 
 
         if (LedgerData.INSTANCE.ledgerImages.Count > 0)
         {
             Debug.LogWarning("are you sure clue camera is loading before ledger images? ");
         }
-        if (sceneName == SceneData.INSTANCE.currentScene)
+        if (sceneName == SceneData.CURRENTSCENE) //is scene texture or render texture? 
         {
-            GameObject g = clueCameraSpawner.SpawnClueCamera(position, eulerRot, sceneName, clueId);
-            Camera clueCamera = g.GetComponent<Camera>();
+            if (!LedgerImageManager.INSTANCE.DoesClueCameraExist(PK))
+            {
+                //remove clue camera from json because it does not exist in ledger image.
+                return;
+            }
 
-            RenderTexture rt = GetRenderTextureFromCamera(ref clueCamera);
+            GameObject g = clueCameraSpawner.SpawnClueCamera(position, eulerRot);
+            var camRender = g.GetComponent<ClueCameraRender>();
+            camRender.CreateClueCameraRender(RTwidth, RTheight, RTDEPTH);
+
+            //add transform to camera look
+            var camLook = g.GetComponent<ClueCameraLook>();
+
+            if (clueHandler.GetClueByClueID(clueId) == null)
+            {
+                Debug.LogError("no clue camera object to be found based on clue camera json file. id is ==>" + clueId);
+            }
+
+            camLook.clueTrans = clueHandler.GetClueByClueID(clueId)?.transform;
+            
+            RenderTexture rt = camRender.renderTexture;
 
             //add loaded clue camera object to dictionary...
-            ClueCameraObject clueCameraObject = new(position, eulerRot, (int)sceneName, rt);
-            AddCameraObject(SceneData.INSTANCE.currentScene, clueCameraObject);
+            ClueCameraObject clueCameraObject = new(position, eulerRot, (int)sceneName, PK, clueId ,rt);
+            AddCameraObject(SceneData.CURRENTSCENE,PK ,clueCameraObject);
         }
         else
         {
-            ClueCameraObject clueCameraObject = new(position, eulerRot, (int)sceneName, texture);
-            AddCameraObject(SceneData.INSTANCE.currentScene, clueCameraObject);
+            ClueCameraObject clueCameraObject = new(position, eulerRot, (int)sceneName, PK, clueId ,texture);
+            AddCameraObject(sceneName, PK ,clueCameraObject);
         }
 
     }
@@ -137,39 +181,63 @@ public class ClueCameraManager : StaticInstance<ClueCameraManager>, IExecution, 
     }
 
 
-    public RenderTexture CreateRenderTexture()
-    {
-        return TextureHandler.INSTANCE?.CreateRenderTexture(RTwidth, RTheight, RTDEPTH);
-    }
-
-
-    //1- load BEFORE ledger images
-    //2- add id to ledger image (determining what im)
+    //IMPORTANT: DO NOT USE CLUE CAMERA MANAGER LOAD, Observer does it for us.
     public void Load()
     {
+        Debug.LogError("You are using clue camera manager load. don't do this.");
         //load camera object data from json.
-        List<JsonClueCamerasObject> jsonClueCamerasObjects = SavePersistenceManager.INSTANCE.LoadDataFromFile<JsonClueCamerasObject>(FileNames.ClueCameraFile);
-        jsonClueCamerasObjects.ForEach(x =>
-        {
-
-
-            foreach (var clueCamera in x.clueCameraObject)
-            {
-                Texture2D tex = TextureHandler.INSTANCE.GetTexture2D(clueCamera.textureName);
-                AddClueCameraFromLoad(clueCamera.camPos, clueCamera.camEulerRot, (SceneNames)clueCamera.sceneId, tex, clueCamera.clueid);
-            }
-
-        });
         ///LoadDataFromFile<JsonLedgerImagesObject>(FileNames.LedgerImageFile)[0];
 
 
 
     }
+    public void LoadObserver()
+    {
+         List<JsonClueCamerasObject> jsonClueCamerasObjects = SavePersistenceManager.INSTANCE.LoadDataFromFile<JsonClueCamerasObject>(FileNames.ClueCameraFile);
+        jsonClueCamerasObjects.ForEach(x =>
+        {
+            foreach (var clueCamera in x.clueCameraObject)
+            {
+                Texture2D tex = TextureHandler.INSTANCE.GetTextureAbsolute(clueCamera.textureName);
+                AddClueCameraFromLoad(clueCamera.camPos, clueCamera.camEulerRot, (SceneNames)clueCamera.sceneId, clueCamera.clueCameraPrimaryKey, tex, clueCamera.clueId);
+            }
+
+        });
+    }
 
     public (FileNames, JsonObject[])[] Save()
     {
-        /*
-        SceneNames[] sceneNames = sceneNameToClueIDToCameraObject.Keys.ToArray();
+        
+
+        SceneNames[] sceneNames = sceneNameToLedgerImageKeyToClueIDToCameraObject.Keys.ToArray();
+        List<JsonClueCameraObject> jsonClueCameraObjects = new();
+        List<JsonClueCamerasObject> jsonClueCamerasObjects = new();
+        foreach (var single in sceneNames)
+        {
+            int[] clueCameraPrimaryKey = sceneNameToLedgerImageKeyToClueIDToCameraObject[single].Keys.ToArray();
+            foreach (var single1 in clueCameraPrimaryKey)
+            {
+                string path = "Image_" + single1.ToString();
+
+                ClueCameraObject clueCameraObject = sceneNameToLedgerImageKeyToClueIDToCameraObject[single][single1] as ClueCameraObject;
+
+                if (sceneNameToLedgerImageKeyToClueIDToCameraObject[single][single1].clueCameraTexture is RenderTexture)
+                {
+                    //save texture to assets
+                    TextureHandler.INSTANCE.SaveRenderTextureToPNG((RenderTexture)sceneNameToLedgerImageKeyToClueIDToCameraObject[single][single1].clueCameraTexture, path);
+                }
+
+                jsonClueCameraObjects.Add(new JsonClueCameraObject(clueCameraObject.camPos, clueCameraObject.camEulerRot, clueCameraObject.sceneId, path, clueCameraObject.clueCameraPrimaryKey, clueCameraObject.clueId));
+
+            }
+        }
+        jsonClueCamerasObjects.Add(new JsonClueCamerasObject(jsonClueCameraObjects.ToArray()));
+        return new (FileNames, JsonObject[])[]{
+        (FileNames.ClueCameraFile, jsonClueCamerasObjects.ToArray()),
+        };
+
+      
+        /*SceneNames[] sceneNames = sceneNameToClueIDToCameraObject.Keys.ToArray();
         List<JsonClueCamerasObject> jsonClueCameraObjects = new();
         foreach (var scene in sceneNames)
         {
@@ -189,18 +257,24 @@ public class ClueCameraManager : StaticInstance<ClueCameraManager>, IExecution, 
             (FileNames.ClueCameraFile, (JsonClueCameraObject[])jsonClueCameraObjects.ToArray())
         };
         */
-        return null;
 
     }
     public void OnNotify(PlayerActions actionData, ClueMono myObject)
     {
         //on omit
-        if (actionData == PlayerActions.onOmitRay)
+        if (actionData == PlayerActions.onOmitRayClue)
         {
-            AddClueCameraFromOmit(); //add to our dictionary!
+            var clueCameraObj = AddClueCameraFromOmit(myObject); //add to our dictionary!
             Debug.Log("camera spawned!");
-            subject.NotifyObservers(ClueCameraActions.onSpawnCamera, myObject);
+            subject.NotifyObservers(ClueCameraActions.onSpawnCamera,new(clueCameraObj,myObject));
         }
     }
-   
+
+    public void OnNotify(LedgerActions data)
+    {
+        if (data == LedgerActions.onAddedPrimaryKeyToLedgerImage)
+        {
+            LoadObserver();
+        }
+    }
 }

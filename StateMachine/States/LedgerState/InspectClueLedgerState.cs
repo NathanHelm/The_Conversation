@@ -14,7 +14,9 @@ public class InspectClueLedgerState : LedgerState
     var renderer = UIData.INSTANCE.ledgerUIImage;
     UIManager.INSTANCE.EnableUIObject(ref ledgerUIImage);
     LedgerImageManager.INSTANCE.SetRenderTextureToLedgerImage(ref renderer, data.pageIndex);
-    ImageUIAnimations.INSTANCE.DrawLedgerImageUI();
+    IconUIAnimations.INSTANCE.DrawLedgerImageUI();
+
+
 
     ActionController.PRESSTAB_LEDGER += ActionController.INSTANCE.actionOpenLedgerTab.pressTabDisableLedger;
     ActionController.PRESSTAB_LEDGER += ActionController.INSTANCE.actionOpenLedgerTab.pressTabStopDialogue;
@@ -35,7 +37,7 @@ public class InspectClueLedgerState : LedgerState
     public override void OnExit(LedgerData data)
   {
 
-    ImageUIAnimations.INSTANCE.EraseLedgerImageUI();
+    IconUIAnimations.INSTANCE.EraseLedgerImageUI();
     var ledgerUIImage = UIData.INSTANCE.ledgerUIImage.gameObject;
     UIManager.INSTANCE.DisableUIObject(ref ledgerUIImage);
 

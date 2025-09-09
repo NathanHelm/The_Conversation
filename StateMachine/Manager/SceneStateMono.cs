@@ -9,25 +9,22 @@ using UnityEngine.InputSystem.XR.Haptics;
 
 public class SceneStateMono : StateMono<SceneData>
 {
-  public static State<SceneData> currentSceneState;
-  private void OnEnable()
-  {
-    Value = SceneData.INSTANCE;
-   
-  }
+ 
+ 
     
 
 
-    public void SwitchScene(State<SceneData> nextState, SceneNames nextSceneName)
+  public void SwitchScene(State<SceneData> nextState, SceneNames nextSceneName)
   {
     if (SceneData.INSTANCE == null)
     {
       UnityEngine.Debug.LogError("Scene data is not found, cannot execute switch scene function.");
       return;
     }
+
     SceneData.INSTANCE.nextScene = nextSceneName;
 
-     currentSceneState.OnExit(Value);
+    SceneData.CURRENTSCENESTATE.OnExit(SceneData.INSTANCE);
 
 
 
@@ -35,15 +32,10 @@ public class SceneStateMono : StateMono<SceneData>
     {
       SceneManager.onStartSceneManager.AddAction(sm => //function runs in MManager
       {
-
-        currentSceneState = nextState;
-
-        currentSceneState.Value = Value;
-
-        currentSceneState.OnEnter(Value);
-        
-        SceneData.INSTANCE.currentScene = nextSceneName;
-
+        SceneData.CURRENTSCENESTATE = nextState;
+        SceneData.CURRENTSCENESTATE.OnEnter(SceneData.INSTANCE);
+        ActionController.AFTERENTERINGSCENE(SceneManager.INSTANCE);
+        SceneData.CURRENTSCENE = nextSceneName;
         SceneManager.onAfterSceneChange.RemoveAllActions();
         SceneManager.onStartSceneManager.RemoveAllActions();
 

@@ -4,7 +4,11 @@ public class ObserverActions
 }
 namespace ObserverAction
 {
-
+    public enum LedgerToolActions
+    {
+        addImageToLedger, 
+        removeImageToLedger,
+    }
     public enum LedgerActions
     {
         activeLedger,
@@ -13,7 +17,9 @@ namespace ObserverAction
         movePageRight,
         onSetTextureToPageImage,
         onAfterMovePageFurthestLeft,
-        onSelectPage
+        onSelectPage,
+
+        onAddedPrimaryKeyToLedgerImage,
         /*
         public SystemActionCall<LedgerManager> onActiveLedger = new SystemActionCall<LedgerManager>();
         public SystemActionCall<LedgerManager> onAfterCreateLedger = new SystemActionCall<LedgerManager>();
@@ -39,7 +45,8 @@ namespace ObserverAction
 
     public enum PlayerActions
     {
-        onOmitRay,
+        onOmitRayClue,
+        onOmitRayCharacter
     }
     public enum ClueCameraActions
     {
@@ -65,7 +72,11 @@ namespace ObserverAction
     }
     public enum MemoryTransform
     {
-        onAfterTransformation
+        onAfterEnableTransformation
+    }
+    public enum StateMachineAction //should done something like this a long time ago... oh well.
+    {
+        onEnterInterviewScene
     }
 
 }

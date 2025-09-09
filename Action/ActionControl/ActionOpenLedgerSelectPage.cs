@@ -26,7 +26,7 @@ namespace ActionControl
             if (LedgerImageManager.INSTANCE.IsIndexInLedgerImageListRange(pageObjectsIndex))
             {
                 int currentClueBodyId = LedgerImageManager.INSTANCE.GetClueBodyIDFromPage(pageObjectsIndex);
-                int currentCludId = LedgerImageManager.INSTANCE.GetClueQuestionIDFromPage(pageObjectsIndex);
+                int currentCludId = LedgerImageManager.INSTANCE.GetQuestionIDFromPage(pageObjectsIndex);
                 DialogueData.INSTANCE.currentCharacterID = currentClueBodyId;
                 DialogueData.INSTANCE.currentQuestionID = currentCludId;
                 GameEventManager.INSTANCE.OnEvent(typeof(ClueConversationState));

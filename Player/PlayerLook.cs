@@ -73,7 +73,7 @@ public class PlayerLook : MonoBehaviour, IExecution
     {
         Look();
 
-        if (Input.GetKey("mouse 0"))
+        if (InputBuffer.INSTANCE.IsPressCharacter(KeyCode.Mouse0))
         {
             SwitchToPlayerRaycast();
         }
