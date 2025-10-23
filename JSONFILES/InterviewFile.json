@@ -1,0 +1,15 @@
+{
+    "Items": [
+        {
+            "Id": 0,
+            "name": "myfile",
+            "questionID": 0,
+            "characterID": 202,
+            "previousScene": 3,
+            "levelPosition": {
+                "x": 0.0,
+                "y": 0.0
+            }
+        }
+    ]
+}

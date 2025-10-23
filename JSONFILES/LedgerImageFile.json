@@ -1,0 +1,108 @@
+{
+    "Items": [
+        {
+            "Id": 0,
+            "name": "myfile",
+            "ledgerImages": [
+                {
+                    "imageDescription": "",
+                    "questionID": 300,
+                    "ledgerImage": {
+                        "instanceID": -32182
+                    },
+                    "ledgerOverlays": [],
+                    "clueQuestionID": -1,
+                    "clueID": 0,
+                    "clueBodyID": 31,
+                    "sceneName": 5,
+                    "clueCameraForeignKey": -1,
+                    "optionalImageFileNamePath": "LedgerNarrativeImages/Journal"
+                },
+                {
+                    "imageDescription": "",
+                    "questionID": 300,
+                    "ledgerImage": {
+                        "instanceID": -32184
+                    },
+                    "ledgerOverlays": [],
+                    "clueQuestionID": -1,
+                    "clueID": 0,
+                    "clueBodyID": 31,
+                    "sceneName": 5,
+                    "clueCameraForeignKey": -1,
+                    "optionalImageFileNamePath": "LedgerNarrativeImages/Journal"
+                },
+                {
+                    "imageDescription": "",
+                    "questionID": 48,
+                    "ledgerImage": {
+                        "instanceID": -32180
+                    },
+                    "ledgerOverlays": [],
+                    "clueQuestionID": -1,
+                    "clueID": -593070,
+                    "clueBodyID": 31,
+                    "sceneName": 3,
+                    "clueCameraForeignKey": -593070,
+                    "optionalImageFileNamePath": ""
+                },
+                {
+                    "imageDescription": "",
+                    "questionID": 300,
+                    "ledgerImage": {
+                        "instanceID": -32186
+                    },
+                    "ledgerOverlays": [],
+                    "clueQuestionID": -1,
+                    "clueID": 0,
+                    "clueBodyID": 31,
+                    "sceneName": 5,
+                    "clueCameraForeignKey": -1,
+                    "optionalImageFileNamePath": "LedgerNarrativeImages/Journal"
+                },
+                {
+                    "imageDescription": "",
+                    "questionID": 300,
+                    "ledgerImage": {
+                        "instanceID": -32188
+                    },
+                    "ledgerOverlays": [],
+                    "clueQuestionID": -1,
+                    "clueID": 0,
+                    "clueBodyID": 31,
+                    "sceneName": 5,
+                    "clueCameraForeignKey": -1,
+                    "optionalImageFileNamePath": "LedgerNarrativeImages/Journal"
+                },
+                {
+                    "imageDescription": "",
+                    "questionID": 300,
+                    "ledgerImage": {
+                        "instanceID": -32190
+                    },
+                    "ledgerOverlays": [],
+                    "clueQuestionID": -1,
+                    "clueID": 0,
+                    "clueBodyID": 31,
+                    "sceneName": 5,
+                    "clueCameraForeignKey": -1,
+                    "optionalImageFileNamePath": "LedgerNarrativeImages/Journal"
+                },
+                {
+                    "imageDescription": "",
+                    "questionID": 300,
+                    "ledgerImage": {
+                        "instanceID": -32192
+                    },
+                    "ledgerOverlays": [],
+                    "clueQuestionID": -1,
+                    "clueID": 0,
+                    "clueBodyID": 31,
+                    "sceneName": 5,
+                    "clueCameraForeignKey": -1,
+                    "optionalImageFileNamePath": "LedgerNarrativeImages/Journal"
+                }
+            ]
+        }
+    ]
+}

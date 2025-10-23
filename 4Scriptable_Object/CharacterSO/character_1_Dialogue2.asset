@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 161a9e145628543d2b3c66df6b9e206a, type: 3}
+  m_Name: character_1_Dialogue2
+  m_EditorClassIdentifier: 
+  character:
+    ID: 210
+    dialogueConversations:
+    - dialogueObjects:
+      - line: 210!!! line one
+        image: {fileID: 0}
+        imageTex: {fileID: 0}
+        imageTexIndex: 0
+      - line: 210!!! line 2
+        image: {fileID: 0}
+        imageTex: {fileID: 0}
+        imageTexIndex: 0
+      ID: 2
+      defaultImageTex: {fileID: 0}
+      defaultImageTexIndex: 0
+    - dialogueObjects:
+      - line: okay good question!
+        image: {fileID: 0}
+        imageTex: {fileID: 0}
+        imageTexIndex: 0
+      - line: okay good question part 2!
+        image: {fileID: 0}
+        imageTex: {fileID: 0}
+        imageTexIndex: 0
+      ID: 46
+      defaultImageTex: {fileID: 0}
+      defaultImageTexIndex: 0
+    memoryStages: []
+    characterFaceSheet: []
+    persistentConversationID: 2

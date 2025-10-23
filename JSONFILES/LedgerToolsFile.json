@@ -1,0 +1,12 @@
+{
+    "Items": [
+        {
+            "Id": 0,
+            "name": "myfile",
+            "clueBodyID": 31,
+            "questionID": 300,
+            "ledgerImageStreamAssetFileName": "Journal",
+            "persistent": false
+        }
+    ]
+}

@@ -1,0 +1,28 @@
+{
+    "Items": [
+        {
+            "Id": 0,
+            "name": "myfile",
+            "clueCameraObject": [
+                {
+                    "Id": 0,
+                    "name": "myfile",
+                    "camPos": {
+                        "x": 41.83190155029297,
+                        "y": 0.699999988079071,
+                        "z": -4.759676933288574
+                    },
+                    "camEulerRot": {
+                        "x": 35.250003814697269,
+                        "y": 312.75,
+                        "z": -0.0000010454691619088408
+                    },
+                    "textureName": "Image_-593070",
+                    "clueCameraPrimaryKey": -593070,
+                    "sceneId": 3,
+                    "clueId": 0
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac177cf7d65f143bb9bffa4b964cdb24, type: 3}
+  m_Name: UIGameObjectSO
+  m_EditorClassIdentifier: 
+  UICanvas: {fileID: 872076618121429267, guid: 95d3e8c28fd7049d68b8dcfd2fb21eef, type: 3}
+  LedgerUI: {fileID: 7749074121297753045, guid: dd9eb27dbc3c244499ef022ed19eba94, type: 3}
+  UICanvasScreenSize: {fileID: 3650971798423912878, guid: 08c19fb304b0e45ef89def1be5ed3b5a, type: 3}

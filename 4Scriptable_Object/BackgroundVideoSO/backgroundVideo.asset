@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7098ffc7af29d44d7a7558c9081bad74, type: 3}
+  m_Name: backgroundVideo
+  m_EditorClassIdentifier: 
+  backgroundVideosObjects:
+  - backgroundVideoColors:
+    - hue: -0.9
+      saturation: 1.5
+      brightness: 1.5
+      hsbSteps: {x: 6, y: 6, z: 6, w: 6}
+    videoClip: {fileID: 32900000, guid: 188d6e2a06c4a4a4bb2a9c0063278292, type: 3}
+  - backgroundVideoColors:
+    - hue: 10
+      saturation: 23
+      brightness: 3
+      hsbSteps: {x: 6, y: 6, z: 6, w: 6}
+    - hue: 0.8
+      saturation: 7
+      brightness: -0.9
+      hsbSteps: {x: 6, y: 6, z: 6, w: 6}
+    - hue: 47
+      saturation: 3.7
+      brightness: 5
+      hsbSteps: {x: 6, y: 6, z: 6, w: 6}
+    - hue: 1
+      saturation: 1.5
+      brightness: 13
+      hsbSteps: {x: 6, y: 6, z: 6, w: 6}
+    videoClip: {fileID: 32900000, guid: 6707538263d0c4effb59dc01f8d31700, type: 3}
+  - backgroundVideoColors:
+    - hue: -0.9
+      saturation: 1.5
+      brightness: 1.5
+      hsbSteps: {x: 12, y: 12, z: 12, w: 12}
+    videoClip: {fileID: 32900000, guid: 2ac0a41f7d1594304bfc7eb3057d9af1, type: 3}
+  backgroundFacesMaterial:
+  - {fileID: 2100000, guid: a1ca773ec5a04467cbfce22f4fe0a470, type: 2}
+  - {fileID: 2100000, guid: 95f344cd885834956945154308231caa, type: 2}
+  - {fileID: 2100000, guid: cdb3913c36d844de39da2aba26fad160, type: 2}
+  posterizationMaterial: {fileID: 2100000, guid: 9b6a9b3e05e97403b9ffead2a8526e74, type: 2}
+  videoPlayerPrefab: {fileID: 1723164942188309727, guid: 907d81e007df647fea0f8a414fc450cb, type: 3}

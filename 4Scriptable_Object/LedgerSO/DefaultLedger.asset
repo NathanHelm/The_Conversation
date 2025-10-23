@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 203d3d301006c43f182b024cc84a61d0, type: 3}
+  m_Name: DefaultLedger
+  m_EditorClassIdentifier: 
+  firstPageMat: {fileID: 2100000, guid: 991094de2d1a0487db607884e70da04c, type: 2}
+  lastPageMat: {fileID: 2100000, guid: 8dcc8f563ed6346dea7dae055aed3775, type: 2}
+  defaultMat: {fileID: 2100000, guid: dfeef87527b62413ca3847b89558e2ef, type: 2}
+  interviewIcon: {fileID: 0}
+  pagePrefab: {fileID: 3497369356904118028, guid: 4ab53d8b91ec34a59b65657f2d8d8401, type: 3}
+  doubleSidedPagePrefab: {fileID: 6996704879649217754, guid: 3568ec465d4ad4ae4ba40fbde90e55c5, type: 3}
+  pagesLength: 10
+  flipPageSpeedToEnd: 2
+  ledgerToolObjects:
+  - questionID: 300
+    ledgerImageStreamAssetFileName: Journal
+    persistent: 1

@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 203d3d301006c43f182b024cc84a61d0, type: 3}
+  m_Name: LedgerSO_Default
+  m_EditorClassIdentifier: 
+  pageSprite: {fileID: 347641337, guid: fcc54237011bb4a3a94bbfc950d81aa2, type: 3}
+  lastPageSprite: {fileID: 84729908, guid: fcc54237011bb4a3a94bbfc950d81aa2, type: 3}
+  firstPageSprite: {fileID: -894979537, guid: fcc54237011bb4a3a94bbfc950d81aa2, type: 3}
+  pagePrefab: {fileID: 0}

@@ -1,0 +1,15 @@
+{
+    "Items": [
+        {
+            "Id": 200,
+            "name": "myfile",
+            "characterID": 200,
+            "memoryObject": [
+                {
+                    "ID": 0,
+                    "subMemoryIds": []
+                }
+            ]
+        }
+    ]
+}

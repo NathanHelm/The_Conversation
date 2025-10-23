@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ef118ae8204146b3af9326699212065, type: 3}
+  m_Name: MemorySpawner
+  m_EditorClassIdentifier: 
+  subMemory3dPrefab: {fileID: 3796894776141121643, guid: dfd10216c344f4de6af6554e1a1ccfeb, type: 3}
+  subMemory2dPrefab: {fileID: 3098405483684421991, guid: 11397dae6f113448196a683535d36549, type: 3}

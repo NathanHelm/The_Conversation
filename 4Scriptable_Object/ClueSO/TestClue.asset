@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47efb4c9ddec54b59bbf6b61f7dc30f2, type: 3}
+  m_Name: TestClue
+  m_EditorClassIdentifier: 
+  imageDescription: clue image description
+  questionID: 46
+  ledgerImage: {fileID: 2800000, guid: f1301538a47fd4a18b87017411c9f203, type: 3}
+  clueID: 0
+  ledgerOverlays:
+  - {fileID: 2800000, guid: 3b0ecbee65dec494697d50e59083463e, type: 3}
+  - {fileID: 2800000, guid: 77c5859916ce94823b27270bd4d47d31, type: 3}
+  - {fileID: 2800000, guid: 377ee3ce0ceb843c389dd1e7fd54ad57, type: 3}
+  dialogConversation:
+    dialogueObjects:
+    - line: this is line one of the clue
+      image: {fileID: 0}
+      imageTex: {fileID: 0}
+      imageTexIndex: 0
+    - line: 
+      image: {fileID: 0}
+      imageTex: {fileID: 0}
+      imageTexIndex: 0
+    - line: this is line 3 of the clue
+      image: {fileID: 0}
+      imageTex: {fileID: 0}
+      imageTexIndex: 0
+    ID: 1
+    defaultImageTex: {fileID: 0}
+    defaultImageTexIndex: 0

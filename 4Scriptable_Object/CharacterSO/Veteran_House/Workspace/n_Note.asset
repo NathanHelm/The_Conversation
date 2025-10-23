@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 161a9e145628543d2b3c66df6b9e206a, type: 3}
+  m_Name: n_Note
+  m_EditorClassIdentifier: 
+  character:
+    ID: 202
+    bodyName: Note
+    dialogueConversations:
+    - dialogueObjects:
+      - line: 'pigeon dialogue
+
+
+'
+        image: {fileID: 0}
+        imageTex: {fileID: 0}
+        imageTexIndex: 0
+      ID: 46
+      defaultImageTex: {fileID: 0}
+      defaultImageTexIndex: 0
+    - dialogueObjects:
+      - line: "This bird is between life and death\u2026 \n\n\n"
+        image: {fileID: 0}
+        imageTex: {fileID: 0}
+        imageTexIndex: 0
+      - line: "I could stop the bird\u2019s misery"
+        image: {fileID: 0}
+        imageTex: {fileID: 0}
+        imageTexIndex: 0
+      - line: "But the voice inside the bird\u2019s head wants to speak with me. 
+          \n"
+        image: {fileID: 0}
+        imageTex: {fileID: 0}
+        imageTexIndex: 0
+      ID: 1
+      defaultImageTex: {fileID: 0}
+      defaultImageTexIndex: 0
+    - dialogueObjects:
+      - line: "squwak! squwak! \n\n\n"
+        image: {fileID: 0}
+        imageTex: {fileID: 0}
+        imageTexIndex: 0
+      - line: "brp? \n\n\n"
+        image: {fileID: 0}
+        imageTex: {fileID: 0}
+        imageTexIndex: 0
+      - line: "brrrrrrrp... squwak! \n\n\n"
+        image: {fileID: 0}
+        imageTex: {fileID: 0}
+        imageTexIndex: 0
+      ID: 666
+      defaultImageTex: {fileID: 0}
+      defaultImageTexIndex: 0
+    characterFaceSheet: []
+    interviewTexture: PIGEY
+    persistentConversationID: 1

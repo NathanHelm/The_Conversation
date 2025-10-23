@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d48c19642c0064753afd89c4093e2b81, type: 3}
+  m_Name: defaultHand
+  m_EditorClassIdentifier: 
+  leftHandPrefab: {fileID: 1363178208989432206, guid: 4336f7e52a3754a47b1bd6d1535d0719, type: 3}
+  rightHandPrefab: {fileID: 5309542423145907451, guid: 8b393b54f3bb841d1973b1cc5203232c, type: 3}
+  farthestLeft: {x: -660, y: -90}
+  farthestRight: {x: 675, y: -90}
+  leftPageObjectPosition: {x: -350, y: -300}
+  rightPageObjectPosition: {x: 350, y: -300}
+  pageWriteEndOffset: {x: 300, y: 585}
+  pageWriteStartOffset: {x: -240, y: -50}
+  leftHandBasePosition: {x: -650, y: -300, z: -150}
+  ledgerImageUIPosition: {x: 0, y: -300, z: -900}

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6704d0e1c25ea4aa8887ae8aa755df81, type: 3}
+  m_Name: Default_Image_SO
+  m_EditorClassIdentifier: 
+  icons:
+  - iconNumber: 1
+    texture: {fileID: 2800000, guid: c78dc699a951c421db1b85a47bf3d95a, type: 3}
+  leftIconShift: 40
+  iconPrefab: {fileID: 3049128926867862009, guid: e4b3d061c32464a7caefdc692c8e63f9, type: 3}
+  ledgerImageUI: {fileID: 2800000, guid: da405f481770b8a4a8592cf2f2eeb50d, type: 3}
+  ledgerImageUIMaterial: {fileID: 2100000, guid: 824a80d8720fd4a07804b86d0e68424c, type: 2}
+  dialogueSelectionObject:
+    uiDialogueButtonImage: {fileID: 6747250161832571656, guid: 54d6813edc16544cebda459c9bee1c7a, type: 3}
+    width: 50
+    height: 80
