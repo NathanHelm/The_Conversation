@@ -91,41 +91,58 @@ public class TriggerManager : StaticInstance<TriggerManager>, IExecution
     public void DefaultTrigger(Collider2D other, ref Trigger trigger)
     {
         Debug.Log("TRIGGER--ENTER!" + other.gameObject.name);
+
+        if (other.GetComponent<NarrativeLedgerMono>() != null)
+        {
+            var nMono = other.GetComponent<NarrativeLedgerMono>();
+            int bodyId = nMono.bodyID;
+            nMono.DestroyMe();
+            triggerActionManager.GetTriggerAction(bodyId)();
+
+            return;
+        }
+
         BodyMono[] bodyMono = other.GetComponents<BodyMono>();
         if (bodyMono.Length == 0)
         {
             return;
         }
 
+
         triggerData.triggerOnTrigger = trigger;
        
         for(int i = 0; i < bodyMono.Length; i++)
-        {
-        if (bodyMono[i] is not CharacterMono) //adds collider which is in trigger to a list
-        {
-            trigger.bodiesOnTrigger.Add(bodyMono[i]);
-            break;
+        {   
+            if (bodyMono[i] is not CharacterMono) //adds collider which is in trigger to a list
+            {
+                trigger.bodiesOnTrigger.Add(bodyMono[i]);
+                break;
+            }
         }
-        }
-        if (other.GetComponent<CharacterMono>() != null) 
+        
+
+        if (other.GetComponent<CharacterMono>() != null)
         {
             trigger.charactersOnTrigger.Add(other.GetComponent<CharacterMono>()); //note that player is NOT character.
         }
-        if (trigger.charactersOnTrigger.Count > 1)
-        {
-            Debug.LogWarning("2 or more characters on trigger");
+      
 
-            //-get characterIDs in trigger
-            //-get trigger action for multiple triggers
-            List<int> characterIDs = new();
-            foreach (CharacterMono single in trigger.charactersOnTrigger)
+
+        if (trigger.charactersOnTrigger.Count > 1)
             {
-                characterIDs.Add(single.bodyID);
+                Debug.LogWarning("2 or more characters on trigger");
+
+                //-get characterIDs in trigger
+                //-get trigger action for multiple triggers
+                List<int> characterIDs = new();
+                foreach (CharacterMono single in trigger.charactersOnTrigger)
+                {
+                    characterIDs.Add(single.bodyID);
+                }
+                Data.TriggerData.INSTANCE.characterMonosInTrigger = trigger.charactersOnTrigger;
+                triggerActionManager.GetTriggerActionMultipleTriggers(characterIDs.ToArray())();
+                return;
             }
-            Data.TriggerData.INSTANCE.characterMonosInTrigger = trigger.charactersOnTrigger;
-            triggerActionManager.GetTriggerActionMultipleTriggers(characterIDs.ToArray())();
-            return;
-        }
         
 
         if (trigger.charactersOnTrigger.Count > 0) //if player != null return

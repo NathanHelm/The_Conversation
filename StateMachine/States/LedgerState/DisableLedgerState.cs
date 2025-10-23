@@ -14,7 +14,7 @@ public class DisableLedgerState : LedgerState
           LedgerManager.INSTANCE.CreateLedger();
         }
         LedgerManager.INSTANCE.DisableLedger();
-
+        //1
         ActionController.PRESSTAB_LEDGER += ActionController.INSTANCE.actionOpenLedgerTab.pressTabStartCutscene;
         ActionController.PRESSTAB_LEDGER += ActionController.INSTANCE.actionOpenLedgerTab.pressTabOpenLedger;
        

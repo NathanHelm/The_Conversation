@@ -18,10 +18,12 @@ public class JsonLedgerImageObject
     public SceneNames sceneName;
 
     public int clueCameraForeignKey;
+
+    public string optionalImageFileNamePath;
     //============================================
     // public LedgerImage(int clueID, string imageDescription, int questionID, int clueQuestionID, Texture ledgerImg, Texture[] ledgerOverlays, int clueBodyID, int ledgerImageKey)
-   
-    public JsonLedgerImageObject(string imageDescription, int questionID, Texture ledgerImage, Texture[] ledgerOverlays, int clueQuestionID, int clueID, int clueBodyID, SceneNames sceneName, int clueCameraForeignKey)
+
+    public JsonLedgerImageObject(string imageDescription, int questionID, Texture ledgerImage, Texture[] ledgerOverlays, int clueQuestionID, int clueID, int clueBodyID, SceneNames sceneName, int clueCameraForeignKey, string optionalImageFileNamePath)
     {
         this.imageDescription = imageDescription;
         this.questionID = questionID;
@@ -32,6 +34,7 @@ public class JsonLedgerImageObject
         this.clueBodyID = clueBodyID;
         this.sceneName = sceneName;
         this.clueCameraForeignKey = clueCameraForeignKey;
+        this.optionalImageFileNamePath = optionalImageFileNamePath;
     }
     
 

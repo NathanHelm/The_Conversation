@@ -190,9 +190,14 @@ public class MemorySpawnerManager : StaticInstance<MemorySpawnerManager>, ISaveL
             MemoryData.INSTANCE.spawnedMemoryStageObject = spawnedMemoryStageObject.ToArray();
             //MemoryData.INSTANCE.currentCharacterID = character.characterID;
         });
-
-        subject.NotifyObservers(ObserverAction.MemorySpawnerAction.onAfterStageObjectsSpawn);
-
+        if (jsonUnlockMemoryObjects.Count > 0)
+        {
+            subject.NotifyObservers(ObserverAction.MemorySpawnerAction.onAfterStageObjectsSpawn);
+        }
+        else
+        {
+            Debug.LogError("No memories are found in json. we will not be running memory spawner manager functions.");
+        }
     }
 
     public (FileNames, JsonObject[])[] Save()

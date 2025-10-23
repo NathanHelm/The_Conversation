@@ -12,6 +12,7 @@ namespace ActionControl
         {
             GameEventManager.INSTANCE.OnEvent(typeof(OpenLedgerState));
             GameEventManager.INSTANCE.OnEvent(typeof(EndConversationState));
+            
         };
         public Action<DialogueManager> runEndDialogueSelectionAgain = lm =>
         {

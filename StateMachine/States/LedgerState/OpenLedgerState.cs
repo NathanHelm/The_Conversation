@@ -6,8 +6,10 @@ public class OpenLedgerState : LedgerState
 {
     public override void OnEnter(LedgerData data)
     {
+        //ActionController.PRESSTAB_LEDGER = x => { };
+
         Debug.Log("Active ledger state");
-            GameEventManager.INSTANCE.OnEvent(typeof(EnableHandState));
+        GameEventManager.INSTANCE.OnEvent(typeof(EnableHandState));
         
         LedgerManager.INSTANCE.OpenLedger();
 
@@ -39,7 +41,6 @@ public class OpenLedgerState : LedgerState
     {
         ActionController.PRESSTAB_LEDGER -= ActionController.INSTANCE.actionOpenLedgerTab.pressTabStopCutscene;
         ActionController.PRESSTAB_LEDGER -= ActionController.INSTANCE.actionOpenLedgerTab.pressTabDisableLedger;
-
 
         Debug.Log("leaving open ledger! but why?");
         base.OnExit(data);

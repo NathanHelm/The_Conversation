@@ -4,7 +4,11 @@ public class VetHouseSceneState : SceneState
 {
     public override void OnEnter(SceneData data)
     {
-       
+        //TODO change!
+        ActionController.PRESSRETURN_LEDGER = lm => { };
+        ActionController.AFTERDIALOGUE = lm => { };
+        ActionController.PRESSTAB_LEDGER = lm => { };
+        
         SceneData.CURRENTSCENE = SceneNames.VetHouseScene;
         GameEventManager.INSTANCE.OnEvent(typeof(DisableHandState));
         GameEventManager.INSTANCE.OnEvent(typeof(DisableLedgerState));
@@ -13,15 +17,21 @@ public class VetHouseSceneState : SceneState
         LedgerImageManager.INSTANCE?.Load();
         QuestionResponseManager.INSTANCE?.Load();
         MemoryManager.INSTANCE?.Load();
+        LedgerNarrativeManager.INSTANCE?.Load();
         ActionController.PRESSRETURN_LEDGER += ActionController.INSTANCE.actionOpenLedgerSelectPage.runClueDialogueOnSelectPage;
     }
     public override void OnExit(SceneData data)
     {
+
         MManager.INSTANCE.onStartManagersAction.RemoveAllActions();
 
-        ActionController.PRESSRETURN_LEDGER -= ActionController.INSTANCE.actionOpenLedgerSelectPage.runClueDialogueOnSelectPage;
-       
+        SavePersistenceManager.INSTANCE.SaveInterfaceData(LedgerNarrativeManager.INSTANCE);
+
+        ActionController.PRESSRETURN_LEDGER = lm => { };
+         ActionController.AFTERDIALOGUE = lm => { };
         ActionController.PRESSTAB_LEDGER = lm => { };
+        
+
 
         //1 -- determine what needs to be saved on exit (if anything...)
         if (data.nextScene == SceneNames.InterviewScene)
@@ -34,9 +44,9 @@ public class VetHouseSceneState : SceneState
             SavePersistenceManager.INSTANCE.SaveInterfaceData(CharacterManager.INSTANCE);
             SavePersistenceManager.INSTANCE.SaveInterfaceData(ClueCameraManager.INSTANCE);
             SavePersistenceManager.INSTANCE.SaveInterfaceData(LedgerImageManager.INSTANCE);
-
+            SavePersistenceManager.INSTANCE.SaveInterfaceData(LedgerNarrativeManager.INSTANCE);
             SavePersistenceManager.INSTANCE.SaveInterfaceData(MemoryManager.INSTANCE); //save memory dictionary
-          
+
         }
         else
         {

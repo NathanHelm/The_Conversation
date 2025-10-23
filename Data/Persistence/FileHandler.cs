@@ -35,7 +35,7 @@ public class FileHandler<T> where T : JsonObject
         }
         return true;
     }
-    private bool IsJSONValid(string json)
+    public bool IsJSONEmpty(string json) //determines whether json has been initialized.
     {
         
         if(string.IsNullOrEmpty(json))

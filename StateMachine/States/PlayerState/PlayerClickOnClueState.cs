@@ -15,14 +15,14 @@ public class PlayerClickOnClueState : PlayerState
 
         CutsceneManager.INSTANCE.SetOPreviousState(new (string, Type)[] { new("DimensionState", typeof(TransitionTo3d)), new("PlayerState", typeof(PlayerLook3dState)), new("DialogueState", typeof(NoConversationState)) });
 
-        CutsceneManager.INSTANCE.RemovePreviousStateMono("CutsceneState");
+        CutsceneManager.INSTANCE.RemoveCapturedStateMono("CutsceneState");
         CutsceneManager.INSTANCE.RemoveStopStateMono("CutsceneState");
 
         CutsceneManager.INSTANCE.RemoveStopStateMono("LedgerState");
-        CutsceneManager.INSTANCE.RemovePreviousStateMono("LedgerState");
+        CutsceneManager.INSTANCE.RemoveCapturedStateMono("LedgerState");
 
         CutsceneManager.INSTANCE.RemoveStopStateMono("HandState");
-        CutsceneManager.INSTANCE.RemovePreviousStateMono("HandState");
+        CutsceneManager.INSTANCE.RemoveCapturedStateMono("HandState");
         
         
         PlayerData.INSTANCE.playerRaycast.OmitRaycast(direction);

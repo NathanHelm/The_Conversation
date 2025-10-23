@@ -6,7 +6,6 @@ using System.Linq;
 using Data;
 public class CutsceneManager : StaticInstance<CutsceneManager>, IExecution
 {
-    private object[] idlestates = new object[] { };
     private object[] previousStates = new object[] { };
 
     private (string stateMonoName, Type state)[] oPauseState = new (string stateMonoName, Type state)[] { };
@@ -20,14 +19,8 @@ public class CutsceneManager : StaticInstance<CutsceneManager>, IExecution
 
     public override void m_Start()
     {
-        idlestates = StateManager.INSTANCE.stopStates;
-        stateMachineStateName = StateManager.INSTANCE.GetStateHashmap(idlestates);
     }
     //below we set what states on play and stop cutscene will be
-    public void SetOPauseState((string stateMonoName, Type state)[] oPauseState) //set both fields before running code 
-    {
-        this.oPauseState = oPauseState;
-    }
     public void SetOPreviousState((string stateMonoName, Type state)[] oPreviousState)
     {
         this.oPreviousState = oPreviousState;
@@ -38,29 +31,31 @@ public class CutsceneManager : StaticInstance<CutsceneManager>, IExecution
         //get previous states before transitioning current states to idle
         previousStates = StateManager.INSTANCE.SnapShotCurrentStates();
 
-        idlestates = StateManager.INSTANCE.stopStates;
+        var idlestates = StateManager.INSTANCE.stopStates;
+
+        //here we are getting all of the idle states
         stateMachineStateName = StateManager.INSTANCE.GetStateHashmap(idlestates);
 
-
+        //here we are getting our pause states and overriding them with the idle states.
         foreach ((string, Type) overridePauseState in oPauseState)
         {
             stateMachineStateName[overridePauseState.Item1] = overridePauseState.Item2;
         }
-
+        //here we are removing the states we don't want to change in the cutscene.
         RemoveStateMono(removeStateOnStopState);
 
 
+        RunState(); //running the states (using gamemanager.onevent)
+
         removeStateOnStopState = new List<string>(); //reset states 
-
-        RunState();
-
-        oPauseState = new (string stateMonoName, Type state)[] { };
+        oPauseState = new (string stateMonoName, Type state)[] { }; //reset override states
 
     }
 
     //running previous states when cutscene ends
     public void PlayAllPreviousStates()
     {
+        Debug.Log("playing previous states!");
         if (previousStates.Length == 0)
         {
             Debug.LogError("previous states not found");
@@ -70,21 +65,22 @@ public class CutsceneManager : StaticInstance<CutsceneManager>, IExecution
             Debug.LogWarning("removed play cutscene state from captured previous states!");
             RemoveCapturedCutsceneState();
         }
+
         stateMachineStateName = StateManager.INSTANCE.GetStateHashmap(previousStates);
 
         foreach ((string, Type) overridePreviousState in oPreviousState)
         {
             stateMachineStateName[overridePreviousState.Item1] = overridePreviousState.Item2;
         }
-
         RemoveStateMono(removeStateOnRunPreviousState);
-        removeStateOnRunPreviousState = new List<string>(); //reset string
-
         RunState();
+
+
         oPreviousState = new (string stateMonoName, Type state)[] { };
+        removeStateOnRunPreviousState = new List<string>(); //reset string
     }
 
-    public void RemovePreviousStateMono(string s) //states that will not run when returning to previous state when cutscene is over
+    public void RemoveCapturedStateMono(string s) //states that will not run when returning to previous state when cutscene is over
     {
         //for example to ledger that is running stop cutscene does not need to be overriden with the "returning" ledger state. 
         removeStateOnRunPreviousState.Add(s);
@@ -103,16 +99,19 @@ public class CutsceneManager : StaticInstance<CutsceneManager>, IExecution
 
     }
 
+
     public void ResetStateMachineState()
     {
         oPreviousState = new (string stateMonoName, Type state)[] { };
         oPauseState = new (string stateMonoName, Type state)[] { };
+        removeStateOnStopState = new();
+        removeStateOnRunPreviousState = new();
     }
 
 
     private void RunState() //runs the states in state dictionary
     {
-       
+
         var values = stateMachineStateName.Values;
         foreach (Type state in values)
         {
@@ -120,19 +119,9 @@ public class CutsceneManager : StaticInstance<CutsceneManager>, IExecution
         }
     }
 
-    public void LedgerDialog()
-    {
-        SetOPreviousState(new (string, Type)[] { new("DimensionState", typeof(TransitionTo3d)), new("PlayerState", typeof(PlayerLook3dState)), new("DialogueState", typeof(NoConversationState)) });
-        RemovePreviousStateMono("CutsceneState");
-        RemoveStopStateMono("CutsceneState");
-        RemoveStopStateMono("LedgerState");
-        RemovePreviousStateMono("LedgerState");
-        RemoveStopStateMono("HandState");
-        RemovePreviousStateMono("HandState");
-    }
     public void RemoveCapturedCutsceneState()
     {
-        RemovePreviousStateMono("CutsceneState");
+        RemoveCapturedStateMono("CutsceneState");
     }
 
 

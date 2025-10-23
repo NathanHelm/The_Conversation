@@ -10,5 +10,9 @@ public class PlayCutsceneState : CutsceneState
         Debug.Log("play cutscene");
         CutsceneManager.INSTANCE.PauseAllStates();
     }
+    public override void OnExit(CutsceneData data)
+    {
+      //CutsceneManager.INSTANCE.ResetStateMachineState();
+    }
 }
 

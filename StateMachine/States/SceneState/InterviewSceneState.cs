@@ -32,8 +32,6 @@ public class InterviewSceneState : SceneState{
 
         SavePersistenceManager.INSTANCE.SaveInterfaceData(MemoryManager.INSTANCE);
 
-        ActionController.PRESSRETURN_LEDGER = lm => { };
-        ActionController.PRESSTAB_LEDGER = lm => { UnityEngine.Debug.Log("exit interview log!"); };
         base.OnExit(data);
     }
 }

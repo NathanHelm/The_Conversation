@@ -14,7 +14,7 @@ using System.Numerics;
 using UnityEditor;
 
 
-public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad, IExecution, IObserverData<ObserverAction.ClueCameraActions,(ClueCameraObject,ClueMono)>, IObserver<ObserverAction.LedgerActions>
+public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad, IExecution, IObserverData<ObserverAction.ClueCameraActions,(ClueCameraObject,ClueMono)>, IObserver<ObserverAction.LedgerActions>, IObserverData<ObserverAction.LedgerNarrativeActions, LedgerImage>
 {
 
     public LedgerImage temporaryImage { get; set; } = null;
@@ -37,7 +37,7 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad,
     {
 
         MManager.INSTANCE.onStartManagersAction.AddAction(m => { m.ledgerImageManager = this; });
-
+        LedgerNarrativeManager.INSTANCE?.subject.AddObserver(this);
         ClueCameraManager.INSTANCE?.subject.AddObserver(this);
         LedgerManager.INSTANCE?.subject.AddObserver(this);
 
@@ -140,7 +140,7 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad,
 
     public void AddRayInfoToLedgerImage(int clueID, string imageDescription, int questionID, Texture ledgerImg, int clueBodyID, SceneNames sceneName, int clueCameraForeignKey) //converts ray information to ledger image object
     {
-        LedgerImage ledgerImage = new(clueID, imageDescription, questionID, ledgerImg, clueBodyID, sceneName, clueCameraForeignKey);
+        LedgerImage ledgerImage = new(clueID, imageDescription, questionID, ledgerImg, clueBodyID, sceneName, clueCameraForeignKey,"");
 
         if (ledgerImages.Count >= MaxLedgerImageLength)
         {
@@ -179,8 +179,8 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad,
             ledgerImages[i].clueID,
             ledgerImages[i].clueBodyID,
             ledgerImages[i].sceneName,
-            ledgerImages[i].clueCameraForiegnKey
-
+            ledgerImages[i].clueCameraForiegnKey,
+            ledgerImages[i].optionalImageFileNamePath
 
             );
         }
@@ -210,20 +210,24 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad,
 
         for (int i = 0; i < n; i++)
         {
+           
             LedgerImage ledgerImage = new(
 
             jsonLedgerImageObjects1[i].clueID,
             jsonLedgerImageObjects1[i].imageDescription,
             jsonLedgerImageObjects1[i].questionID,
-
             dummy,
             jsonLedgerImageObjects1[i].clueBodyID,
             jsonLedgerImageObjects1[i].sceneName,
-            jsonLedgerImageObjects1[i].clueCameraForeignKey
+            jsonLedgerImageObjects1[i].clueCameraForeignKey,
+            jsonLedgerImageObjects1[i].optionalImageFileNamePath
 
             );
             AddLedgerImage(ledgerImage);
-            PopulatePkKeyToLedgerImage(jsonLedgerImageObjects1[i].clueCameraForeignKey, ledgerImage);
+            if (jsonLedgerImageObjects1[i].optionalImageFileNamePath == "") //If ledger image has no clue camera. (its possible!)
+            {
+                PopulatePkKeyToLedgerImage(jsonLedgerImageObjects1[i].clueCameraForeignKey, ledgerImage);
+            }
             
         }
         //notify observer (load clue camera manager)... 
@@ -231,7 +235,11 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad,
 
         for (int i = 0; i < n; i++)
         {
-
+            if (ledgerImages[i].optionalImageFileNamePath != "")
+            {
+                ledgerImages[i].ledgerImage = TextureHandler.INSTANCE.GetTextureAbsolute(ledgerImages[i].optionalImageFileNamePath);
+                continue;
+            }   
             ClueCameraObject clueCameraObject = ClueCameraManager.INSTANCE.GetClueCameraObjectOnPK(jsonLedgerImageObjects1[i].clueCameraForeignKey);
 
             if (clueCameraObject == null)
@@ -250,7 +258,6 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad,
         SetTexturesToLedgerUIPages();
         for (int i = 0; i < ledgerImages.Count; i++)
         {
-          //  AddPostProcessingRenderTextures(ledgerImages[i]);
             SetImageValueToOne(i);
         }
     }
@@ -313,47 +320,6 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad,
 
 
     }
-    /*
-    public IEnumerator test()
-    {
-
-        while (true)
-        {
-            // GL.Clear(true, true, Color.clear);
-            for (int i = 0; i < ledgerImages.Count; i++)
-            {
-                //1) get the image
-                if (ledgerImages[i].ledgerImage is not RenderTexture)
-                {
-                    //   continue;
-                }
-                var rt = ledgerImages[i].ledgerImage;
-                RenderTexture rt2 = TextureHandler.INSTANCE.CreateRenderTexture(rt.height, rt.width, 24);
-                Material mat = new Material(sobelFilter);
-                if (i == 0)
-                {
-                    mat.SetFloat("_OutlineThickness", 10);
-                    mat.SetFloat("_OutlineDepthMultiplier", 1);
-                    mat.SetFloat("_OutlineDepthBias", 1);
-                    mat.SetFloat("_OutlineNormalMultiplier", 1);
-                    mat.SetFloat("_OutlineNormalBias", 1);
-                }
-                else
-                {
-                    mat.SetFloat("_OutlineThickness", 1000);
-                }
-                Graphics.Blit(rt, testing[i], mat);
-                UI.LedgerUIManager.INSTANCE.SetTextureToPage(i, rt);
-                RenderTexture.active = null;
-
-            }
-
-            //SetTexturesToLedgerUIPages();
-
-            yield return new WaitForSeconds(1);
-        }
-    }*/
-    
     public void AddPostProcessingRenderTextures(LedgerImage ledgerImage)
     {
         Debug.Log("my instance" + ledgerImage.ledgerImage.GetInstanceID());
@@ -366,5 +332,18 @@ public class LedgerImageManager : StaticInstance<LedgerImageManager>, ISaveLoad,
 
         var rt2 = TextureHandler.INSTANCE.CreateRenderTexture(rt.height, rt.width, 24);
         postProcessingRenderTextures.Add(rt2);
+    }
+
+    public void OnNotify(LedgerNarrativeActions data, LedgerImage ledgerImage)
+    {
+        if (data == LedgerNarrativeActions.addImageToLedger)
+        {
+            AddLedgerImage(ledgerImage);
+            SetTexturesToLedgerUIPages();
+            for (int i = 0; i < ledgerImages.Count; i++)
+            {
+                SetImageValueToOne(i);
+            }
+        }
     }
 }

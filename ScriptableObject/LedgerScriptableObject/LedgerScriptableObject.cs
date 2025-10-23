@@ -18,7 +18,8 @@ public class LedgerScriptableObject : ScriptableObject
         "speed at which it takes to make it from first to last page."
     )]
     public float flipPageSpeedToEnd;
-    
-    //public 
+
+
+    public LedgerNarrativeObject[] ledgerToolObjects;
 
 }

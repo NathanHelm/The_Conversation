@@ -16,9 +16,9 @@ namespace ActionControl
                 return;
             }
             int currentClueId = LedgerImageManager.INSTANCE.GetQuestionIDFromPage(pageObjectsIndex);
-            //"LOG: getting clue id from page object " + currentClueId);
             DialogueData.INSTANCE.currentQuestionID = currentClueId;
             GameEventManager.INSTANCE.OnEvent(typeof(ClueConversationState));
+            GameEventManager.INSTANCE.OnEvent(typeof(InspectClueLedgerState));
         };
         public Action<LedgerManager> runClueDialogueOnSelectPage = lm =>
         {
@@ -26,9 +26,9 @@ namespace ActionControl
             if (LedgerImageManager.INSTANCE.IsIndexInLedgerImageListRange(pageObjectsIndex))
             {
                 int currentClueBodyId = LedgerImageManager.INSTANCE.GetClueBodyIDFromPage(pageObjectsIndex);
-                int currentCludId = LedgerImageManager.INSTANCE.GetQuestionIDFromPage(pageObjectsIndex);
+                int currentClueQuestionId = LedgerImageManager.INSTANCE.GetQuestionIDFromPage(pageObjectsIndex);
                 DialogueData.INSTANCE.currentCharacterID = currentClueBodyId;
-                DialogueData.INSTANCE.currentQuestionID = currentCludId;
+                DialogueData.INSTANCE.currentQuestionID = currentClueQuestionId;
                 GameEventManager.INSTANCE.OnEvent(typeof(ClueConversationState));
                 GameEventManager.INSTANCE.OnEvent(typeof(InspectClueLedgerState));
             }

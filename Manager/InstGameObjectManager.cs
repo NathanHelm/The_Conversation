@@ -33,9 +33,11 @@ public class InstGameObjectManager : MonoBehaviour, IExecution
         var uI = GameObject.FindGameObjectWithTag("UI");
 
         var ledgerUI = Instantiate(uIGameobjectsScriptableObject?.LedgerUI, uI?.transform);
+
         ledgerUI.GetComponent<Canvas>().worldCamera = GameObject.FindGameObjectWithTag("LedgerCams").GetComponentsInChildren<Camera>()[0];
-        
+
         Instantiate(uIGameobjectsScriptableObject?.UICanvas, uI?.transform);
+        Instantiate(uIGameobjectsScriptableObject?.UICanvasScreenSize, uI?.transform);
     }
     
     private void InstLedgerCam()

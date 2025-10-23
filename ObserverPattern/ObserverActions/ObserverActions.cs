@@ -4,11 +4,13 @@ public class ObserverActions
 }
 namespace ObserverAction
 {
-    public enum LedgerToolActions
+    public enum LedgerNarrativeActions
     {
-        addImageToLedger, 
+        addImageToLedger,
         removeImageToLedger,
+        loadLedgerNarrative
     }
+  
     public enum LedgerActions
     {
         activeLedger,

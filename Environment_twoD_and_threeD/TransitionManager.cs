@@ -22,12 +22,25 @@ public class TransitionManager : StaticInstance<TransitionManager>, IExecution{
        actionOnStartConversation.RunAction(this);
     }
     public void ToDimension(DimensionScriptableObject dimensionScriptableObject)
-	{
-		cam.orthographic = dimensionScriptableObject.isOrthographic;
-        // cam.orthographicSize = dimensionScriptableObject.cameraSize;
+    {
+        cam.orthographic = dimensionScriptableObject.isOrthographic;
+        //
+        if (dimensionScriptableObject.isOrthographic)
+        {
+            int layerIndex = LayerMask.NameToLayer("Sprite");
+            int layerBit = 1 << layerIndex;
+            cam.cullingMask |= layerBit;
+        }
+        else
+        {
+            int layerIndex = LayerMask.NameToLayer("Sprite");
+            int layerBit = 1 << layerIndex;
+            cam.cullingMask  &= ~layerBit;
+        }
         
-        Data.DimensionData.INSTANCE.cinemachineVirtualCamera2D.m_Lens.OrthographicSize = dimensionScriptableObject.cameraSize;
-		dimensionScriptableObject.cinemachineVirtualCamera.Priority = 1;
+        //
+            Data.DimensionData.INSTANCE.cinemachineVirtualCamera2D.m_Lens.OrthographicSize = dimensionScriptableObject.cameraSize;
+        dimensionScriptableObject.cinemachineVirtualCamera.Priority = 1;
 	}
     public void SetCamToZero(DimensionScriptableObject dimensionScriptableObject)
     {

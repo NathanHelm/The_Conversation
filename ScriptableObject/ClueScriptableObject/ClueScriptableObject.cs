@@ -12,8 +12,6 @@ public class ClueScriptableObject : ScriptableObject
     public Texture ledgerImage;
     [Header("official id for the clue.")]
     public int clueID;
-    public int clueQuestionID;
-
     public Texture[] ledgerOverlays;
 
     [Header("there is no need to add a id-- you will be routed to cluemono static instance")]

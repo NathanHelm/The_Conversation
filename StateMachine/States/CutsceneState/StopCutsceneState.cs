@@ -3,9 +3,13 @@ using System.Collections;
 using Data;
 public class StopCutsceneState : CutsceneState
 {
-    public override void OnEnter(CutsceneData data)
+  public override void OnEnter(CutsceneData data)
+  {
+    CutsceneManager.INSTANCE.PlayAllPreviousStates();
+    CutsceneManager.INSTANCE.ResetStateMachineState();
+  }
+    public override void OnExit(CutsceneData data)
     {
-      CutsceneManager.INSTANCE.PlayAllPreviousStates();
       CutsceneManager.INSTANCE.ResetStateMachineState();
     }
 }

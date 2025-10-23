@@ -124,7 +124,12 @@ public class LedgerManager : StaticInstance<LedgerManager>, IExecution
     public void MovePagesToFurthestLeft()
     {
         StartCoroutine(MovePageLeftUntilIndex(index, 0, animationSpeed, 0));
-      
+    }
+    public void SetLayeringToFirstPage()
+    {
+        //make first page the topmost render queue (used when ledgermanager starts.)
+       // for(int i = 0; i < )
+
     }
 
     public void OpenLedger()
@@ -136,10 +141,11 @@ public class LedgerManager : StaticInstance<LedgerManager>, IExecution
     
     public void ChangeColorLayeringBorderLeft()
     {
-        for(int i = 0; i < pageObjectLength; i++)
-            {
-                UI.LedgerUIManager.INSTANCE.LayerDownAtIndex(i, 2500);
-            }  
+        UI.LedgerUIManager.INSTANCE.LayerDownAtIndex(0, 3100);
+        for (int i = 1; i < pageObjectLength; i++)
+        {
+            UI.LedgerUIManager.INSTANCE.LayerDownAtIndex(i, 2500);
+        }  
         UI.LedgerUIManager.INSTANCE.ChangeBorderLeft();
     }
 

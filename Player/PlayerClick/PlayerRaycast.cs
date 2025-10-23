@@ -59,10 +59,7 @@ public class PlayerRaycast : MonoBehaviour
                 subjectCharacter.NotifyObservers(PlayerActions.onOmitRayCharacter, characterMonoInRay);
                 GameEventManager.INSTANCE.OnEvent(typeof(MemorySceneState));
             }
-            //TODO Change this
-
-                //add dialogue that says drawing here is useless... 
-
+             
 
 
                 Debug.Log("hit!!!!");

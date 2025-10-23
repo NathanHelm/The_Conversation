@@ -12,12 +12,12 @@ namespace ActionControl
         public Action<LedgerManager> pressTabEnterPreviousScene = lm =>
         {
             Debug.Log("err-1");
-            GameEventManager.INSTANCE.OnEvent(SceneManager.INSTANCE.enumSceneNameToSceneState[InterviewData.PREVIOUSSCENE]);
+            GameEventManager.INSTANCE.OnEvent(SceneManager.INSTANCE.enumSceneNameToSceneState[SceneData.PREVIOUSSCENE]);
         };
         public Action<LedgerManager> pressTabEnterInterviewScene = lm =>
         {
-              Debug.Log("err-2");
-             GameEventManager.INSTANCE.OnEvent(typeof(InterviewSceneState));
+            Debug.Log("err-2");
+            GameEventManager.INSTANCE.OnEvent(typeof(InterviewSceneState));
         };
         public Action<LedgerManager> pressTabDisableLedger = lm =>
         {
@@ -39,11 +39,15 @@ namespace ActionControl
         public Action<LedgerManager> pressTabStartCutscene = lm =>
         {
               Debug.Log("err-6");
+
             GameEventManager.INSTANCE.OnEvent(typeof(PlayCutsceneState));
         };
         public Action<LedgerManager> pressTabStopCutscene = lm =>
         {
-              Debug.Log("err-7");
+            Debug.Log("err-7");
+            CutsceneManager.INSTANCE.RemoveCapturedStateMono("LedgerState");
+            CutsceneManager.INSTANCE.SetOPreviousState(new (string, Type)[] { ("PlayerState", typeof(PlayerLook3dState)) });
+
             GameEventManager.INSTANCE.OnEvent(typeof(StopCutsceneState));
         };
         

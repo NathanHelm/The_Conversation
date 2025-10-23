@@ -11,7 +11,7 @@ namespace Data
         public Image dialogBlock { get; set; }
         public TextMeshProUGUI dialogText { get; set; }
 
-        public Renderer ledgerUIImage {get; set;}
+        public Renderer ledgerClueScreenImage {get; set;}
         public Renderer interviewIcon {get; set;}
 
         public Button dialogueButton, dialogueButton1; 
@@ -24,7 +24,7 @@ namespace Data
             dialogBlock = GameObject.FindGameObjectWithTag("DialogueBox").GetComponent<Image>();
             var buttons = FindObjectsOfType<DialogueButton>();
 
-            ledgerUIImage = GameObject.FindGameObjectWithTag("LedgerImage")?.GetComponent<Renderer>();
+            ledgerClueScreenImage = GameObject.FindGameObjectWithTag("LedgerImage")?.GetComponent<Renderer>();
             interviewIcon = GameObject.FindGameObjectWithTag("InterviewIcon")?.GetComponent<Renderer>();
 
            
@@ -39,7 +39,7 @@ namespace Data
 
 
            
-            IconUIAnimations.onStartImageUIAnimations.AddAction(iuia => { iuia.drawLedgerUIPageIndexRenderer = ledgerUIImage;});
+            IconUIAnimations.onStartImageUIAnimations.AddAction(iuia => { iuia.drawLedgerUIPageIndexRenderer = ledgerClueScreenImage;});
 
             ButtonDialogueManager.onActionStart.AddAction((ButtonDialogueManager e)=>{e.button1 = dialogueButton; e.button2 = dialogueButton1;});
             

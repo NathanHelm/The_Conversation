@@ -92,6 +92,11 @@ public class MemoryTransformationHandler : MonoBehaviour, IObserver<ObserverActi
     public void MemoriesTransformOnEnable()
     {
         //based on the memory ID that is being used, alter the movement
+        if (spawnedStages.Count == 0)
+        {
+            Debug.Log("");
+            return;
+        }
         int currentMemoryID = MemoryData.INSTANCE.recentUnlockedMemoryId;
         MemorySpawnObject currentMemory = spawnedStages[0].memorySpawnObject;
 
@@ -145,6 +150,10 @@ public class MemoryTransformationHandler : MonoBehaviour, IObserver<ObserverActi
     }
      private List<MemoryTransformUpdateAction> GetRandomUpdateAction(int maxSpawnStage) //(2) get random action from randomly selected stage.
     {
+        if (spawnedStages.Count == 0)
+        {
+            return new();
+        }
         int currentCharacterID = spawnedStages[0].memorySpawnObject.characterId;
 
         List<ObserverAction.MemoryTransformUpdateAction> randomUpdateStageActionsTemp = new(); //randomly update observer actions

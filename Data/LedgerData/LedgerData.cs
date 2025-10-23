@@ -34,7 +34,10 @@ namespace Data
 
         public PencilSketchPostEffect pencilSketchPostEffect { get; set; }
         public PencilSketchPostEffect pencilSketchPostEffectScreenShot { get; set; }
-        public Action<LedgerManager> writeActionLedgerManager = lm => {
+        
+        public LedgerNarrativeManager ledgerTools { get; set; }
+        public Action<LedgerManager> writeActionLedgerManager = lm =>
+        {
             //TODO change to hand state, not function 
             ImageUIAnimations.INSTANCE.DrawImageOnCurrentPage();
             GameEventManager.INSTANCE.OnEvent(typeof(WriteHandState));
@@ -50,14 +53,10 @@ namespace Data
         public Action<ImageUIAnimations> disableleftHandPage = pa => {
             Debug.LogError("disable left hand page has not been set :/ ");
         };
-        public Action<LedgerManager> runOpenLedgerAndCutscene = lm =>
-        {
-            CutsceneManager.INSTANCE?.LedgerDialog();
-            GameEventManager.INSTANCE.OnEvent(typeof(OpenLedgerState));
-        }; //check trigger action manager
 
         public override void m_OnEnable()
         {
+            ledgerTools = FindFirstObjectByType<LedgerNarrativeManager>();
 
             disableleftHandPage = pa =>
             {

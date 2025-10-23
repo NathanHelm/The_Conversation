@@ -10,8 +10,8 @@ public class InspectClueLedgerState : LedgerState
     UnityEngine.Debug.Log("inspect clue state!");
     GameEventManager.INSTANCE.OnEvent(typeof(HoldPageState));
 
-    var ledgerUIImage = UIData.INSTANCE.ledgerUIImage.gameObject;
-    var renderer = UIData.INSTANCE.ledgerUIImage;
+    var ledgerUIImage = UIData.INSTANCE.ledgerClueScreenImage.gameObject;
+    var renderer = UIData.INSTANCE.ledgerClueScreenImage;
     UIManager.INSTANCE.EnableUIObject(ref ledgerUIImage);
     LedgerImageManager.INSTANCE.SetRenderTextureToLedgerImage(ref renderer, data.pageIndex);
     IconUIAnimations.INSTANCE.DrawLedgerImageUI();
@@ -38,7 +38,7 @@ public class InspectClueLedgerState : LedgerState
   {
 
     IconUIAnimations.INSTANCE.EraseLedgerImageUI();
-    var ledgerUIImage = UIData.INSTANCE.ledgerUIImage.gameObject;
+    var ledgerUIImage = UIData.INSTANCE.ledgerClueScreenImage.gameObject;
     UIManager.INSTANCE.DisableUIObject(ref ledgerUIImage);
 
     ActionController.PRESSTAB_LEDGER -= ActionController.INSTANCE.actionOpenLedgerTab.pressTabDisableLedger;

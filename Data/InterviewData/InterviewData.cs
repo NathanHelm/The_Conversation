@@ -13,7 +13,6 @@ public class InterviewData : StaticInstanceData<InterviewData>, ISaveLoad, IExec
    public static int characterID = 0;
 
     public static string interviewTexturePath = ""; //
-   public static SceneNames PREVIOUSSCENE;
 
     public Renderer interviewFaceRenderer;
 
@@ -42,9 +41,8 @@ public class InterviewData : StaticInstanceData<InterviewData>, ISaveLoad, IExec
         
         questionID = DialogueData.INSTANCE.currentQuestionID;
         characterID = DialogueData.INSTANCE.currentCharacterID;
-        PREVIOUSSCENE = SceneData.CURRENTSCENE;
 
-        JsonInterviewObject jsonInterviewObject = new JsonInterviewObject(questionID, characterID, PREVIOUSSCENE);
+        JsonInterviewObject jsonInterviewObject = new JsonInterviewObject(questionID, characterID, SceneData.PREVIOUSSCENE);
         
         return new (FileNames, JsonObject[])[]
         {

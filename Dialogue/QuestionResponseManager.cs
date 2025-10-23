@@ -92,7 +92,13 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>, 
 		//31 is the character id for ALL clues
 		npcToQuestionDialogueNpc.Add(31, new Dictionary<int, DialogueConversation>());
 		npcToQuestionDialogueNpc[31] = AddQuestionsIDToCharacterAnswer(new (int[], DialogueConversation)[]{
-			new (new int[] { 1 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(31, 1))
+			new (new int[] { 46 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(31, 46)),
+			new (new int[] { 1 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(31, 1)),
+			new (new int[] { 300 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(31,300)),
+			new (new int[] { 301 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(31,301)),
+			new (new int[] {47} , CharacterManager.INSTANCE.GetConversationOnCharacterID(31, 47 )),
+			new (new int[] {48} , CharacterManager.INSTANCE.GetConversationOnCharacterID(31, 48 ))
+
 		});
 		npcToQuestionDialogueNpc.Add(200, new Dictionary<int, DialogueConversation>());
 
@@ -124,8 +130,10 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>, 
 
 		//key pair value code goes here.
 		//question id							
-			new (new int[] { 0 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(202,1)), //based on character & conversation id, return conversation
+			new (new int[] { 0 }, CharacterManager.INSTANCE.GetConversationOnCharacterID(202,0)), //based on character & conversation id, return conversation
 			new (new int[] {46}, CharacterManager.INSTANCE.GetConversationOnCharacterID(202,46)),
+			new (new int[] {666}, CharacterManager.INSTANCE.GetConversationOnCharacterID(202,666)),
+
 			/*
 			 here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
 			 */
@@ -174,6 +182,7 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>, 
 			 here, questions 2, 3, and 4, return a conversation response of character 1, with question id 2. 
 			 */
 		});
+		
 	
 
 
@@ -224,6 +233,12 @@ public class QuestionResponseManager : StaticInstance<QuestionResponseManager>, 
 		}
 		if (!npcToQuestionDialogueNpc[characterID].ContainsKey(playerQuestionID))
 		{
+			if (npcToQuestionDialogueNpc[characterID].ContainsKey(666))
+			{
+				//this is the universal dialogue object.
+				return CharacterManager.INSTANCE.GetConversationOnCharacterID(characterID, 666).dialogueObjects;
+			}
+			Debug.LogError("Character " + characterID + " does not have id " + playerQuestionID + "\n have you added a dialogueconversation response to dictionary? (that is, has adding a dialogue conversation when question id "+ playerQuestionID + ") been made?");
 			Debug.Log("playerQuestion ID " + playerQuestionID + " does not match player question value for character " + characterID);
 			/*
 			if (!npcToQuestionDialogueNpc[characterID].ContainsKey(dialogueData.currentPersistentConversationID))

@@ -1,5 +1,6 @@
 public class CharacterNoDialogueObject
 {
+    //TODO
     public int persistentConversationId;
     public string texturePath;
 

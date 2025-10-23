@@ -23,9 +23,8 @@ public class SceneStateMono : StateMono<SceneData>
     }
 
     SceneData.INSTANCE.nextScene = nextSceneName;
-
+    SceneData.PREVIOUSSCENE = SceneData.CURRENTSCENE; //save previous scene.
     SceneData.CURRENTSCENESTATE.OnExit(SceneData.INSTANCE);
-
 
 
     SceneManager.onAfterSceneChange.AddAction(sm => //after scene runs
@@ -33,6 +32,12 @@ public class SceneStateMono : StateMono<SceneData>
       SceneManager.onStartSceneManager.AddAction(sm => //function runs in MManager
       {
         SceneData.CURRENTSCENESTATE = nextState;
+
+        UnityEngine.Debug.Log("Refreshing press return ledger");
+        ActionController.PRESSRETURN_LEDGER = lm => {};
+        ActionController.AFTERDIALOGUE = lm => {};
+        ActionController.PRESSTAB_LEDGER = lm => {};
+
         SceneData.CURRENTSCENESTATE.OnEnter(SceneData.INSTANCE);
         ActionController.AFTERENTERINGSCENE(SceneManager.INSTANCE);
         SceneData.CURRENTSCENE = nextSceneName;

@@ -10,6 +10,8 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>, IExecu
 	public static SystemActionCall<TriggerActionManager> onTriggerActionTriggerActionManager = new SystemActionCall<TriggerActionManager>();
 	public Dictionary<int, Action> characterIDToTriggerAction = new Dictionary<int, Action>();
 	public Dictionary<int, Action> characterIDToTriggerExitAction = new Dictionary<int, Action>();
+ 
+
 	public Trigger triggerOnTrigger { get; set; }
 
     public override void m_OnEnable()
@@ -47,6 +49,7 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>, IExecu
 			GameEventManager.INSTANCE.OnEvent(typeof(ConversationState));
 
 		});
+	
 
 		characterIDToTriggerAction.Add(2000, () =>
 		{
@@ -67,7 +70,6 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>, IExecu
 
 		});
 
-
 		//NOTE: EVERY CHARACTER- or characterID with the id 2 - will run the action below, use with caution!
 		characterIDToTriggerAction.Add(2, () =>
 		{
@@ -79,11 +81,10 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>, IExecu
 			//one change that will effect all chracters 
 
 		});
-		characterIDToTriggerAction.Add(12, () =>
-	   {
-
-		   //Game
-	   });
+		characterIDToTriggerAction.Add(21, () =>
+		{
+			GameEventManager.INSTANCE.OnEvent(typeof(ConversationState));
+		});
 
 		//exit trigger========================================================================================
 		characterIDToTriggerExitAction.Add(2, () =>
@@ -92,6 +93,16 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>, IExecu
 			GameEventManager.INSTANCE.OnEvent(typeof(NoConversationState));
 			GameEventManager.INSTANCE.OnEvent(typeof(DisableLedgerState));
 
+		});
+		
+		characterIDToTriggerExitAction.Add(3, () =>
+		{
+
+		});
+		characterIDToTriggerAction.Add(4000, () =>
+		{
+			//going to previous scene
+			GameEventManager.INSTANCE.OnEvent(SceneManager.INSTANCE.enumSceneNameToSceneState[SceneData.PREVIOUSSCENE]);
 		});
 		characterIDToTriggerExitAction.Add(2000, () =>
 		{
@@ -169,6 +180,14 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>, IExecu
 				var dialogueData = DialogueData.INSTANCE;
 				dialogueData.currentCharacterID = characterNotOnTrigger.bodyID;
 				dialogueData.currentPersistentConversationID = characterNotOnTrigger.persistentConversationQuestionId;
+
+
+				int getSecondValue = GetNVal(characterID, 1);
+				if (getSecondValue != -1 && getSecondValue == 1)
+				{
+					return characterIDToTriggerAction[21];
+				}
+
 				return characterIDToTriggerAction[2];
 			}
 
@@ -185,7 +204,6 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>, IExecu
 		return characterIDToTriggerExitAction[2000];
 
 	}
- 
 
 
 	public Action GetTriggerAction(int characterID) //really only used for ontrigger events :/ 
@@ -194,37 +212,39 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>, IExecu
 
 		int getFirstVal = GetFirstVal(characterID);
 		Debug.Log("LOG first value that's in trigger --> " + getFirstVal);
-
-		if (!characterIDToTriggerAction.ContainsKey(characterID)) //if there is no character id found the warrant a trigger event (see characterIDToTriggerAction dictionary)
+		
+		if (characterIDToTriggerAction.ContainsKey(characterID)) //if there is no character id found the warrant a trigger event (see characterIDToTriggerAction dictionary)
 		{
-			Debug.LogError("could not find id " + characterID + " in trigger action");
+			return characterIDToTriggerAction[characterID];
 		}
-		if (getFirstVal == 2)
+		else if (getFirstVal == 2)
 		{
 			Debug.Log("LOG playing default character trigger at --> 2");
-			characterIDToTriggerAction[2]();
+			int getSecondValue = GetNVal(characterID, 1);
+
+			if (getSecondValue != -1 && getSecondValue == 1)
+			{
+				return characterIDToTriggerAction[21];
+			}
+
+			return characterIDToTriggerAction[2];
 		}
 		else if (getFirstVal == 3)
 		{
-			characterIDToTriggerAction[3]();
+			return () => { LedgerNarrativeManager.INSTANCE.AddImageToLedgerImage(characterID); };
 		}
 		else if (getFirstVal == 1)
 		{
-			characterIDToTriggerAction[1]();
+			return characterIDToTriggerAction[1];
 		}
 		else
 		{
-			Debug.LogWarning("interesting -- your id with: " + getFirstVal + " does not start with 1, 2, or 3.");
-		}
-
-		if (!characterIDToTriggerAction.ContainsKey(characterID)) //if there is no character id found the warrant a trigger event (see characterIDToTriggerAction dictionary)
-		{
-			Debug.LogError("could not find id " + characterID + " in trigger exit action");
+			Debug.LogError("could not find id " + characterID + " in trigger action");
 			return () => { Debug.LogError("run action!"); };
 		}
 
 
-		return characterIDToTriggerAction[characterID];
+	
 
 	}
 	public Action GetTriggerExitAction(int characterID) //really only used for ontrigger events :/ 
@@ -232,36 +252,43 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>, IExecu
 		onTriggerActionTriggerActionManager?.RunAction(this);
 
 		int getFirstVal = GetFirstVal(characterID);
+		 
 		Debug.Log("LOG first value that's in trigger --> " + getFirstVal);
-
-		if (getFirstVal == 1)
+		if (characterIDToTriggerExitAction.ContainsKey(characterID))
 		{
-			characterIDToTriggerExitAction[1]();
+			return characterIDToTriggerExitAction[characterID];
+		}
+		else if (getFirstVal == 1)
+		{
+			return characterIDToTriggerExitAction[1];
 		}
 		else if (getFirstVal == 2)
 		{
 			Debug.Log("LOG playing default character trigger at --> 2");
-			characterIDToTriggerExitAction[2]();
+			/*
+			int getSecondValue = GetNVal(characterID, 1);
+			if (getSecondValue != -1 && getSecondValue == 1)
+			{
+				return characterIDToTriggerAction[21];
+			}
+			*/
+			return characterIDToTriggerExitAction[2];
 		}
 		else if (getFirstVal == 3)
 		{
-			characterIDToTriggerExitAction[3]();
+			return () => { Debug.Log("exiting a narrative trigger"); };
 		}
 		else
 		{
-			Debug.LogWarning("interesting -- your id with: " + getFirstVal + " does not start with 1, 2, or 3.");
-		}
-
-		if (!characterIDToTriggerExitAction.ContainsKey(characterID)) //if there is no character id found the warrant a trigger event (see characterIDToTriggerAction dictionary)
-		{
 			Debug.LogError("could not find id " + characterID + " in trigger exit action");
+			Debug.LogWarning("interesting -- your id with: " + getFirstVal + " does not start with 1, 2, or 3.");
 			return () => { Debug.LogError("run action!"); };
 		}
 
 
 		
 
-		return characterIDToTriggerExitAction[characterID];
+		
 
 	}
 
@@ -272,6 +299,10 @@ public class TriggerActionManager : StaticInstance<TriggerActionManager>, IExecu
 	}
 	private int GetNVal(int characterID, int N)
 	{
+		if (N > characterID.ToString().Length - 1)
+		{
+			return -1;
+		}
 		return int.Parse(characterID.ToString()[N].ToString());
 	}
 

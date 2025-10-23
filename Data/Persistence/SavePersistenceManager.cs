@@ -6,7 +6,7 @@ using Persistence;
 using UnityEngine;
 
 
-public enum FileNames { myfile, mydialogfile, DialogueConversationFile, InterviewFile, LedgerImageFile, PlayerFile, SpawnFile, MemoryFile, UnlockedMemoryFile, ClueCameraFile }; //enter all filenames here
+public enum FileNames { myfile, mydialogfile, DialogueConversationFile, InterviewFile, LedgerImageFile, PlayerFile, SpawnFile, MemoryFile, UnlockedMemoryFile, ClueCameraFile, LedgerToolsFile }; //enter all filenames here
 
 /*
 so you want to save somethings
@@ -90,6 +90,9 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>, IE
 
         FileHandler<JsonClueCamerasObject> fileHandler9 =  new FileHandler<JsonClueCamerasObject>(Path.Combine(GetPath(), FileNames.ClueCameraFile + ".json"));
         fileHandlerNameTofileHandler.Add(FileNames.ClueCameraFile, fileHandler9);
+
+        FileHandler<JsonLedgerNarrativeObject> fileHandler10 = new FileHandler<JsonLedgerNarrativeObject>(Path.Combine(GetPath(), FileNames.LedgerToolsFile + ".json"));
+        fileHandlerNameTofileHandler.Add(FileNames.LedgerToolsFile, fileHandler10);
          //dont touch this.
         foreach (FileNames fileHandlerKey in fileHandlerNameTofileHandler.Keys)
         {
@@ -158,6 +161,10 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>, IE
             else if (jsonObject is FileHandler<JsonQuestionObject>)
             {
                 PopulatePersistenceDictionary<JsonQuestionObject>(fileHandlerKey);
+            }
+            else if (jsonObject is FileHandler<JsonLedgerNarrativeObject>)
+            {
+                PopulatePersistenceDictionary<JsonLedgerNarrativeObject>(fileHandlerKey);
             }
             else if (jsonObject is FileHandler<JsonInterviewObject>)
             {
@@ -329,6 +336,10 @@ public class SavePersistenceManager : StaticInstance<SavePersistenceManager>, IE
             else if (saveObj.Item2 is JsonQuestionObject[])
             {
                 SaveToFileName(currentFile, (JsonQuestionObject[])saveObj.Item2);
+            }
+            else if (saveObj.Item2 is JsonLedgerNarrativeObject[])
+            {
+                SaveToFileName(currentFile, (JsonLedgerNarrativeObject[])saveObj.Item2);
             }
             else if (saveObj.Item2 is JsonInterviewObject[])
             {

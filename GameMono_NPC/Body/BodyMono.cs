@@ -14,7 +14,7 @@ public class BodyMono : MonoBehaviour
     {
         if (bodyScriptableObject != null)
         {
-            bodyScriptableObject.bodyID = bodyID;
+             bodyID =  bodyScriptableObject.bodyID;
         }
     }
 }
