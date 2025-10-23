@@ -8,6 +8,7 @@ ScriptedImporter:
   assetBundleName: 
   assetBundleVariant: 
   script: {fileID: 11500000, guid: 62a9f0aa5b59740cfbadc7e5f9823bb0, type: 3}
+  importerVersion: 1
   textureImporterSettings:
     alphaSource: 1
     mipMapMode: 0
@@ -105,6 +106,7 @@ ScriptedImporter:
     pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 0
@@ -126,6 +128,7 @@ ScriptedImporter:
     pivot: {x: 0.46511626, y: -0.061946902}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 4
@@ -146,6 +149,7 @@ ScriptedImporter:
     pivot: {x: 0.46511626, y: -0.06306306}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 4
@@ -166,6 +170,7 @@ ScriptedImporter:
     pivot: {x: 0.46511626, y: -0.054054055}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 55
@@ -186,6 +191,7 @@ ScriptedImporter:
     pivot: {x: 0.43478262, y: -0.14999999}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 106
@@ -206,6 +212,7 @@ ScriptedImporter:
     pivot: {x: 0.3783784, y: -0.16494845}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 55
@@ -226,6 +233,7 @@ ScriptedImporter:
     pivot: {x: 0.5217391, y: -0.14999999}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 106
@@ -246,6 +254,7 @@ ScriptedImporter:
     pivot: {x: 0.6216216, y: -0.16494845}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 160
@@ -264,62 +273,69 @@ ScriptedImporter:
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
-    guid: 1900481723
+    guid: -1888460441
     name: vet - Copy
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: vet - Copy_Frame_0
+    - name: Frame_0
       frameIndex: 0
+      additiveSortOrder: 0
       cellRect:
         x: 44
         y: 7
         width: 43
         height: 113
       spriteId: 93800f725e00c4d659a567f436c50738
-    - name: vet - Copy_Frame_1
+    - name: Frame_1
       frameIndex: 1
+      additiveSortOrder: 0
       cellRect:
         x: 44
         y: 7
         width: 43
         height: 111
       spriteId: cd9b3b168b91947c08503ed5bd2c7256
-    - name: vet - Copy_Frame_2
+    - name: Frame_2
       frameIndex: 2
+      additiveSortOrder: 0
       cellRect:
         x: 44
         y: 6
         width: 43
         height: 111
       spriteId: d9c80929fe9604920ad65abbba5a5536
-    - name: vet - Copy_Frame_3
+    - name: Frame_3
       frameIndex: 3
+      additiveSortOrder: 0
       cellRect:
         x: 44
         y: 15
         width: 46
         height: 100
       spriteId: a9f79f44ee346442e8a7779b61db21b6
-    - name: vet - Copy_Frame_4
+    - name: Frame_4
       frameIndex: 4
+      additiveSortOrder: 0
       cellRect:
         x: 50
         y: 16
         width: 37
         height: 97
       spriteId: 399fbcb765d1747eca29274945fc4917
-    - name: vet - Copy_Frame_5
+    - name: Frame_5
       frameIndex: 5
+      additiveSortOrder: 0
       cellRect:
         x: 40
         y: 15
         width: 46
         height: 100
       spriteId: 39002ac9a24874d598d3f63532c31407
-    - name: vet - Copy_Frame_6
+    - name: Frame_6
       frameIndex: 6
+      additiveSortOrder: 0
       cellRect:
         x: 41
         y: 16
@@ -333,3 +349,4 @@ ScriptedImporter:
   secondarySpriteTextures: []
   spritePackingTag: 
   canvasSize: {x: 128, y: 128}
+  previousTextureSize: {x: 256, y: 256}

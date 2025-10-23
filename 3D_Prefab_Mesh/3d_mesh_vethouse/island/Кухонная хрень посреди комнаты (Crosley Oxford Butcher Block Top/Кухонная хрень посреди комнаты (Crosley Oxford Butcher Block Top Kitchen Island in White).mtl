@@ -1,0 +1,33 @@
+#
+## Alias OBJ Material File
+# Exported from SketchUp, (c) 2000-2012 Trimble Navigation Limited
+
+newmtl Carrera_Marble
+Ka 0.000000 0.000000 0.000000
+Kd 0.811765 0.811765 0.811765
+Ks 0.330000 0.330000 0.330000
+map_Kd Кухонная хрень посреди комнаты (Crosley Oxford Butcher Block Top Kitchen Island in White)/Carrera_Marble.jpg
+
+newmtl Stone_Vein_Gray
+Ka 0.000000 0.000000 0.000000
+Kd 0.650980 0.647059 0.647059
+Ks 0.330000 0.330000 0.330000
+map_Kd Кухонная хрень посреди комнаты (Crosley Oxford Butcher Block Top Kitchen Island in White)/Stone_Vein_Gray.jpg
+
+newmtl Stone_Brushed_Khaki
+Ka 0.000000 0.000000 0.000000
+Kd 0.886275 0.772549 0.521569
+Ks 0.330000 0.330000 0.330000
+map_Kd Кухонная хрень посреди комнаты (Crosley Oxford Butcher Block Top Kitchen Island in White)/Stone_Brushed_Khaki.jpg
+
+newmtl FrontColor
+Ka 0.000000 0.000000 0.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.330000 0.330000 0.330000
+
+newmtl Wood_Floor_Dark
+Ka 0.000000 0.000000 0.000000
+Kd 0.600000 0.368627 0.164706
+Ks 0.330000 0.330000 0.330000
+map_Kd Кухонная хрень посреди комнаты (Crosley Oxford Butcher Block Top Kitchen Island in White)/Wood_Floor_Dark.jpg
+

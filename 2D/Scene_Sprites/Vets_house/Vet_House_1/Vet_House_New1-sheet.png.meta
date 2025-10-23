@@ -1,0 +1,1315 @@
+fileFormatVersion: 2
+guid: 49a1febf89df846cfb91e60d265c3a97
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_0
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 12
+        width: 89
+        height: 59
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4939f64c67f9c4c5586ae25480d11ce4
+      internalID: -1663122421
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_1
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 40
+        width: 14
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7391e9ff89f1d47818a5bb94f99fdd5f
+      internalID: 276282785
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_2
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 20
+        width: 13
+        height: 62
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5b9145e1a29f64e939fa0edb49089b08
+      internalID: -500323384
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_3
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 39
+        width: 16
+        height: 25
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3aee9a72ee4804aed982cfc01cfbf48d
+      internalID: -618577239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_4
+      rect:
+        serializedVersion: 2
+        x: 686
+        y: 62
+        width: 19
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bf53731664c0b44d0a4d899b7aa36cd4
+      internalID: -1314777498
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_5
+      rect:
+        serializedVersion: 2
+        x: 714
+        y: 61
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 834b1936e08fa41438a500e0cc0c429b
+      internalID: 33293301
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_6
+      rect:
+        serializedVersion: 2
+        x: 872
+        y: 64
+        width: 16
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e098498a5d3a3480fb7cdc06a1c0e176
+      internalID: 2014160834
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_7
+      rect:
+        serializedVersion: 2
+        x: 893
+        y: 66
+        width: 5
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a40f4ac06e8c94e529a5ff248dfa8483
+      internalID: -1318290346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_8
+      rect:
+        serializedVersion: 2
+        x: 899
+        y: 69
+        width: 4
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 18bb964a6a51d4fcba5a610770d092fd
+      internalID: 1574037427
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_9
+      rect:
+        serializedVersion: 2
+        x: 902
+        y: 70
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9fffd53c7218a4355902801eb564573a
+      internalID: 1676557976
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_10
+      rect:
+        serializedVersion: 2
+        x: 927
+        y: 67
+        width: 29
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a12b030b7308648b4939c902f92453f0
+      internalID: -1708539474
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_11
+      rect:
+        serializedVersion: 2
+        x: 973
+        y: 63
+        width: 23
+        height: 21
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f0178b1617f0a4f748ea5b00bbc9d8f0
+      internalID: 127824653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_12
+      rect:
+        serializedVersion: 2
+        x: 1108
+        y: 51
+        width: 33
+        height: 37
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ff357d1e212f34822b684ba960547be7
+      internalID: 68099285
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_13
+      rect:
+        serializedVersion: 2
+        x: 1157
+        y: 53
+        width: 30
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3d2772dda6be84fb2a97580ff2e53f94
+      internalID: 1989095792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_14
+      rect:
+        serializedVersion: 2
+        x: 1340
+        y: 55
+        width: 30
+        height: 33
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2edad9b1e7057402e90629cbd9dfe19d
+      internalID: 476625215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_15
+      rect:
+        serializedVersion: 2
+        x: 1499
+        y: 13
+        width: 43
+        height: 69
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 142c07258cfc149489acb5109f759a24
+      internalID: 899749884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_16
+      rect:
+        serializedVersion: 2
+        x: 889
+        y: 66
+        width: 4
+        height: 4
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2d69f7cea38fe438fb8ea34417896c85
+      internalID: 2124040402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_17
+      rect:
+        serializedVersion: 2
+        x: 1042
+        y: 27
+        width: 35
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 764b28fe920134b719d178fe4f60277a
+      internalID: 1659551691
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_18
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 32
+        width: 62
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 56b3db4d049414bc7a13b282ac987488
+      internalID: -686246904
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_19
+      rect:
+        serializedVersion: 2
+        x: 665
+        y: 7
+        width: 10
+        height: 55
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 20bdf15d8dea5403080004a24aa7a7bd
+      internalID: 1358088502
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_20
+      rect:
+        serializedVersion: 2
+        x: 764
+        y: 24
+        width: 27
+        height: 41
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 245b1e90773a742d496b9d8f0496e429
+      internalID: -205714823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_21
+      rect:
+        serializedVersion: 2
+        x: 836
+        y: 46
+        width: 20
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc87e733a17404886b8736725ad0f215
+      internalID: -2086133602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_22
+      rect:
+        serializedVersion: 2
+        x: 886
+        y: 56
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 11f2b33a8e8764a4a9bc3becdb4f8569
+      internalID: 1700616210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_23
+      rect:
+        serializedVersion: 2
+        x: 893
+        y: 59
+        width: 5
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 50b7a8a90e5b1457a8ef2b2346a08eea
+      internalID: 87420063
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_24
+      rect:
+        serializedVersion: 2
+        x: 899
+        y: 60
+        width: 5
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7bcd8e3b414874799b42a04318d6b046
+      internalID: -1618782749
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_25
+      rect:
+        serializedVersion: 2
+        x: 900
+        y: 49
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3930ae54075df4ed5801544f68365c29
+      internalID: 1989386176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_26
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 6
+        width: 16
+        height: 53
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 21807a2dbda39401784c0c0f533b755b
+      internalID: 1738248711
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_27
+      rect:
+        serializedVersion: 2
+        x: 487
+        y: 21
+        width: 24
+        height: 29
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 232799f092cee476f9a253d81dd81a73
+      internalID: 388524201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_28
+      rect:
+        serializedVersion: 2
+        x: 690
+        y: 32
+        width: 13
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5e2f68d277a304b679e9ff860bb5d722
+      internalID: -1247881723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_29
+      rect:
+        serializedVersion: 2
+        x: 890
+        y: 44
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dd485b4c7e1fe4affab9a2bba60fbe4f
+      internalID: -15269441
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_30
+      rect:
+        serializedVersion: 2
+        x: 946
+        y: 35
+        width: 21
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 45ac41766bc904c159705202edf75d10
+      internalID: 1230069261
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_31
+      rect:
+        serializedVersion: 2
+        x: 1213
+        y: 37
+        width: 37
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dd050081e7e86408fadb2bf7a581077a
+      internalID: -196737538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_32
+      rect:
+        serializedVersion: 2
+        x: 1257
+        y: 43
+        width: 13
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f46aaa6afae6145a289439572c0290ed
+      internalID: -2045090460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_33
+      rect:
+        serializedVersion: 2
+        x: 1314
+        y: 19
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 637bd9e04a4c84c72a2c2561716a8cda
+      internalID: -2041599449
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_34
+      rect:
+        serializedVersion: 2
+        x: 1411
+        y: 37
+        width: 32
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fa2fde7d232a440d2ab708bcdc7a66aa
+      internalID: -605791362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_35
+      rect:
+        serializedVersion: 2
+        x: 557
+        y: 11
+        width: 75
+        height: 23
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6f80c64673d7741188feb894d4a06b7d
+      internalID: 1312766292
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_36
+      rect:
+        serializedVersion: 2
+        x: 858
+        y: 19
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2b30985f7dd6842ad8798cff6e33e47a
+      internalID: 140387394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_37
+      rect:
+        serializedVersion: 2
+        x: 869
+        y: 15
+        width: 12
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: adb79c06b7c7347d9a9ad342ea2b94a0
+      internalID: -388208414
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_38
+      rect:
+        serializedVersion: 2
+        x: 965
+        y: 22
+        width: 31
+        height: 17
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 36e3eacee4fd44d6ca043dd05d77f666
+      internalID: -445553136
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_39
+      rect:
+        serializedVersion: 2
+        x: 1135
+        y: 6
+        width: 35
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 609d1d197ae894a1c9a2f2b3af655206
+      internalID: 1212041295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_40
+      rect:
+        serializedVersion: 2
+        x: 1215
+        y: 24
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3e20ad03c16424f79a7911d2dcf215fb
+      internalID: -256188621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_41
+      rect:
+        serializedVersion: 2
+        x: 1231
+        y: 21
+        width: 26
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 213d27cdbd4a34828895e425f2bc1610
+      internalID: 659869278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_42
+      rect:
+        serializedVersion: 2
+        x: 1261
+        y: 26
+        width: 13
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 90721de26e0a84133992d390ad5d2d8c
+      internalID: -1991038898
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_43
+      rect:
+        serializedVersion: 2
+        x: 852
+        y: 9
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f86a8339a4fb24add888cb2cc2c0e1e4
+      internalID: 1003191476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_44
+      rect:
+        serializedVersion: 2
+        x: 862
+        y: 8
+        width: 6
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8617f4a19fd0d41dd84211f3eeaf640e
+      internalID: -1970632738
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_45
+      rect:
+        serializedVersion: 2
+        x: 870
+        y: 5
+        width: 5
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 44a089588c6334917a4d138349d69eae
+      internalID: 504874811
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_46
+      rect:
+        serializedVersion: 2
+        x: 880
+        y: 6
+        width: 14
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0ff5d8ac855c94dbabbe16d7d975193e
+      internalID: 1171968215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_47
+      rect:
+        serializedVersion: 2
+        x: 893
+        y: 5
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 318dd0690f5c54f7fb533f7ca6a5388c
+      internalID: 1575354366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_48
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 39
+        width: 2
+        height: 53
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 50635142efbd24cb49abb69560ee27ee
+      internalID: 1105828733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_49
+      rect:
+        serializedVersion: 2
+        x: 265
+        y: 35
+        width: 2
+        height: 57
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c6bd90e3256e3443f92cf1ed14574235
+      internalID: -679055884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_50
+      rect:
+        serializedVersion: 2
+        x: 849
+        y: 5
+        width: 51
+        height: 26
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5236ffbaaacb748ea84667e4360f6a89
+      internalID: 19535202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_51
+      rect:
+        serializedVersion: 2
+        x: 869
+        y: 42
+        width: 48
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 320e798cbc5f345fb8dadff65e688f56
+      internalID: 1293178318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_52
+      rect:
+        serializedVersion: 2
+        x: 557
+        y: 41
+        width: 74
+        height: 3
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c3dc8906181184406aba75e7d7c043d5
+      internalID: -404184770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vet_House_New1-sheet_53
+      rect:
+        serializedVersion: 2
+        x: 1210
+        y: 20
+        width: 67
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 13263843b6ca74ae9a6a8a3aa722e1ff
+      internalID: 395089457
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      Vet_House_New1-sheet_0: -1663122421
+      Vet_House_New1-sheet_1: 276282785
+      Vet_House_New1-sheet_10: -1708539474
+      Vet_House_New1-sheet_11: 127824653
+      Vet_House_New1-sheet_12: 68099285
+      Vet_House_New1-sheet_13: 1989095792
+      Vet_House_New1-sheet_14: 476625215
+      Vet_House_New1-sheet_15: 899749884
+      Vet_House_New1-sheet_16: 2124040402
+      Vet_House_New1-sheet_17: 1659551691
+      Vet_House_New1-sheet_18: -686246904
+      Vet_House_New1-sheet_19: 1358088502
+      Vet_House_New1-sheet_2: -500323384
+      Vet_House_New1-sheet_20: -205714823
+      Vet_House_New1-sheet_21: -2086133602
+      Vet_House_New1-sheet_22: 1700616210
+      Vet_House_New1-sheet_23: 87420063
+      Vet_House_New1-sheet_24: -1618782749
+      Vet_House_New1-sheet_25: 1989386176
+      Vet_House_New1-sheet_26: 1738248711
+      Vet_House_New1-sheet_27: 388524201
+      Vet_House_New1-sheet_28: -1247881723
+      Vet_House_New1-sheet_29: -15269441
+      Vet_House_New1-sheet_3: -618577239
+      Vet_House_New1-sheet_30: 1230069261
+      Vet_House_New1-sheet_31: -196737538
+      Vet_House_New1-sheet_32: -2045090460
+      Vet_House_New1-sheet_33: -2041599449
+      Vet_House_New1-sheet_34: -605791362
+      Vet_House_New1-sheet_35: 1312766292
+      Vet_House_New1-sheet_36: 140387394
+      Vet_House_New1-sheet_37: -388208414
+      Vet_House_New1-sheet_38: -445553136
+      Vet_House_New1-sheet_39: 1212041295
+      Vet_House_New1-sheet_4: -1314777498
+      Vet_House_New1-sheet_40: -256188621
+      Vet_House_New1-sheet_41: 659869278
+      Vet_House_New1-sheet_42: -1991038898
+      Vet_House_New1-sheet_43: 1003191476
+      Vet_House_New1-sheet_44: -1970632738
+      Vet_House_New1-sheet_45: 504874811
+      Vet_House_New1-sheet_46: 1171968215
+      Vet_House_New1-sheet_47: 1575354366
+      Vet_House_New1-sheet_48: 1105828733
+      Vet_House_New1-sheet_49: -679055884
+      Vet_House_New1-sheet_5: 33293301
+      Vet_House_New1-sheet_50: 19535202
+      Vet_House_New1-sheet_51: 1293178318
+      Vet_House_New1-sheet_52: -404184770
+      Vet_House_New1-sheet_53: 395089457
+      Vet_House_New1-sheet_6: 2014160834
+      Vet_House_New1-sheet_7: -1318290346
+      Vet_House_New1-sheet_8: 1574037427
+      Vet_House_New1-sheet_9: 1676557976
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
