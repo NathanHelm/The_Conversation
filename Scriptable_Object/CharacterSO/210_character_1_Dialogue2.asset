@@ -10,34 +10,35 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 161a9e145628543d2b3c66df6b9e206a, type: 3}
-  m_Name: c_CLAUDE
+  m_Name: 210_character_1_Dialogue2
   m_EditorClassIdentifier: 
   character:
-    ID: 21
+    ID: 210
     dialogueConversations:
     - dialogueObjects:
-      - line: this is part1 dialog
+      - line: 210!!! line one
         image: {fileID: 0}
         imageTex: {fileID: 0}
         imageTexIndex: 0
-      - line: part1, second dialog.
+      - line: 210!!! line 2
         image: {fileID: 0}
         imageTex: {fileID: 0}
-        imageTexIndex: 2
+        imageTexIndex: 0
       ID: 2
       defaultImageTex: {fileID: 0}
       defaultImageTexIndex: 0
     - dialogueObjects:
-      - line: AH yes... this clue...
+      - line: okay good question!
         image: {fileID: 0}
         imageTex: {fileID: 0}
         imageTexIndex: 0
-      - line: This is my favourite clue....
+      - line: okay good question part 2!
         image: {fileID: 0}
         imageTex: {fileID: 0}
         imageTexIndex: 0
       ID: 46
       defaultImageTex: {fileID: 0}
       defaultImageTexIndex: 0
+    memoryStages: []
     characterFaceSheet: []
     persistentConversationID: 2

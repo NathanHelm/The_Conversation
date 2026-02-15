@@ -1,32 +1,13 @@
 {
     "Items": [
         {
-            "Id": 200,
+            "Id": 31,
             "name": "myfile",
             "dialogueObjects": [
                 {
                     "dialogueObjects": [
                         {
-                            "line": "line one\n",
-                            "image": {
-                                "instanceID": 0
-                            },
-                            "imageTex": {
-                                "instanceID": 0
-                            },
-                            "imageTexIndex": 0
-                        }
-                    ],
-                    "ID": 1,
-                    "defaultImageTex": {
-                        "instanceID": 0
-                    },
-                    "defaultImageTexIndex": 0
-                },
-                {
-                    "dialogueObjects": [
-                        {
-                            "line": "yes... this clue\n",
+                            "line": "This is a drawing of clue 1",
                             "image": {
                                 "instanceID": 0
                             },
@@ -41,19 +22,11 @@
                         "instanceID": 0
                     },
                     "defaultImageTexIndex": 0
-                }
-            ],
-            "textureId": 0,
-            "persistentDialogueId": 0
-        },
-        {
-            "Id": 201,
-            "name": "myfile",
-            "dialogueObjects": [
+                },
                 {
                     "dialogueObjects": [
                         {
-                            "line": "racoon2\n",
+                            "line": "This is a drawing of a Journal",
                             "image": {
                                 "instanceID": 0
                             },
@@ -63,7 +36,7 @@
                             "imageTexIndex": 0
                         }
                     ],
-                    "ID": 1,
+                    "ID": 300,
                     "defaultImageTex": {
                         "instanceID": 0
                     },
@@ -72,7 +45,17 @@
                 {
                     "dialogueObjects": [
                         {
-                            "line": "racoon2\n",
+                            "line": "A fridge. ",
+                            "image": {
+                                "instanceID": 0
+                            },
+                            "imageTex": {
+                                "instanceID": 0
+                            },
+                            "imageTexIndex": 0
+                        },
+                        {
+                            "line": "The night cats usually come around and find a snack. ",
                             "image": {
                                 "instanceID": 0
                             },
@@ -82,7 +65,45 @@
                             "imageTexIndex": 0
                         }
                     ],
-                    "ID": 46,
+                    "ID": 47,
+                    "defaultImageTex": {
+                        "instanceID": 0
+                    },
+                    "defaultImageTexIndex": 0
+                },
+                {
+                    "dialogueObjects": [
+                        {
+                            "line": "Do birds use typewriters? ",
+                            "image": {
+                                "instanceID": 0
+                            },
+                            "imageTex": {
+                                "instanceID": 0
+                            },
+                            "imageTexIndex": 0
+                        }
+                    ],
+                    "ID": 48,
+                    "defaultImageTex": {
+                        "instanceID": 0
+                    },
+                    "defaultImageTexIndex": 0
+                },
+                {
+                    "dialogueObjects": [
+                        {
+                            "line": "...meh",
+                            "image": {
+                                "instanceID": 0
+                            },
+                            "imageTex": {
+                                "instanceID": 0
+                            },
+                            "imageTexIndex": 0
+                        }
+                    ],
+                    "ID": 666,
                     "defaultImageTex": {
                         "instanceID": 0
                     },
@@ -198,13 +219,32 @@
             "persistentDialogueId": 0
         },
         {
-            "Id": 31,
+            "Id": 201,
             "name": "myfile",
             "dialogueObjects": [
                 {
                     "dialogueObjects": [
                         {
-                            "line": "This is a drawing of clue 1",
+                            "line": "racoon2\n",
+                            "image": {
+                                "instanceID": 0
+                            },
+                            "imageTex": {
+                                "instanceID": 0
+                            },
+                            "imageTexIndex": 0
+                        }
+                    ],
+                    "ID": 1,
+                    "defaultImageTex": {
+                        "instanceID": 0
+                    },
+                    "defaultImageTexIndex": 0
+                },
+                {
+                    "dialogueObjects": [
+                        {
+                            "line": "racoon2\n",
                             "image": {
                                 "instanceID": 0
                             },
@@ -219,11 +259,19 @@
                         "instanceID": 0
                     },
                     "defaultImageTexIndex": 0
-                },
+                }
+            ],
+            "textureId": 0,
+            "persistentDialogueId": 0
+        },
+        {
+            "Id": 200,
+            "name": "myfile",
+            "dialogueObjects": [
                 {
                     "dialogueObjects": [
                         {
-                            "line": "This is a drawing of a Journal",
+                            "line": "line one\n",
                             "image": {
                                 "instanceID": 0
                             },
@@ -233,7 +281,7 @@
                             "imageTexIndex": 0
                         }
                     ],
-                    "ID": 300,
+                    "ID": 1,
                     "defaultImageTex": {
                         "instanceID": 0
                     },
@@ -242,17 +290,7 @@
                 {
                     "dialogueObjects": [
                         {
-                            "line": "A fridge. ",
-                            "image": {
-                                "instanceID": 0
-                            },
-                            "imageTex": {
-                                "instanceID": 0
-                            },
-                            "imageTexIndex": 0
-                        },
-                        {
-                            "line": "The night cats usually come around and find a snack. ",
+                            "line": "yes... this clue\n",
                             "image": {
                                 "instanceID": 0
                             },
@@ -262,45 +300,7 @@
                             "imageTexIndex": 0
                         }
                     ],
-                    "ID": 47,
-                    "defaultImageTex": {
-                        "instanceID": 0
-                    },
-                    "defaultImageTexIndex": 0
-                },
-                {
-                    "dialogueObjects": [
-                        {
-                            "line": "Do birds use typewriters? ",
-                            "image": {
-                                "instanceID": 0
-                            },
-                            "imageTex": {
-                                "instanceID": 0
-                            },
-                            "imageTexIndex": 0
-                        }
-                    ],
-                    "ID": 48,
-                    "defaultImageTex": {
-                        "instanceID": 0
-                    },
-                    "defaultImageTexIndex": 0
-                },
-                {
-                    "dialogueObjects": [
-                        {
-                            "line": "...meh",
-                            "image": {
-                                "instanceID": 0
-                            },
-                            "imageTex": {
-                                "instanceID": 0
-                            },
-                            "imageTexIndex": 0
-                        }
-                    ],
-                    "ID": 666,
+                    "ID": 46,
                     "defaultImageTex": {
                         "instanceID": 0
                     },

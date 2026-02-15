@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: backgroundFaceMat 1
-  m_Shader: {fileID: 4800000, guid: 792a2cefe7bb34c9c8c54ce2bffa7ce1, type: 3}
+  m_Name: PageShader
+  m_Shader: {fileID: 4800000, guid: 28d4c162777914dcc8e4e7274d805f77, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -16,18 +16,30 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _BumpMap:
-        m_Texture: {fileID: 0}
+    - _BackPage:
+        m_Texture: {fileID: 2800000, guid: 15654c4c15ce04a038ef1829cb99b8db, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _ColorWheel:
+    - _BackSideInsideTex:
+        m_Texture: {fileID: 2800000, guid: 0f8cf6dc3515948e2a5a89f73f861068, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BackSideTex:
+        m_Texture: {fileID: 2800000, guid: b73d14580714e4c688ce597d71cecd4d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BackTex:
+        m_Texture: {fileID: 2800000, guid: a350ac53491e75b4e843bb6e1705a1d4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -47,20 +59,24 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Face1:
-        m_Texture: {fileID: 8400000, guid: d72d81037c67f499fb6237bcb9d4e1b9, type: 2}
+    - _FontSideInsideTex:
+        m_Texture: {fileID: 2800000, guid: eeb4d406c95b0424ca51a9f6cb36ac3d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Face2:
-        m_Texture: {fileID: 8400000, guid: 2902cd32b3c6f45af829db3e82d02293, type: 2}
+    - _FrontPage:
+        m_Texture: {fileID: 2800000, guid: 0f8cf6dc3515948e2a5a89f73f861068, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Face3:
-        m_Texture: {fileID: 8400000, guid: 6a5bac2e41084408faba5b8af0a6a233, type: 2}
+    - _FrontSideInsideTex:
+        m_Texture: {fileID: 2800000, guid: 882d6001fd3a94dd9b337625948197f4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _FaceTextures:
-        m_Texture: {fileID: 0}
+    - _FrontSideTex:
+        m_Texture: {fileID: 2800000, guid: 0f8cf6dc3515948e2a5a89f73f861068, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FrontTex:
+        m_Texture: {fileID: 2800000, guid: a5fbcf512e323074384f3d7eb1b798f5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -69,14 +85,6 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NoiseTex_1:
-        m_Texture: {fileID: 2800000, guid: 2668dc488da6e40b495bdfc86cd651b5, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NoiseTex_2:
-        m_Texture: {fileID: 2800000, guid: b73d14580714e4c688ce597d71cecd4d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -89,43 +97,35 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Amplitude: 0.1
-    - _Bright1: 5
-    - _Bright2: 1.5
-    - _Bright3: 1.5
+    - _Boldness: 0.3
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _Freq: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _Hue1: 47
-    - _Hue2: -0.9
-    - _Hue3: -0.9
-    - _ImageAmount: 3
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
+    - _PaperBlend: 0.56
     - _Parallax: 0.02
-    - _Sat1: 3.7
-    - _Sat2: 1.5
-    - _Sat3: 1.5
-    - _Scale: 1
-    - _Scale1: 0.5
-    - _SliceAmount: 8
+    - _ScaleBackPage: 1
+    - _ScaleFrontPage: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
+    - _Split: 0
     - _SrcBlend: 1
-    - _Strength: 0.5
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _COORD: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 1, g: 1, b: 1, a: 0.4}
+    - _BackCanvas: {r: 0, g: 1, b: 0, a: 1}
+    - _Color: {r: 0.8301887, g: 0.6696333, b: 0.6696333, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _HSBStep: {r: 6, g: 6, b: 6, a: 6}
-    - _Range: {r: 1, g: 1, b: 0, a: 0}
+    - _FrontCanvas: {r: 0, g: 1.09, b: -0.02, a: 1.1}
+    - _OffsetBack: {r: 0, g: 1, b: 1, a: 1}
+    - _OffsetBackPage: {r: 0.5, g: 0.5, b: 0, a: 0}
+    - _OffsetFront: {r: 0, g: 0, b: 1.1, a: 0}
+    - _OffsetFrontPage: {r: 0, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

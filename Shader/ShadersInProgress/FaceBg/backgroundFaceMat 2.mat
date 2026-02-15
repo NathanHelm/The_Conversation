@@ -48,15 +48,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Face1:
-        m_Texture: {fileID: 8400000, guid: 6a5bac2e41084408faba5b8af0a6a233, type: 2}
+        m_Texture: {fileID: 8400000, guid: d72d81037c67f499fb6237bcb9d4e1b9, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Face2:
-        m_Texture: {fileID: 8400000, guid: 137460192810a403f93bc87045e20cc4, type: 2}
+        m_Texture: {fileID: 8400000, guid: 2902cd32b3c6f45af829db3e82d02293, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Face3:
-        m_Texture: {fileID: 8400000, guid: d72d81037c67f499fb6237bcb9d4e1b9, type: 2}
+        m_Texture: {fileID: 8400000, guid: 6a5bac2e41084408faba5b8af0a6a233, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FaceTextures:
@@ -90,7 +90,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Amplitude: 0.1
-    - _Bright1: 5
+    - _Bright1: -0.9
     - _Bright2: 1.5
     - _Bright3: 1.5
     - _BumpScale: 1
@@ -101,7 +101,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _Hue1: 47
+    - _Hue1: 0.8
     - _Hue2: -0.9
     - _Hue3: -0.9
     - _ImageAmount: 3
@@ -109,7 +109,7 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Sat1: 3.7
+    - _Sat1: 7
     - _Sat2: 1.5
     - _Sat3: 1.5
     - _Scale: 1
